@@ -1,0 +1,311 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-mona: var(--font-mona-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-open: var(--font-open-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --spacing: 0.25rem;
+  --color-brand-cortex-orange: var(--brand-cortex-orange);
+  --color-brand-cortex-carbon: var(--brand-cortex-carbon);
+  --color-brand-monad-purple: var(--brand-monad-purple);
+  --color-brand-cortex-amber: var(--brand-cortex-amber);
+  --color-vibrant-haze-purple: var(--vibrant-haze-purple);
+  --color-vibrant-electric-yellow: var(--vibrant-electric-yellow);
+  --color-vibrant-active-cyan: var(--vibrant-active-cyan);
+  --color-vibrant-signal-magenta: var(--vibrant-signal-magenta);
+  --color-neutral-white: var(--neutral-white);
+  --color-neutral-silver-gray: var(--neutral-silver-gray);
+  --color-neutral-neural-gray: var(--neutral-neural-gray);
+  --color-neutral-neural-dark: var(--neutral-neural-dark);
+  --color-neutral-black: var(--neutral-black);
+  --color-extended-volt-dark: var(--extended-volt-dark);
+  --color-extended-deep-blue: var(--extended-deep-blue);
+  --color-extended-blue: var(--extended-blue);
+  --color-bg-canvas: var(--bg-canvas);
+  --color-bg-section: var(--bg-section);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-inverse: var(--bg-inverse);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-action-primary: var(--action-primary);
+  --color-action-primary-hover: var(--action-primary-hover);
+  --color-action-secondary: var(--action-secondary);
+  --color-action-secondary-hover: var(--action-secondary-hover);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-none: 0;
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+  --radius-full: 9999px;
+  --text-display: 4.125rem;
+  --text-display--line-height: 1;
+  --text-display--font-weight: 600;
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 1;
+  --text-hero--font-weight: 600;
+  --text-section-heading: 3.625rem;
+  --text-section-heading--line-height: 1;
+  --text-section-heading--font-weight: 800;
+  --text-card-heading: 3.75rem;
+  --text-card-heading--line-height: 1;
+  --text-card-heading--font-weight: 400;
+  --text-event-heading: 2rem;
+  --text-event-heading--line-height: 1;
+  --text-event-heading--font-weight: 700;
+  --text-team-name: 1.75rem;
+  --text-team-name--line-height: 1;
+  --text-team-name--font-weight: 600;
+  --text-body-lg: 1.25rem;
+  --text-body-lg--line-height: 1.36;
+  --text-body-lg--font-weight: 400;
+  --text-body: 1.125rem;
+  --text-body--line-height: 1.3;
+  --text-body--font-weight: 400;
+  --text-body-sm: 1rem;
+  --text-body-sm--line-height: 1.3;
+  --text-body-sm--font-weight: 400;
+  --text-nav: 0.875rem;
+  --text-nav--line-height: 1;
+  --text-nav--font-weight: 600;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1;
+  --text-label--font-weight: 800;
+  --text-label--letter-spacing: 0.41em;
+  --text-tag: 0.75rem;
+  --text-tag--line-height: 1;
+  --text-tag--font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1;
+  --text-caption--font-weight: 400;
+}
+
+:root {
+  --brand-cortex-orange: #ff5e00;
+  --brand-cortex-carbon: #111111;
+  --brand-monad-purple: #6e54ff;
+  --brand-cortex-amber: #fbb143;
+  --vibrant-haze-purple: #b7aaff;
+  --vibrant-electric-yellow: #ffe100;
+  --vibrant-active-cyan: #54fff9;
+  --vibrant-signal-magenta: #ff0051;
+  --neutral-white: #ffffff;
+  --neutral-silver-gray: #d9d9d9;
+  --neutral-neural-gray: #7c7c7c;
+  --neutral-neural-dark: #282828;
+  --neutral-black: #000000;
+  --extended-volt-dark: #993800;
+  --extended-deep-blue: #000899;
+  --extended-blue: #2b00ff;
+
+  --bg-canvas: var(--brand-cortex-carbon);
+  --bg-section: var(--brand-cortex-carbon);
+  --bg-elevated: var(--neutral-neural-dark);
+  --bg-inverse: var(--neutral-white);
+  --text-primary: var(--neutral-white);
+  --text-secondary: var(--neutral-silver-gray);
+  --text-muted: var(--neutral-neural-gray);
+  --text-inverse: var(--brand-cortex-carbon);
+  --border-default: var(--neutral-neural-dark);
+  --border-strong: var(--neutral-silver-gray);
+  --action-primary: var(--brand-cortex-orange);
+  --action-primary-hover: #ff6a14;
+  --action-secondary: var(--brand-monad-purple);
+  --action-secondary-hover: #7860ff;
+
+  /* Gradients -- Check DESIGN.md for more details */
+  --gradient-primary-surface-stops:
+    transparent 0%,
+    color-mix(in srgb, var(--neutral-neural-gray) 70%, transparent) 50%,
+    var(--brand-cortex-orange) 100%;
+  --gradient-primary-overlay-stops:
+    transparent 0%,
+    color-mix(in srgb, var(--neutral-neural-gray) 50%, transparent) 50%,
+    var(--brand-cortex-orange) 100%;
+  --gradient-orange-depth-stops:
+    transparent 0%, var(--brand-cortex-orange) 45%,
+    var(--extended-volt-dark) 100%;
+  --gradient-extended-blue-volt-stops:
+    transparent 0%, var(--extended-blue) 45%, var(--extended-volt-dark) 100%;
+  --gradient-cortex-extend-stops:
+    var(--extended-blue) 0%, var(--extended-volt-dark) 100%;
+  --gradient-cortex-gray-stops:
+    color-mix(in srgb, var(--neutral-white) 8%, var(--brand-cortex-carbon)) 0%,
+    color-mix(in srgb, var(--neutral-white) 18%, var(--brand-cortex-carbon)) 50%,
+    color-mix(in srgb, var(--neutral-white) 8%, var(--brand-cortex-carbon)) 100%;
+  --gradient-cortex-orange-stops:
+    transparent 0%, var(--neutral-neural-gray) 50%,
+    var(--brand-cortex-orange) 100%;
+
+  --shader-orange-amber-color-a: var(--brand-cortex-orange);
+  --shader-orange-amber-color-b: var(--brand-cortex-amber);
+  --shader-orange-amber-background: var(--brand-cortex-carbon);
+  --shader-orange-purple-color-a: var(--brand-cortex-orange);
+  --shader-orange-purple-color-b: var(--brand-monad-purple);
+  --shader-orange-purple-background: var(--brand-cortex-carbon);
+  --shader-orange-magenta-color-a: var(--brand-cortex-orange);
+  --shader-orange-magenta-color-b: var(--vibrant-signal-magenta);
+  --shader-orange-magenta-background: var(--brand-cortex-carbon);
+  --shader-orange-yellow-color-a: var(--brand-cortex-orange);
+  --shader-orange-yellow-color-b: var(--vibrant-electric-yellow);
+  --shader-orange-yellow-background: var(--brand-cortex-carbon);
+  --shader-cyan-amber-color-a: var(--vibrant-active-cyan);
+  --shader-cyan-amber-color-b: var(--brand-cortex-amber);
+  --shader-cyan-amber-background: var(--brand-cortex-carbon);
+
+  --text-display: 4.125rem;
+  --text-display-line-height: 1;
+  --text-display-font-weight: 600;
+  --text-hero: 3.5rem;
+  --text-hero-line-height: 1;
+  --text-hero-font-weight: 600;
+  --text-section-heading: 3.625rem;
+  --text-section-heading-line-height: 1;
+  --text-section-heading-font-weight: 800;
+  --text-card-heading: 3.75rem;
+  --text-card-heading-line-height: 1;
+  --text-card-heading-font-weight: 400;
+  --text-event-heading: 2rem;
+  --text-event-heading-line-height: 1;
+  --text-event-heading-font-weight: 700;
+  --text-team-name: 1.75rem;
+  --text-team-name-line-height: 1;
+  --text-team-name-font-weight: 600;
+  --text-body-lg: 1.25rem;
+  --text-body-lg-line-height: 1.36;
+  --text-body-lg-font-weight: 400;
+  --text-body: 1.125rem;
+  --text-body-line-height: 1.3;
+  --text-body-font-weight: 400;
+  --text-body-sm: 1rem;
+  --text-body-sm-line-height: 1.3;
+  --text-body-sm-font-weight: 400;
+  --text-nav: 0.875rem;
+  --text-nav-line-height: 1;
+  --text-nav-font-weight: 600;
+  --text-label: 0.8125rem;
+  --text-label-line-height: 1;
+  --text-label-font-weight: 800;
+  --text-label-letter-spacing: 0.41em;
+  --text-tag: 0.75rem;
+  --text-tag-line-height: 1;
+  --text-tag-font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption-line-height: 1;
+  --text-caption-font-weight: 400;
+
+  --radius-none: 0;
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+  --radius-full: 9999px;
+
+  --button-height: 2.125rem;
+  --button-height-lg: 2.625rem;
+  --button-padding-inline: 1.875rem;
+  --button-disabled-opacity: 0.5;
+
+  --background: var(--bg-canvas);
+  --foreground: var(--text-primary);
+  --card: var(--bg-section);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-elevated);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--action-primary);
+  --primary-foreground: var(--neutral-white);
+  --secondary: var(--action-secondary);
+  --secondary-foreground: var(--neutral-white);
+  --muted: var(--bg-elevated);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--bg-elevated);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--vibrant-signal-magenta);
+  --border: var(--border-default);
+  --input: var(--border-default);
+  --ring: var(--action-primary);
+  --chart-1: var(--brand-cortex-orange);
+  --chart-2: var(--brand-monad-purple);
+  --chart-3: var(--brand-cortex-amber);
+  --chart-4: var(--vibrant-active-cyan);
+  --chart-5: var(--vibrant-signal-magenta);
+  --radius: var(--radius-lg);
+  --sidebar: var(--bg-canvas);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--action-primary);
+  --sidebar-primary-foreground: var(--neutral-white);
+  --sidebar-accent: var(--bg-elevated);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-default);
+  --sidebar-ring: var(--action-primary);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@layer components {
+  .site-container {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-mona;
+  }
+}
