@@ -59,8 +59,8 @@ Foundation setup: brand guidance, design-system source, and agent context are be
 
 ## Latest Handoff
 
-- Changed: fixed Dot Orbits extra-dot reveal order so stagger interleaves one dot per ring at a time (column-major) instead of exhausting a ring before moving on (ring-major); corrected `node-mesh.md` topology from the incorrect 49-node/120-connection figure to the geometrically accurate 46-node/111-connection figure, with an explicit note explaining why 7 nodes per odd row cannot fit inside the 40–560 canvas at `colWidth = 520/6`.
-- Files touched: `skills/examples/animated-dot-orbits.tsx`, `skills/examples/node-mesh.md`.
-- Verification run: `tsc --noEmit`; `bun run lint`; full Codex review pass — clean.
+- Changed: updated GitHub CI workflow to match project tooling by replacing npm setup/install/commands with Bun (`oven-sh/setup-bun`, `bun install --frozen-lockfile`, and Bun script execution for lint, typecheck, and build).
+- Files touched: `.github/workflows/ci.yml`.
+- Verification run: `bun install --frozen-lockfile && bun run lint && bun run typecheck && bun run build` (pass).
 - Open questions: none.
-- Next step: build website sections (Hero, Mission, Services, etc.) in parallel using the shared starter-kit contracts.
+- Next step: monitor the next GitHub Actions run to confirm parity between local and remote CI.
