@@ -41,7 +41,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Do not add a separate smooth-scroll dependency by default; use ScrollSmoother only if the website needs a global polished scroll layer.
 - All five Pattern Studio starters (Pulse Field, Dot Orbits, Radiating Segments, Stepped Lattice, Node Mesh) use algorithmic SVG generation with no static SVG file dependencies. This is the standard approach: generate geometry in code and animate with GSAP.
 - `skills/examples/` can be imported by temporary demo pages as a starter kit; production sections should adapt examples into `src/components/`.
-- React Three Fiber, @react-three/drei, and Three.js should be used for shader or 3D moments when real runtime rendering is needed.
+- React Three Fiber, @react-three/drei, and Three.js should be used for shader or 3D moments when real runtime rendering is necaeded.
 - Files and folders should use kebab-case; React component exports can stay PascalCase.
 - Design tokens should map through `src/app/globals.css` and Tailwind 4 `@theme inline`, then components should use semantic Tailwind utilities directly or compose reusable named classes in `@layer components` with `@apply`, like `.site-container`, rather than raw hex values or a default `lib/design-tokens.ts` file.
 - shadcn is used as a component API/accessibility base, not as a visual source to copy blindly.
@@ -57,14 +57,14 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Start foundation implementation first: repo infra, motion runtime, layout/content scaffolding, header/mobile nav, footer shell, SVG adapters, WebGL runtime, and newsletter capture.
-2. Begin section work in parallel once blocking foundation issues are available.
-3. Keep this tracker updated after meaningful implementation changes.
+1. Hero section.
+2. Footer shell.
+3. Section work in parallel once blocking foundation issues are available.
 
 ## Latest Handoff
 
-- Changed: recorded that the GitHub issue set has been created and updated the next steps from issue creation to foundation implementation, and parallel section work.
-- Files touched: `skills/context/progress-tracker.md`.
-- Verification run: documentation-only update; no build needed.
+- Changed: moved reusable site header, desktop mega nav, and mobile nav visual contracts into `src/app/globals.css` as CSS variables and `@layer components` classes, then replaced hard-to-read raw Tailwind values in the header/nav components with named classes. Set the mobile nav panel to intentionally fill the viewport width while keeping its background pinned to pure Cortex Carbon. Rolled back the experimental mobile CTA arrow animation; the arrow is static again. Softened the shared button text hover turnover angle while preserving the original slide-text structure. Replaced header logo `<img>` tags with inline `CortexMark` and `CortexWordmark` SVG components that use `currentColor`, so logo colors are controlled through Tailwind utilities instead of hardcoded SVG fills.
+- Files touched: `src/app/globals.css`, `src/components/layout/site-header.tsx`, `src/components/layout/mobile-nav.tsx`, `src/components/logos/cortex-mark.tsx`, `src/components/logos/cortex-wordmark.tsx`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run lint`; `bun run build`; browser check on `http://localhost:3000` confirmed `.mobile-nav-panel` CSS includes full-width and Cortex Carbon overrides.
 - Open questions: none.
-- Next step: start active foundation issues before unblocking section PRs.
+- Next step: continue foundation implementation with the same semantic token pattern before section work expands.

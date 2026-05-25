@@ -1,11 +1,11 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Button } from "@/components/ui/button";
+import { SlideText } from "@/components/slide-text";
+import { cn } from "@/lib/utils";
 
 const cortexButtonVariants = cva(
-  "cursor-pointer rounded-full font-mona text-[length:var(--text-nav)] leading-[var(--text-nav-line-height)] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-[var(--button-disabled-opacity)]",
+  "group/button cursor-pointer overflow-hidden rounded-full font-mona text-[length:var(--text-nav)] leading-[var(--text-nav-line-height)] font-semibold transition-colors active:!translate-y-0 disabled:cursor-not-allowed disabled:opacity-[var(--button-disabled-opacity)]",
   {
     variants: {
       variant: {
@@ -28,31 +28,60 @@ const cortexButtonVariants = cva(
       variant: "primary",
       size: "default",
     },
-  }
-)
+  },
+);
 
 type CortexButtonProps = Omit<
   React.ComponentProps<typeof Button>,
   "variant" | "size"
 > &
-  VariantProps<typeof cortexButtonVariants>
+  VariantProps<typeof cortexButtonVariants> & {
+    animated?: boolean;
+  };
 
 function CortexButton({
   className,
   variant,
   size,
+  asChild,
+  animated = true,
+  children,
   ...props
 }: CortexButtonProps) {
+  let content: React.ReactNode;
+
+  if (!animated) {
+    content = children;
+  } else if (asChild && React.isValidElement(children)) {
+    const child = children as React.ReactElement<React.PropsWithChildren>;
+    const label = child.props.children;
+    content = React.cloneElement(
+      child,
+      {},
+      typeof label === "string" ? <SlideText>{label}</SlideText> : label,
+    );
+  } else {
+    content =
+      typeof children === "string" ? (
+        <SlideText>{children}</SlideText>
+      ) : (
+        children
+      );
+  }
+
   return (
     <Button
       data-cortex-variant={variant}
       data-cortex-size={size}
       variant="default"
       size="default"
+      asChild={asChild}
       className={cn(cortexButtonVariants({ variant, size }), className)}
       {...props}
-    />
-  )
+    >
+      {content}
+    </Button>
+  );
 }
 
-export { CortexButton, cortexButtonVariants }
+export { CortexButton, cortexButtonVariants };
