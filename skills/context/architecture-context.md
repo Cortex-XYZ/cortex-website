@@ -1,3 +1,5 @@
+<!--markdownlint-disable-->
+
 # Architecture Context
 
 ## Target Website Stack
@@ -11,8 +13,11 @@ Use this stack when the production website is scaffolded or consolidated:
 - Tailwind CSS 4
 - shadcn/ui as the component API layer
 - Lucide React for icons
-- GSAP from the `gsap` package, `@gsap/react`, ScrollTrigger, and ScrollSmoother for UI animation, scroll-linked reveals, and optional smooth scrolling
-- React Three Fiber, @react-three/drei, and Three.js only for shader or 3D moments that need real runtime rendering
+- GSAP from the `gsap` package, `@gsap/react`, ScrollTrigger, and ScrollSmoother for UI animation, scroll-linked reveals, and optional smooth scrolling. ScrollSmoother deferred to post-launch.
+- React Three Fiber, `@react-three/drei`, and Three.js for WebGL moments such as hero particles, network fields, service-card shaders, or 3D details. Desktop only (mobile/tablet → gradient or static fallback).
+- Zod for all input validation (form schemas, server action parsing, future env-var validation)
+- Resend (`resend` package) for newsletter capture — create a Contact and assign to the newsletter Segment/Topic (Audiences API is being migrated; see https://resend.com/docs/dashboard/segments/migrating-from-audiences-to-segments). Sending deferred to post-launch.
+- Cloudflare Turnstile for invisible bot prevention on public forms
 
 If the selected app uses a newer Next.js version, read the relevant docs in `node_modules/next/dist/docs/` before implementation. Do not rely only on older Next.js memory.
 
@@ -38,39 +43,55 @@ Page-level layout details belong in page or section code. Do not promote exact d
 
 ## Expected Website Structure
 
-When the production app exists, use a structure close to:
+All app code lives under `src/`. Use a structure close to:
 
 ```txt
-app/
-  layout.tsx
-  page.tsx
-  globals.css
-components/
-  cortex-button.tsx
-  ui/
-  layout/
-  sections/
-  shaders/
-lib/
-  content/
+src/
+  app/
+    layout.tsx              # mounts Navbar + Footer; loads fonts; metadata defaults
+    page.tsx                # composes sections in order
+    globals.css             # CSS custom properties + @theme inline + @layer components
+  components/
+    cortex-button.tsx       # Cortex-styled wrapper over shadcn Button
+    ui/                     # generated shadcn primitives — DO NOT edit
+    layout/                 # Section wrapper, SiteHeader, MobileNav, SiteFooter
+    sections/               # one file per section + per-section subcomponents (cards, detail views)
+    illustrations/          # animated SVG patterns (active-prop driven)
+    webgl/                  # R3F canvas wrapper, hero WebGL background, service visual surfaces
+  hooks/
+    use-reduced-motion.ts   # SSR-safe, single source of truth for motion gating
+  lib/
+    utils.ts                # cn(), etc.
+    content/                # typed TS content modules (hardcoded for v1)
+    schemas/                # zod schemas
+    integrations/           # external service wrappers (Resend, etc.)
+    motion/                 # added during P1 polish, not v1 foundation
 public/
   images/
+    team/                   # person photos (next/image)
   logos/
 ```
 
-Design tokens should be mapped in `app/globals.css` with CSS custom properties and Tailwind 4 `@theme inline`. Components should consume those mapped tokens with semantic Tailwind utilities such as `bg-action-primary`, `text-text-primary`, `font-mona`, and `rounded-full`. When a reusable component contract is clearer as a named CSS class, define it in `app/globals.css` under `@layer components` and compose the same semantic utilities with Tailwind `@apply`, like the existing `.site-container` class. Use `tailwind.config.*` only for configuration that cannot live cleanly in CSS. Do not create a separate `lib/design-tokens.ts` unless the team later needs runtime token access in TypeScript.
+Design tokens should be mapped in `src/app/globals.css` with CSS custom properties and Tailwind 4 `@theme inline`. Components should consume those mapped tokens with semantic Tailwind utilities such as `bg-action-primary`, `text-text-primary`, `font-mona`, and `rounded-full`. When a reusable component contract is clearer as a named CSS class, define it in `src/app/globals.css` under `@layer components` and compose the same semantic utilities with Tailwind `@apply`, like the existing `.site-container` class. Use `tailwind.config.*` only for configuration that cannot live cleanly in CSS. Do not create a separate `lib/design-tokens.ts` unless the team later needs runtime token access in TypeScript.
 
-`components/ui/` is reserved for generated shadcn/ui components. Custom Cortex components and wrappers should live in `components/` or a domain subfolder such as `components/sections/`, and should wrap shadcn primitives instead of modifying generated files for product-specific styling.
+`src/components/ui/` is reserved for generated shadcn/ui components. Custom Cortex components and wrappers should live in `components/` or a domain subfolder such as `src/components/sections/`, and should wrap shadcn primitives instead of modifying generated files for product-specific styling.
 
 Keep section ownership clear so teammates can work in parallel:
 
-- `components/sections/hero-section.tsx`
-- `components/sections/mission-section.tsx`
-- `components/sections/services-section.tsx`
-- `components/sections/team-section.tsx`
-- `components/sections/events-section.tsx`
-- `components/sections/history-section.tsx`
-- `components/sections/footer-section.tsx`
+- `src/components/sections/hero-section.tsx`
+- `src/components/sections/mission-section.tsx`
+- `src/components/sections/services-section.tsx`
+- `src/components/sections/team-section.tsx`
+- `src/components/sections/events-section.tsx`
+- `src/components/sections/history-section.tsx`
+
+Global chrome lives in `src/components/layout/`:
+
+- `src/components/layout/site-header.tsx`
+- `src/components/layout/mobile-nav.tsx`
+- `src/components/layout/site-footer.tsx`
+
+For v1, `site-header.tsx` should implement the desktop `About` mega nav from Figma, while `Services` and `Contact` stay direct top-level links. The nav should read from `src/lib/content/nav.ts` so later top-level mega nav groups can be added without rewriting the header structure. `mobile-nav.tsx` should mirror the same nav content with nested groups inside the hamburger sheet.
 
 ## Data And Content
 
@@ -88,6 +109,7 @@ Recommended pattern:
 - The site is dark-first.
 - Cortex Orange is the primary action color.
 - Buttons use Cortex variants, not default shadcn visuals.
-- Shaders use approved design-system color recipes.
+- Service-card shaders use approved design-system color recipes.
+- Hero WebGL backgrounds use Cortex brand-pattern concepts such as nodes, edges, mesh, and approved palette fallbacks.
 - Layout is responsive and token-driven, not hardcoded to a 1440px canvas.
 - Accessibility and mobile behavior are implementation requirements, not cleanup tasks.
