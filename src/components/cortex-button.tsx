@@ -11,8 +11,8 @@ const cortexButtonVariants = cva(
       variant: {
         primary:
           "border-transparent bg-action-primary text-neutral-white hover:bg-action-primary-hover aria-expanded:bg-action-primary-hover",
-        outline:
-          "border-action-primary bg-transparent text-neutral-white hover:border-action-primary-hover hover:bg-transparent aria-expanded:border-action-primary-hover aria-expanded:bg-transparent",
+        subtleOutline:
+          "border-action-primary bg-action-primary-subtle text-neutral-white hover:bg-action-primary-subtle-hover aria-expanded:bg-action-primary-subtle-hover",
         secondary:
           "border-transparent bg-action-secondary text-neutral-white hover:bg-action-secondary-hover aria-expanded:bg-action-secondary-hover",
         ghost:

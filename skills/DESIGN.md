@@ -39,6 +39,8 @@ colors:
 
   action-primary: "#FF5E00"
   action-primary-hover: "#FF6A14"
+  action-primary-subtle: "rgba(255,94,0,0.1)"
+  action-primary-subtle-hover: "rgba(255,94,0,0.18)"
   action-secondary: "#6E54FF"
   action-secondary-hover: "#7860FF"
 
@@ -85,6 +87,12 @@ typography:
   hero:
     fontFamily: Mona Sans
     fontSize: 56px
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: 0
+  hero-mobile:
+    fontFamily: Mona Sans
+    fontSize: 44px
     fontWeight: 600
     lineHeight: 1
     letterSpacing: 0
@@ -224,17 +232,17 @@ components:
   button-primary-hover:
     backgroundColor: "{colors.action-primary-hover}"
     textColor: "{colors.neutral-white}"
-  button-outline:
-    backgroundColor: transparent
+  button-subtle-outline:
+    backgroundColor: "{colors.action-primary-subtle}"
     borderColor: "{colors.action-primary}"
     textColor: "{colors.neutral-white}"
     typography: "{typography.nav}"
     rounded: "{rounded.full}"
     height: 34px
     paddingInline: 30px
-  button-outline-hover:
-    backgroundColor: transparent
-    borderColor: "{colors.action-primary-hover}"
+  button-subtle-outline-hover:
+    backgroundColor: "{colors.action-primary-subtle-hover}"
+    borderColor: "{colors.action-primary}"
   button-secondary:
     backgroundColor: "{colors.action-secondary}"
     textColor: "{colors.neutral-white}"
@@ -370,6 +378,7 @@ Rules:
 - Section labels are the exception: uppercase Mona Sans ExtraBold, 13px, with wide letter spacing.
 - Do not use novelty display fonts in CTAs or navigation.
 - Do not scale font size with viewport width. Use responsive layout, not viewport-based typography.
+- Figma typography variable names may use `font/size/*` grouping, but WEB code syntax should point to the Tailwind 4 text token custom properties, such as `var(--text-hero)` and `var(--text-body-lg)`.
 
 ## Layout
 
@@ -501,7 +510,7 @@ Cortex/Button
 Properties:
 
 ```txt
-Variant: Primary, Outline, Secondary, Ghost
+Variant: Primary, Subtle Outline, Secondary, Ghost
 Size: Default, lg
 State: Default, Hover, Disabled
 ```
@@ -516,14 +525,17 @@ Rules:
 - Default height: `34px`.
 - `lg` height: `42px`.
 - Horizontal padding: `30px`.
+- Code variant `subtleOutline` maps to the Figma `Subtle Outline` variant, avoiding collision with shadcn/ui's generic `outline` variant name.
 - Primary hover background: `action-primary-hover` / `#FF6A14`.
+- Subtle outline background: `action-primary-subtle` / `rgba(255,94,0,0.1)`.
+- Subtle outline hover background: `action-primary-subtle-hover` / `rgba(255,94,0,0.18)`.
 - Secondary hover background: `action-secondary-hover` / `#7860FF`.
 - Disabled state uses `opacity: 0.5`.
 
 Code mapping:
 
 ```ts
-variant: "primary" | "outline" | "secondary" | "ghost";
+variant: "primary" | "subtleOutline" | "secondary" | "ghost";
 size: "default" | "lg";
 ```
 

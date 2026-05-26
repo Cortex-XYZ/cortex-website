@@ -9,7 +9,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Created active brand guidance in `skills/BRAND.md`.
 - Created active design-system guidance in `skills/DESIGN.md`.
 - Defined primary, secondary, neutral, extended, gradient, typography, spacing, radius, button, and shader guidance in the active design system.
-- Created Figma button component variants for `Primary`, `Outline`, `Secondary`, and `Ghost`, with `Default` and `lg` sizes plus `Default`, `Hover`, and `Disabled` states.
+- Created button variants for `Primary`, `Subtle Outline`, `Secondary`, and `Ghost`, with `Default` and `lg` sizes plus `Default`, `Hover`, and `Disabled` states.
 - Clarified that shader recipes lock colors only; motion uniforms are tuned in code.
 - Created this `skills/context/` folder for agent implementation context.
 - Added root `AGENTS.md` to point agents to the required read order.
@@ -17,10 +17,10 @@ GitHub issue planning is complete. The production website build is ready to move
 - Mapped Cortex design tokens into `src/app/globals.css` with CSS custom properties and Tailwind 4 `@theme inline`.
 - Converted reusable gradient CSS variables to stop-list tokens so horizontal and vertical usage can set direction locally.
 - Set the default section container contract to Tailwind default breakpoints through a named `.site-container` class.
-- Added a separate `CortexButton` wrapper in `src/components/` that extends the shadcn `Button` with Cortex token variants and placed primary/outline CTA examples on the homepage.
+- Added a separate `CortexButton` wrapper in `src/components/` that extends the shadcn `Button` with Cortex token variants and placed primary/subtle-outline CTA examples on the homepage.
 - Preserved `CortexButton` typography through `tailwind-merge` by using token-backed arbitrary size and line-height utilities.
 - Set Service Cards as the canonical reusable card terminology across design, brand, and implementation context docs.
-- Services section uses **five Service Cards** (one per service in Figma cortex-web, May 2026), not three. Any older notes referring to three should be ignored. The cards each compose `<ServiceVisualSurface variant="service-...">` from the F6 WebGL visual runtime; placement is owned by `services-section.tsx`.
+- Services section uses **five Service Cards**, not three. Any older notes referring to three should be ignored. The cards each compose `<ServiceVisualSurface variant="service-...">` from the F6 WebGL visual runtime; placement is owned by `services-section.tsx`.
 - Set a GSAP-first scroll and motion runtime: `gsap`, `@gsap/react`, ScrollTrigger, and optional ScrollSmoother.
 - ScrollSmoother is not part of v1; use normal browser scrolling for launch and revisit global smooth scrolling after launch if the site needs it.
 - Cleaned self-animated SVG pattern rules into runnable starter-kit examples under `skills/examples/`.
@@ -29,6 +29,8 @@ GitHub issue planning is complete. The production website build is ready to move
 - Clarified that production Mission animated SVGs live inside `MissionCard` and only run while their card is active.
 - Created the v1 GitHub issue set for foundations, section features, polish, launch, post-launch, and remaining decisions.
 - Updated GitHub CI workflow to use Bun setup, frozen lockfile install, lint, typecheck, and build commands.
+- Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
+- Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
 
 ## Decisions
 
@@ -57,14 +59,14 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Hero section.
-2. Footer shell.
-3. Section work in parallel once blocking foundation issues are available.
+1. Add typed content modules in `src/lib/content/` for mission, history, team, monad, services, events, footer, and nav.
+2. Wire layout and section components to those content modules.
+3. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: moved reusable site header, desktop mega nav, and mobile nav visual contracts into `src/app/globals.css` as CSS variables and `@layer components` classes, then replaced hard-to-read raw Tailwind values in the header/nav components with named classes. Set the mobile nav panel to intentionally fill the viewport width while keeping its background pinned to pure Cortex Carbon. Rolled back the experimental mobile CTA arrow animation; the arrow is static again. Softened the shared button text hover turnover angle while preserving the original slide-text structure. Replaced header logo `<img>` tags with inline `CortexMark` and `CortexWordmark` SVG components that use `currentColor`, so logo colors are controlled through Tailwind utilities instead of hardcoded SVG fills.
-- Files touched: `src/app/globals.css`, `src/components/layout/site-header.tsx`, `src/components/layout/mobile-nav.tsx`, `src/components/logos/cortex-mark.tsx`, `src/components/logos/cortex-wordmark.tsx`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run lint`; `bun run build`; browser check on `http://localhost:3000` confirmed `.mobile-nav-panel` CSS includes full-width and Cortex Carbon overrides.
+- Changed: extracted the hero into `hero-section.tsx`, made it full-bleed with a `HeroWebglBackground` replacement point, added responsive hero typography, kept the two CTAs in one row on mobile, added the bottom-center animated Lucide scroll cue, and updated `subtleOutline` button styling to use a subtle orange fill with orange border.
+- Files touched: `skills/DESIGN.md`, `src/app/globals.css`, `src/components/cortex-button.tsx`, `src/components/sections/hero-section.tsx`, `src/components/webgl/hero-webgl-background.tsx`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run lint`; `bun run typecheck`; `bun run build`; in-app browser geometry check on `http://localhost:3000/`.
 - Open questions: none.
-- Next step: continue foundation implementation with the same semantic token pattern before section work expands.
+- Next step: add typed content modules in `src/lib/content/` for mission, history, team, monad, services, events, footer, and nav.
