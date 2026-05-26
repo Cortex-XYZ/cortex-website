@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Foundation setup: brand guidance, design-system source, and agent context are being organized before the production website build starts.
+GitHub issue planning is complete. The production website build is ready to move into foundation implementation and parallel section work.
 
 ## Completed
 
@@ -20,11 +20,15 @@ Foundation setup: brand guidance, design-system source, and agent context are be
 - Added a separate `CortexButton` wrapper in `src/components/` that extends the shadcn `Button` with Cortex token variants and placed primary/outline CTA examples on the homepage.
 - Preserved `CortexButton` typography through `tailwind-merge` by using token-backed arbitrary size and line-height utilities.
 - Set Service Cards as the canonical reusable card terminology across design, brand, and implementation context docs.
+- Services section uses **five Service Cards** (one per service in Figma cortex-web, May 2026), not three. Any older notes referring to three should be ignored. The cards each compose `<ServiceVisualSurface variant="service-...">` from the F6 WebGL visual runtime; placement is owned by `services-section.tsx`.
 - Set a GSAP-first scroll and motion runtime: `gsap`, `@gsap/react`, ScrollTrigger, and optional ScrollSmoother.
+- ScrollSmoother is not part of v1; use normal browser scrolling for launch and revisit global smooth scrolling after launch if the site needs it.
 - Cleaned self-animated SVG pattern rules into runnable starter-kit examples under `skills/examples/`.
 - Added five algorithmic Pattern Studio animated SVG starters and temporary homepage demos: Pulse Field, Dot Orbits, Radiating Segments, Stepped Lattice, and Node Mesh. The examples now generate geometry in code and include targeted performance refinements where needed.
 - Condensed `skills/context/ui-context.md` animation guidance so detailed per-pattern contracts live in `skills/examples/`.
 - Clarified that production Mission animated SVGs live inside `MissionCard` and only run while their card is active.
+- Created the v1 GitHub issue set for foundations, section features, polish, launch, post-launch, and remaining decisions.
+- Updated GitHub CI workflow to use Bun setup, frozen lockfile install, lint, typecheck, and build commands.
 
 ## Decisions
 
@@ -39,7 +43,7 @@ Foundation setup: brand guidance, design-system source, and agent context are be
 - `skills/examples/` can be imported by temporary demo pages as a starter kit; production sections should adapt examples into `src/components/`.
 - React Three Fiber, @react-three/drei, and Three.js should be used for shader or 3D moments when real runtime rendering is needed.
 - Files and folders should use kebab-case; React component exports can stay PascalCase.
-- Design tokens should map through `app/globals.css` and Tailwind 4 `@theme inline`, then components should use semantic Tailwind utilities directly or compose reusable named classes in `@layer components` with `@apply`, like `.site-container`, rather than raw hex values or a default `lib/design-tokens.ts` file.
+- Design tokens should map through `src/app/globals.css` and Tailwind 4 `@theme inline`, then components should use semantic Tailwind utilities directly or compose reusable named classes in `@layer components` with `@apply`, like `.site-container`, rather than raw hex values or a default `lib/design-tokens.ts` file.
 - shadcn is used as a component API/accessibility base, not as a visual source to copy blindly.
 - Layout should be responsive and token-driven, not hardcoded from a 1440px mockup.
 - Reusable gradient CSS variables should store color stops, while `linear-gradient()` direction should be composed at the usage site unless direction is itself a design-system contract.
@@ -53,14 +57,14 @@ Foundation setup: brand guidance, design-system source, and agent context are be
 
 ## Next Steps
 
-1. Build website sections in parallel using shared tokens and components.
-2. Adapt approved `skills/examples/` patterns into `src/components/` when the Mission section is implemented.
+1. Start foundation implementation first: repo infra, motion runtime, layout/content scaffolding, header/mobile nav, footer shell, SVG adapters, WebGL runtime, and newsletter capture.
+2. Begin section work in parallel once blocking foundation issues are available.
 3. Keep this tracker updated after meaningful implementation changes.
 
 ## Latest Handoff
 
-- Changed: updated GitHub CI workflow to match project tooling by replacing npm setup/install/commands with Bun (`oven-sh/setup-bun`, `bun install --frozen-lockfile`, and Bun script execution for lint, typecheck, and build).
-- Files touched: `.github/workflows/ci.yml`.
-- Verification run: `bun install --frozen-lockfile && bun run lint && bun run typecheck && bun run build` (pass).
+- Changed: recorded that the GitHub issue set has been created and updated the next steps from issue creation to foundation implementation, and parallel section work.
+- Files touched: `skills/context/progress-tracker.md`.
+- Verification run: documentation-only update; no build needed.
 - Open questions: none.
-- Next step: monitor the next GitHub Actions run to confirm parity between local and remote CI.
+- Next step: start active foundation issues before unblocking section PRs.

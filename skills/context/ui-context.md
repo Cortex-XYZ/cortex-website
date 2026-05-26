@@ -12,7 +12,7 @@ Dark-first website. No light-mode work unless explicitly requested.
 
 Use the semantic color tokens from `skills/DESIGN.md` for backgrounds, text, borders, actions, service identity, gradients, and shaders.
 
-No raw hex values in components. Define CSS custom properties in `app/globals.css`, then expose them to Tailwind 4 with `@theme inline`.
+No raw hex values in components. Define CSS custom properties in `src/app/globals.css`, then expose them to Tailwind 4 with `@theme inline`.
 
 Example mapping style:
 
