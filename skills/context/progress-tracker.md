@@ -28,6 +28,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Condensed `skills/context/ui-context.md` animation guidance so detailed per-pattern contracts live in `skills/examples/`.
 - Clarified that production Mission animated SVGs live inside `MissionCard` and only run while their card is active.
 - Created the v1 GitHub issue set for foundations, section features, polish, launch, post-launch, and remaining decisions.
+- Updated GitHub CI workflow to use Bun setup, frozen lockfile install, lint, typecheck, and build commands.
 
 ## Decisions
 
