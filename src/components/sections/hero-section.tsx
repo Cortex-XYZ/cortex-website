@@ -1,8 +1,11 @@
 import { ChevronDown } from "lucide-react";
 import { CortexButton } from "@/components/cortex-button";
 import { HeroWebglBackground } from "@/components/webgl/hero-webgl-background";
+import { heroSection } from "@/lib/content/hero";
 
-function HeroSection() {
+export function HeroSection() {
+  const titleLines = heroSection.title.split("\n");
+
   return (
     <section className="relative isolate min-h-svh overflow-hidden bg-bg-canvas">
       <HeroWebglBackground />
@@ -11,19 +14,26 @@ function HeroSection() {
         <div className="flex max-w-3xl flex-col items-start gap-8 py-24">
           <div className="flex flex-col gap-6">
             <h1 className="font-mona text-hero-mobile text-text-primary sm:text-hero lg:text-display">
-              Local Service. <br /> Global Impact.
+              {titleLines.map((line, i) => (
+                <span key={i}>
+                  {i > 0 && <br />}
+                  {line}
+                </span>
+              ))}
             </h1>
-            <div className="flex max-w-3xl flex-col gap-6 font-open text-body-sm text-text-secondary sm:text-body lg:text-body-lg">
-              <p>
-                <strong className="font-mona font-semibold text-text-primary">
-                  Cortex
-                </strong>{" "}
-                serves all individual, business, and community needs from our
-                local hubs - local citizens providing expertise, guidance, and
-                connection to the top industry professionals in all verticals -
-                around the world.
-              </p>
-              <p>Everything for Everyone. Everywhere.</p>
+            <div className="flex max-w-3xl flex-col gap-6 font-open text-body-sm text-text-secondary sm:text-body">
+              {heroSection.paragraphs.map((p, i) => (
+                <p key={i}>
+                  {p.emphasis && (
+                    <>
+                      <strong className="font-mona font-semibold text-text-primary">
+                        {p.emphasis}
+                      </strong>{" "}
+                    </>
+                  )}
+                  {p.text}
+                </p>
+              ))}
             </div>
           </div>
 
@@ -34,7 +44,7 @@ function HeroSection() {
               animated={false}
               className="px-4 sm:px-(--button-padding-inline)"
             >
-              I am new here
+              {heroSection.primaryCta.label}
             </CortexButton>
             <CortexButton
               variant="subtleOutline"
@@ -42,7 +52,7 @@ function HeroSection() {
               animated={false}
               className="px-4 sm:px-(--button-padding-inline)"
             >
-              I am in community
+              {heroSection.secondaryCta.label}
             </CortexButton>
           </div>
         </div>
@@ -61,5 +71,3 @@ function HeroSection() {
     </section>
   );
 }
-
-export { HeroSection };

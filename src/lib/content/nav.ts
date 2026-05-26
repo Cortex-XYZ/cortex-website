@@ -1,3 +1,5 @@
+import { siteLinks } from "./links"
+
 export type MegaNavLink = {
   label: string
   description: string
@@ -20,32 +22,60 @@ export const navItems: NavItem[] = [
       {
         heading: "Cortex",
         links: [
-          { label: "Mission Statement", href: "/#mission", description: "What Cortex exists to do." },
-          { label: "Cortex History", href: "/#history", description: "Where the network came from." },
-          { label: "Team", href: "/#team", description: "People behind the network." },
+          {
+            label: "Mission Statement",
+            href: siteLinks.mission.href,
+            description: "What Cortex exists to do.",
+          },
+          {
+            label: "Cortex History",
+            href: siteLinks.history.href,
+            description: "Where the network came from.",
+          },
+          {
+            label: "Team",
+            href: siteLinks.team.href,
+            description: "People behind the network.",
+          },
         ],
       },
       {
         heading: "Monad Context",
         links: [
-          { label: "What is Monad", href: "/#monad", description: "Foundational context for new visitors." },
-          { label: "History and Team", href: "/#monad-history", description: "Monad's story and the team behind it." },
-          { label: "Monad Links", href: "/#monad-links", description: "Ecosystem references and MIPLand." },
+          {
+            label: "What is Monad",
+            href: siteLinks.monad.href,
+            description: "Foundational context for new visitors.",
+          },
+          {
+            label: "History and Team",
+            href: siteLinks.monadHistory.href,
+            description: "Monad's story and the team behind it.",
+          },
+          {
+            label: "Monad Links",
+            href: siteLinks.monadLinks.href,
+            description: "Ecosystem references and MIPLand.",
+          },
         ],
       },
       {
         heading: "Start Here",
         links: [
-          { label: "New Here?", href: "/#start", description: "Mission, history, Monad context, programs." },
+          {
+            label: "New Here?",
+            href: siteLinks.start.href,
+            description: "Mission, history, Monad context, programs.",
+          },
         ],
       },
     ],
   },
-  { label: "Services", href: "/#services" },
-  { label: "Contact", href: "/#contact" },
+  { label: siteLinks.services.label, href: siteLinks.services.href },
+  { label: siteLinks.contact.label, href: siteLinks.contact.href },
 ]
 
 export const ctaButton = {
-  label: "Stake to Support",
-  href: "/stake",
+  label: siteLinks.stake.label,
+  href: siteLinks.stake.href,
 }

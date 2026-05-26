@@ -31,6 +31,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Updated GitHub CI workflow to use Bun setup, frozen lockfile install, lint, typecheck, and build commands.
 - Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
 - Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
+- Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
 
 ## Decisions
 
@@ -43,7 +44,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Do not add a separate smooth-scroll dependency by default; use ScrollSmoother only if the website needs a global polished scroll layer.
 - All five Pattern Studio starters (Pulse Field, Dot Orbits, Radiating Segments, Stepped Lattice, Node Mesh) use algorithmic SVG generation with no static SVG file dependencies. This is the standard approach: generate geometry in code and animate with GSAP.
 - `skills/examples/` can be imported by temporary demo pages as a starter kit; production sections should adapt examples into `src/components/`.
-- React Three Fiber, @react-three/drei, and Three.js should be used for shader or 3D moments when real runtime rendering is necaeded.
+- React Three Fiber, @react-three/drei, and Three.js should be used for shader or 3D moments when real runtime rendering is needed.
 - Files and folders should use kebab-case; React component exports can stay PascalCase.
 - Design tokens should map through `src/app/globals.css` and Tailwind 4 `@theme inline`, then components should use semantic Tailwind utilities directly or compose reusable named classes in `@layer components` with `@apply`, like `.site-container`, rather than raw hex values or a default `lib/design-tokens.ts` file.
 - shadcn is used as a component API/accessibility base, not as a visual source to copy blindly.
@@ -59,14 +60,13 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Add typed content modules in `src/lib/content/` for mission, history, team, monad, services, events, footer, and nav.
-2. Wire layout and section components to those content modules.
-3. Add the hero visual treatment using the approved brand-pattern or shader direction.
+1. Build section components wired to content modules: `mission-section`, `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`.
+2. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: extracted the hero into `hero-section.tsx`, made it full-bleed with a `HeroWebglBackground` replacement point, added responsive hero typography, kept the two CTAs in one row on mobile, added the bottom-center animated Lucide scroll cue, and updated `subtleOutline` button styling to use a subtle orange fill with orange border.
-- Files touched: `skills/DESIGN.md`, `src/app/globals.css`, `src/components/cortex-button.tsx`, `src/components/sections/hero-section.tsx`, `src/components/webgl/hero-webgl-background.tsx`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run lint`; `bun run typecheck`; `bun run build`; in-app browser geometry check on `http://localhost:3000/`.
+- Changed: added a code standard to prefer `export default function ComponentName()` for project-owned routes, layouts, pages, and React components, while exempting generated or third-party-owned APIs such as shadcn/ui.
+- Files touched: `skills/context/code-standards.md`, `skills/context/progress-tracker.md`.
+- Verification run: documentation-only change; not run.
 - Open questions: none.
-- Next step: add typed content modules in `src/lib/content/` for mission, history, team, monad, services, events, footer, and nav.
+- Next step: wire layout and section components to the typed content modules.

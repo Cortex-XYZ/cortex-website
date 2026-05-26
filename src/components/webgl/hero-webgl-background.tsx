@@ -1,4 +1,4 @@
-function HeroWebglBackground() {
+export function HeroWebglBackground() {
   return (
     <div
       aria-hidden="true"
@@ -7,5 +7,3 @@ function HeroWebglBackground() {
     />
   );
 }
-
-export { HeroWebglBackground };

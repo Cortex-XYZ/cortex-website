@@ -133,7 +133,7 @@ export function SiteHeader() {
                         <p className="mega-nav-heading">{column.heading}</p>
                         <div className="flex flex-col">
                           {column.links.map((link, j) => (
-                            <div key={link.href}>
+                            <div key={`${link.href}-${link.label}`}>
                               {j > 0 && <div className="mega-nav-separator" />}
                               <Link
                                 href={link.href}
