@@ -9,6 +9,8 @@
 - Use clear names over clever abstractions.
 - Use kebab-case for file and folder names, such as `hero-section.tsx`, not `HeroSection.tsx`.
 - Keep React component exports in PascalCase, such as `HeroSection`.
+- Prefer `export default function ComponentName()` for app routes, pages, layouts, and project-owned React components. Avoid trailing named export blocks like `export { ComponentName }` for project-owned components unless there is a clear interop reason.
+- Generated files and third-party-owned APIs, such as shadcn/ui components, may keep their generated export style.
 - Keep content data typed.
 - Avoid unrelated refactors while implementing a section.
 

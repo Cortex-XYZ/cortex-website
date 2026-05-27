@@ -9,7 +9,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Created active brand guidance in `skills/BRAND.md`.
 - Created active design-system guidance in `skills/DESIGN.md`.
 - Defined primary, secondary, neutral, extended, gradient, typography, spacing, radius, button, and shader guidance in the active design system.
-- Created Figma button component variants for `Primary`, `Outline`, `Secondary`, and `Ghost`, with `Default` and `lg` sizes plus `Default`, `Hover`, and `Disabled` states.
+- Created button variants for `Primary`, `Subtle Outline`, `Secondary`, and `Ghost`, with `Default` and `lg` sizes plus `Default`, `Hover`, and `Disabled` states.
 - Clarified that shader recipes lock colors only; motion uniforms are tuned in code.
 - Created this `skills/context/` folder for agent implementation context.
 - Added root `AGENTS.md` to point agents to the required read order.
@@ -17,10 +17,10 @@ GitHub issue planning is complete. The production website build is ready to move
 - Mapped Cortex design tokens into `src/app/globals.css` with CSS custom properties and Tailwind 4 `@theme inline`.
 - Converted reusable gradient CSS variables to stop-list tokens so horizontal and vertical usage can set direction locally.
 - Set the default section container contract to Tailwind default breakpoints through a named `.site-container` class.
-- Added a separate `CortexButton` wrapper in `src/components/` that extends the shadcn `Button` with Cortex token variants and placed primary/outline CTA examples on the homepage.
+- Added a separate `CortexButton` wrapper in `src/components/` that extends the shadcn `Button` with Cortex token variants and placed primary/subtle-outline CTA examples on the homepage.
 - Preserved `CortexButton` typography through `tailwind-merge` by using token-backed arbitrary size and line-height utilities.
 - Set Service Cards as the canonical reusable card terminology across design, brand, and implementation context docs.
-- Services section uses **five Service Cards** (one per service in Figma cortex-web, May 2026), not three. Any older notes referring to three should be ignored. The cards each compose `<ServiceVisualSurface variant="service-...">` from the F6 WebGL visual runtime; placement is owned by `services-section.tsx`.
+- Services section uses **five Service Cards**, not three. Any older notes referring to three should be ignored. The cards each compose `<ServiceVisualSurface variant="service-...">` from the F6 WebGL visual runtime; placement is owned by `services-section.tsx`.
 - Set a GSAP-first scroll and motion runtime: `gsap`, `@gsap/react`, ScrollTrigger, and optional ScrollSmoother.
 - ScrollSmoother is not part of v1; use normal browser scrolling for launch and revisit global smooth scrolling after launch if the site needs it.
 - Cleaned self-animated SVG pattern rules into runnable starter-kit examples under `skills/examples/`.
@@ -29,6 +29,9 @@ GitHub issue planning is complete. The production website build is ready to move
 - Clarified that production Mission animated SVGs live inside `MissionCard` and only run while their card is active.
 - Created the v1 GitHub issue set for foundations, section features, polish, launch, post-launch, and remaining decisions.
 - Updated GitHub CI workflow to use Bun setup, frozen lockfile install, lint, typecheck, and build commands.
+- Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
+- Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
+- Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
 
 ## Decisions
 
@@ -57,14 +60,13 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Start foundation implementation first: repo infra, motion runtime, layout/content scaffolding, header/mobile nav, footer shell, SVG adapters, WebGL runtime, and newsletter capture.
-2. Begin section work in parallel once blocking foundation issues are available.
-3. Keep this tracker updated after meaningful implementation changes.
+1. Build section components wired to content modules: `mission-section`, `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`.
+2. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: recorded that the GitHub issue set has been created and updated the next steps from issue creation to foundation implementation, and parallel section work.
-- Files touched: `skills/context/progress-tracker.md`.
-- Verification run: documentation-only update; no build needed.
+- Changed: added a code standard to prefer `export default function ComponentName()` for project-owned routes, layouts, pages, and React components, while exempting generated or third-party-owned APIs such as shadcn/ui.
+- Files touched: `skills/context/code-standards.md`, `skills/context/progress-tracker.md`.
+- Verification run: documentation-only change; not run.
 - Open questions: none.
-- Next step: start active foundation issues before unblocking section PRs.
+- Next step: wire layout and section components to the typed content modules.
