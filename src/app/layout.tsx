@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mona_Sans, Open_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
+import { FooterSection } from "@/components/sections/footer-section";
 import "./globals.css";
 
 const monaSans = Mona_Sans({
@@ -31,7 +32,8 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <SiteHeader />
-        {children}
+        <div className="flex-1">{children}</div>
+        <FooterSection />
       </body>
     </html>
   );

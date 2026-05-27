@@ -32,6 +32,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
 - Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
 - Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
+- Built the global footer: `src/components/sections/footer-section.tsx` (server component wired to `footerContent`), `src/components/sections/footer-newsletter.tsx` (client mailto subscribe island), and `src/components/icons/social.tsx` (inline Simple Icons glyphs for X / Instagram / TikTok / LinkedIn / YouTube). Mobile-first, responsive across sm/lg; mounted globally in `src/app/layout.tsx` after `{children}`. Headline renders accent-colored periods (orange / purple / amber).
 
 ## Decisions
 
@@ -60,13 +61,13 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Build section components wired to content modules: `mission-section`, `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`.
+1. Build section components wired to content modules: `mission-section`, `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`.
 2. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: added a code standard to prefer `export default function ComponentName()` for project-owned routes, layouts, pages, and React components, while exempting generated or third-party-owned APIs such as shadcn/ui.
-- Files touched: `skills/context/code-standards.md`, `skills/context/progress-tracker.md`.
-- Verification run: documentation-only change; not run.
-- Open questions: none.
-- Next step: wire layout and section components to the typed content modules.
+- Changed: implemented the global footer section per the v2 Figma drop (mobile-first, responsive to tablet/laptop/monitor).
+- Files touched: `src/components/sections/footer-section.tsx` (new), `src/components/sections/footer-newsletter.tsx` (new), `src/components/icons/social.tsx` (new), `src/app/layout.tsx` (mount footer + flex-1 wrapper around children).
+- Verification run: `bunx tsc --noEmit` clean, `bun run build` green, ESLint clean on the new files, served HTML confirmed via curl. Browser screenshots not captured — Claude-in-Chrome extension was not connected.
+- Open questions: Figma footer shows **8** social icons (adds GitHub, Facebook, Reddit) but `cortexSocialLinkKeys` in `src/lib/content/links.ts` defines only **5**. Rendered the 5 with real URLs; GitHub/Facebook/Reddit need URLs added to `externalLinks` + `cortexSocialLinkKeys` before they can ship.
+- Next step: confirm the 3 missing social URLs, then build the remaining content-wired sections.
