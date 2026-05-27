@@ -32,7 +32,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
 - Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
 - Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
-- Built the global footer: `src/components/sections/footer-section.tsx` (server component wired to `footerContent`), `src/components/sections/footer-newsletter.tsx` (client mailto subscribe island), and `src/components/icons/social.tsx` (inline Simple Icons glyphs for X / Instagram / TikTok / LinkedIn / YouTube). Mobile-first, responsive across sm/lg; mounted globally in `src/app/layout.tsx` after `{children}`. Headline renders accent-colored periods (orange / purple / amber).
+- Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
 
 ## Decisions
 
@@ -66,8 +66,8 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Latest Handoff
 
-- Changed: implemented the global footer section per the v2 Figma drop (mobile-first, responsive to tablet/laptop/monitor).
-- Files touched: `src/components/sections/footer-section.tsx` (new), `src/components/sections/footer-newsletter.tsx` (new), `src/components/icons/social.tsx` (new), `src/app/layout.tsx` (mount footer + flex-1 wrapper around children).
-- Verification run: `bunx tsc --noEmit` clean, `bun run build` green, ESLint clean on the new files, served HTML confirmed via curl. Browser screenshots not captured — Claude-in-Chrome extension was not connected.
+- Changed: consolidated the footer into a single `SiteFooter` component per the GitHub issue checklist (SiteFooter file, CTA quote block, newsletter input UI only, contact email, About/Programs/Legal columns, social links, mobile single-column collapse, mounted in root layout). Newsletter is now UI-only (no mailto submit); columns collapse to one column on mobile.
+- Files touched: `src/components/layout/site-footer.tsx` (new, self-contained), `src/app/layout.tsx` (mount `SiteFooter`), `eslint.config.mjs` (ignore `claude-code-handoff/**`); removed `src/components/sections/footer-section.tsx`, `src/components/sections/footer-newsletter.tsx`, `src/components/icons/social.tsx`.
+- Verification run: `bunx tsc --noEmit` clean, `bun run lint` clean, `bun run build` green, served HTML confirmed via curl. Browser screenshots not captured — Claude-in-Chrome extension was not connected.
 - Open questions: Figma footer shows **8** social icons (adds GitHub, Facebook, Reddit) but `cortexSocialLinkKeys` in `src/lib/content/links.ts` defines only **5**. Rendered the 5 with real URLs; GitHub/Facebook/Reddit need URLs added to `externalLinks` + `cortexSocialLinkKeys` before they can ship.
 - Next step: confirm the 3 missing social URLs, then build the remaining content-wired sections.
