@@ -7,8 +7,20 @@ export type MissionPattern =
   | "radiating-segments"
   | "node-mesh";
 
+export type MissionCardId =
+  | "pulse"
+  | "disciplines"
+  | "collections"
+  | "ideas"
+  | "culture";
+
+export type MissionParagraph = {
+  emphasis?: string;
+  text: string;
+};
+
 export type MissionCard = {
-  id: string;
+  id: MissionCardId;
   eyebrow: string;
   title: string;
   body: string;
@@ -18,8 +30,18 @@ export type MissionCard = {
 export const missionSection = {
   id: "mission",
   eyebrow: "Mission Statement",
-  description:
-    "Cortex is a global network of professionals accelerating the growth, adoption, and integration of blockchain technology into all facets of community life. We support every region and the unique needs and personas through expert education for every audience, and a full-slate of services including technical, security, research,  advocacy, and incubation offerings integral to drive open innovation. Our mission is to lower the barriers to entry, cultivate a self-sustaining workforce, and to do so in a human-centric manner that further galvanizes both local and global communities. ",
+  paragraphs: [
+    {
+      emphasis: "Cortex",
+      text: "is a global network of professionals accelerating the growth, adoption, and integration of blockchain technology into all facets of community life.",
+    },
+    {
+      text: "We support every region and the unique needs and personas through expert education for every audience, and a full-slate of services including technical, security, research, advocacy, and incubation offerings integral to drive open innovation.",
+    },
+    {
+      text: "Our mission is to lower the barriers to entry, cultivate a self-sustaining workforce, and to do so in a human-centric manner that further galvanizes both local and global communities.",
+    },
+  ] satisfies readonly MissionParagraph[],
   cards: [
     {
       id: "pulse",
@@ -39,7 +61,7 @@ export const missionSection = {
       id: "collections",
       eyebrow: "03 / Collections",
       title: "A structured path from onboarding to incubation.",
-      body: "Cortex creates that path through education, events, networking, technical mentorship, professional services, and future physical spaces for hands-on collaboration..",
+      body: "Cortex creates that path through education, events, networking, technical mentorship, professional services, and future physical spaces for hands-on collaboration.",
       pattern: "stepped-lattice",
     },
     {
@@ -60,6 +82,6 @@ export const missionSection = {
 } as const satisfies {
   id: SectionContent["id"];
   eyebrow: SectionContent["eyebrow"];
-  description: SectionContent["description"];
+  paragraphs: readonly MissionParagraph[];
   cards: readonly MissionCard[];
 };
