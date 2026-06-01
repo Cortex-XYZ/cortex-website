@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Reference bundle: raw Figma exports + drop-in stubs, not production source.
+    "claude-code-handoff/**",
   ]),
 ]);
 
