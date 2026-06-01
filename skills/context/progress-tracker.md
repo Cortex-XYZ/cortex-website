@@ -32,6 +32,11 @@ GitHub issue planning is complete. The production website build is ready to move
 - Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
 - Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
 - Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
+- Implemented responsive Mission section: desktop accordion card stack with bottom-aligned intro copy; mobile stacked intro, horizontal snap carousel with pagination dots, and section-owned per-card illustration placement.
+- Moved stable Mission section presentation classes into `src/app/globals.css` under `@layer components`, keeping interaction state and per-card geometry in `mission-section.tsx`.
+- Kept `src/lib/content/mission.ts` content-focused by moving Mission illustration placement classes into a typed card-ID map in `mission-section.tsx`.
+- Matched the Mission intro paragraph font-size progression to the Hero paragraph sizing: `text-body-sm` at base and `text-body` from `sm` upward, without an `xl` size jump.
+- Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
 
 ## Decisions
 
@@ -60,13 +65,13 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Build section components wired to content modules: `mission-section`, `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`.
+1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`.
 2. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: added a code standard to prefer `export default function ComponentName()` for project-owned routes, layouts, pages, and React components, while exempting generated or third-party-owned APIs such as shadcn/ui.
-- Files touched: `skills/context/code-standards.md`, `skills/context/progress-tracker.md`.
-- Verification run: documentation-only change; not run.
-- Open questions: none.
-- Next step: wire layout and section components to the typed content modules.
+- Changed: refactored Mission so static intro/layout render from the server component, moved accordion/carousel interactivity into `mission-cards-client.tsx`, dynamically loaded the five GSAP illustration modules, memoized expanded cards, moved collapsed-card writing mode into CSS, and extracted the shared desktop Mission card height into `src/lib/layout/mission-layout.ts`.
+- Files touched: `src/components/sections/mission-section.tsx`, `src/components/sections/mission-cards-client.tsx`, `src/lib/layout/mission-layout.ts`, `src/app/globals.css`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run typecheck`, `bun run lint`, `bun run build`.
+- Open questions: none blocking.
+- Next step: continue building the remaining UI sections/components.

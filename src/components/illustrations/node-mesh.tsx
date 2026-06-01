@@ -194,7 +194,7 @@ export function NodeMesh({ active, className }: Props) {
         }
       };
     },
-    { dependencies: [active], scope: layerRef },
+    { dependencies: [active], revertOnUpdate: true, scope: layerRef },
   );
 
   return (

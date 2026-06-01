@@ -180,7 +180,7 @@ export function SteppedLattice({ active, className }: Props) {
         dots.forEach((r) => r.remove());
       };
     },
-    { dependencies: [active], scope: layerRef },
+    { dependencies: [active], revertOnUpdate: true, scope: layerRef },
   );
 
   return (
