@@ -186,19 +186,19 @@ export function SiteFooter() {
               <CortexMark className="h-10 w-auto text-brand-cortex-orange" />
               <CortexWordmark className="h-9 w-auto text-text-secondary" />
             </Link>
-            <p className="max-w-xs font-open text-caption uppercase tracking-wide text-text-secondary">
+            <p className="max-w-xs font-open text-body-sm text-text-secondary sm:text-body lg:text-caption lg:uppercase lg:tracking-wide">
               {footerContent.tagline}
             </p>
           </div>
 
-          {/* About / Programs / Legal — single column on mobile, 3-up from sm */}
+          {/* About / Programs / Legal — 3-up at every width (per figma) */}
           <nav
             aria-label="Footer"
-            className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-12"
+            className="grid grid-cols-3 gap-6 sm:gap-12"
           >
             {footerContent.columns.map((column) => (
               <div key={column.title} className="flex flex-col gap-5">
-                <h3 className="font-mona text-body-sm font-semibold uppercase tracking-wide text-brand-cortex-orange sm:text-body">
+                <h3 className="font-mona text-body-sm font-semibold text-brand-cortex-orange sm:text-body lg:uppercase lg:tracking-wide">
                   {column.title}
                 </h3>
                 <ul className="flex flex-col gap-4">
@@ -218,10 +218,10 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        {/* Bottom bar — hairline divider, then copyright + social.
-            Mobile: social above copyright, both centered.
-            Desktop: copyright left, social right. */}
-        <div className="order-3 flex flex-col items-center gap-8 border-t border-border-default pt-8 sm:pt-10 lg:flex-row lg:justify-between lg:gap-6 lg:pt-12">
+        {/* Bottom bar — social + copyright.
+            Mobile: social above copyright, both centered, no divider.
+            Desktop: hairline above, copyright left, social right. */}
+        <div className="order-3 flex flex-col items-center gap-8 lg:flex-row lg:justify-between lg:gap-6 lg:border-t lg:border-border-default lg:pt-12">
           <ul className="order-1 flex flex-wrap items-center justify-center gap-4 lg:order-2">
             {footerContent.socialLinks.map((social) => {
               const channel = social.channel;
@@ -244,7 +244,7 @@ export function SiteFooter() {
             })}
           </ul>
 
-          <p className="order-2 font-open text-caption uppercase tracking-wide text-text-muted lg:order-1">
+          <p className="order-2 font-open text-caption text-text-muted lg:order-1 lg:uppercase lg:tracking-wide">
             {footerContent.copyright}
           </p>
         </div>
