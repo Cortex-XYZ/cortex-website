@@ -102,8 +102,17 @@ export function SiteFooter() {
       aria-labelledby="site-footer-heading"
     >
       <div className="site-container flex flex-col gap-16 py-16 sm:gap-20 sm:py-20 lg:gap-24 lg:py-24">
-        {/* CTA quote block + newsletter (UI only) */}
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        {/*
+          DOM order = mobile order (matches the approved mobile figma):
+            1. headline + newsletter
+            2. brand lockup + link columns
+            3. bottom bar (social + copyright)
+          Desktop swaps 1 and 2 via Tailwind `order-N`, so the brand band
+          renders above the headline band on lg, per the desktop figma.
+        */}
+
+        {/* Headline + newsletter — mobile: top, desktop: middle */}
+        <div className="order-1 grid gap-12 lg:order-2 lg:grid-cols-2 lg:gap-16 lg:items-end">
           <div className="flex flex-col gap-6">
             <h2
               id="site-footer-heading"
@@ -130,35 +139,44 @@ export function SiteFooter() {
             )}
           </div>
 
-          {/* Newsletter — input UI only, no submit behavior */}
+          {/* Newsletter — input UI only, no submit behavior.
+              Mobile: input above button. Desktop: input and button inline. */}
           <div className="flex lg:justify-end">
-            <div className="flex w-full max-w-md flex-col gap-6">
-              <label htmlFor="footer-email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="footer-email"
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder={footerContent.email.label}
-                // Password managers (1Password, LastPass, Bitwarden, etc.) inject
-                // inline `style`, `data-*`, and form-fill attributes into email inputs
-                // before React hydrates, causing a benign hydration mismatch. The
-                // attributes are added by the extension at runtime — there is nothing
-                // to reconcile on the server side, so we suppress the warning here.
-                suppressHydrationWarning
-                className="w-full border-0 border-b border-action-primary bg-transparent pb-3 font-open text-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:border-action-primary-hover sm:text-body"
-              />
-              <CortexButton type="button" variant="primary" size="lg" className="w-fit">
+            <div className="flex w-full max-w-md flex-col gap-6 lg:flex-row lg:items-end lg:gap-4">
+              <div className="flex flex-1 flex-col">
+                <label htmlFor="footer-email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="footer-email"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder={footerContent.email.label}
+                  // Password managers (1Password, LastPass, Bitwarden, etc.)
+                  // inject inline `style`, `data-*`, and form-fill attributes
+                  // into email inputs before React hydrates, causing a benign
+                  // hydration mismatch. The attributes are added by the
+                  // extension at runtime — there is nothing to reconcile on
+                  // the server side, so we suppress the warning here.
+                  suppressHydrationWarning
+                  className="w-full border-0 border-b border-action-primary bg-transparent pb-3 font-open text-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:border-action-primary-hover sm:text-body"
+                />
+              </div>
+              <CortexButton
+                type="button"
+                variant="primary"
+                size="lg"
+                className="w-fit shrink-0"
+              >
                 {footerContent.newsletterCta.label}
               </CortexButton>
             </div>
           </div>
         </div>
 
-        {/* Brand lockup + tagline + link columns */}
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        {/* Brand lockup + link columns — mobile: middle, desktop: top */}
+        <div className="order-2 grid gap-12 lg:order-1 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col gap-6">
             <Link
               href="/"
@@ -168,19 +186,19 @@ export function SiteFooter() {
               <CortexMark className="h-10 w-auto text-brand-cortex-orange" />
               <CortexWordmark className="h-9 w-auto text-text-secondary" />
             </Link>
-            <p className="max-w-xs font-open text-body-sm text-text-secondary sm:text-body">
+            <p className="max-w-xs font-open text-caption uppercase tracking-wide text-text-secondary">
               {footerContent.tagline}
             </p>
           </div>
 
-          {/* About / Programs / Legal — single column on mobile, row from sm up */}
+          {/* About / Programs / Legal — single column on mobile, 3-up from sm */}
           <nav
             aria-label="Footer"
-            className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-12 lg:justify-end"
+            className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-12"
           >
             {footerContent.columns.map((column) => (
               <div key={column.title} className="flex flex-col gap-5">
-                <h3 className="font-mona text-body-sm font-semibold text-brand-cortex-orange sm:text-body">
+                <h3 className="font-mona text-body-sm font-semibold uppercase tracking-wide text-brand-cortex-orange sm:text-body">
                   {column.title}
                 </h3>
                 <ul className="flex flex-col gap-4">
@@ -200,9 +218,11 @@ export function SiteFooter() {
           </nav>
         </div>
 
-        {/* Social links + contact + copyright */}
-        <div className="flex flex-col items-center gap-8 lg:flex-row lg:justify-between lg:gap-6">
-          <ul className="flex flex-wrap items-center justify-center gap-4">
+        {/* Bottom bar — hairline divider, then copyright + social.
+            Mobile: social above copyright, both centered.
+            Desktop: copyright left, social right. */}
+        <div className="order-3 flex flex-col items-center gap-8 border-t border-border-default pt-8 sm:pt-10 lg:flex-row lg:justify-between lg:gap-6 lg:pt-12">
+          <ul className="order-1 flex flex-wrap items-center justify-center gap-4 lg:order-2">
             {footerContent.socialLinks.map((social) => {
               const channel = social.channel;
               if (!channel) return null;
@@ -224,17 +244,9 @@ export function SiteFooter() {
             })}
           </ul>
 
-          <div className="flex flex-col items-center gap-2 text-center lg:flex-row lg:gap-6 lg:text-right">
-            <a
-              href={footerContent.email.href}
-              className="font-open text-caption text-text-secondary transition-colors hover:text-text-primary"
-            >
-              {footerContent.email.label}
-            </a>
-            <p className="font-open text-caption text-text-muted">
-              {footerContent.copyright}
-            </p>
-          </div>
+          <p className="order-2 font-open text-caption uppercase tracking-wide text-text-muted lg:order-1">
+            {footerContent.copyright}
+          </p>
         </div>
       </div>
     </footer>
