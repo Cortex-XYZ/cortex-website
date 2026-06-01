@@ -142,6 +142,12 @@ export function SiteFooter() {
                 name="email"
                 autoComplete="email"
                 placeholder={footerContent.email.label}
+                // Password managers (1Password, LastPass, Bitwarden, etc.) inject
+                // inline `style`, `data-*`, and form-fill attributes into email inputs
+                // before React hydrates, causing a benign hydration mismatch. The
+                // attributes are added by the extension at runtime — there is nothing
+                // to reconcile on the server side, so we suppress the warning here.
+                suppressHydrationWarning
                 className="w-full border-0 border-b border-action-primary bg-transparent pb-3 font-open text-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:border-action-primary-hover sm:text-body"
               />
               <CortexButton type="button" variant="primary" size="lg" className="w-fit">
