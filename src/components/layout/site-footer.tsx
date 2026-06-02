@@ -5,6 +5,7 @@ import { CortexMark } from "@/components/logos/cortex-mark";
 import { CortexWordmark } from "@/components/logos/cortex-wordmark";
 import type { ExternalLinkChannel } from "@/lib/content/links";
 import { footerContent } from "@/lib/content/footer";
+import { cn } from "@/lib/utils";
 
 // --- Social glyphs -----------------------------------------------------------
 // Single-path Simple Icons marks on a 24x24 grid, drawn in currentColor so the
@@ -116,14 +117,17 @@ export function SiteFooter() {
           <div className="flex flex-col gap-6">
             <h2
               id="site-footer-heading"
-              className="font-mona text-hero-mobile font-light leading-none text-text-primary sm:text-hero lg:text-display"
+              className="font-mona text-hero-mobile font-light leading-none text-text-primary sm:text-hero lg:max-w-[37rem] lg:text-section-heading lg:font-extralight"
             >
               {quoteLines.map((line, i) => (
                 <span key={i} className="block">
                   {line.text}
                   {line.period && (
                     <span
-                      className={PERIOD_ACCENTS[i % PERIOD_ACCENTS.length]}
+                      className={cn(
+                        "font-medium",
+                        PERIOD_ACCENTS[i % PERIOD_ACCENTS.length],
+                      )}
                       aria-hidden
                     >
                       .
@@ -133,7 +137,7 @@ export function SiteFooter() {
               ))}
             </h2>
             {footerContent.description && (
-              <p className="max-w-xl font-open text-body-sm text-text-muted sm:text-body">
+              <p className="max-w-xl font-open text-body-sm text-text-muted sm:text-body lg:max-w-[34rem] lg:text-[11px] lg:font-semibold lg:leading-[1.3]">
                 {footerContent.description}
               </p>
             )}
@@ -160,14 +164,14 @@ export function SiteFooter() {
                   // extension at runtime — there is nothing to reconcile on
                   // the server side, so we suppress the warning here.
                   suppressHydrationWarning
-                  className="w-full border-0 border-b border-action-primary bg-transparent pb-3 font-open text-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:border-action-primary-hover sm:text-body"
+                  className="w-full border-0 border-b border-action-primary bg-transparent pb-3 font-open text-body-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:border-action-primary-hover sm:text-body lg:font-mona lg:text-[25px] lg:font-normal lg:placeholder:text-text-muted/40"
                 />
               </div>
               <CortexButton
                 type="button"
                 variant="primary"
-                size="lg"
-                className="w-fit shrink-0"
+                size="default"
+                className="w-fit shrink-0 text-text-inverse"
               >
                 {footerContent.newsletterCta.label}
               </CortexButton>
@@ -186,7 +190,7 @@ export function SiteFooter() {
               <CortexMark className="h-10 w-auto text-brand-cortex-orange" />
               <CortexWordmark className="h-9 w-auto text-text-secondary" />
             </Link>
-            <p className="max-w-xs font-open text-body-sm text-text-secondary sm:text-body lg:text-caption lg:uppercase lg:tracking-wide">
+            <p className="max-w-xs font-open text-body-sm text-text-secondary sm:text-body lg:font-mona lg:text-[14px] lg:font-normal lg:leading-[1.2] lg:uppercase">
               {footerContent.tagline}
             </p>
           </div>
@@ -198,7 +202,7 @@ export function SiteFooter() {
           >
             {footerContent.columns.map((column) => (
               <div key={column.title} className="flex flex-col gap-5">
-                <h3 className="font-mona text-body-sm font-semibold text-brand-cortex-orange sm:text-body lg:uppercase lg:tracking-wide">
+                <h3 className="font-mona text-body-sm font-semibold text-brand-cortex-orange sm:text-body lg:text-[15px] lg:font-medium lg:uppercase">
                   {column.title}
                 </h3>
                 <ul className="flex flex-col gap-4">
@@ -206,7 +210,7 @@ export function SiteFooter() {
                     <li key={`${column.title}-${link.href}-${link.label}`}>
                       <Link
                         href={link.href}
-                        className="font-open text-body-sm text-text-secondary transition-colors hover:text-text-primary"
+                        className="font-mona text-body-sm font-semibold text-text-secondary transition-colors hover:text-text-primary"
                       >
                         {link.label}
                       </Link>
@@ -235,16 +239,16 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.ariaLabel}
-                    className="flex size-10 items-center justify-center rounded-full border border-border-strong/40 text-text-secondary transition-colors hover:border-action-primary hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary"
+                    className="flex size-[42px] items-center justify-center rounded-full border border-border-default text-text-secondary transition-colors hover:border-action-primary hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary"
                   >
-                    <Glyph className="size-[18px]" />
+                    <Glyph className="size-6" />
                   </a>
                 </li>
               );
             })}
           </ul>
 
-          <p className="order-2 font-open text-caption text-text-muted lg:order-1 lg:uppercase lg:tracking-wide">
+          <p className="order-2 font-mona text-caption text-text-muted lg:order-1 lg:text-text-secondary lg:uppercase">
             {footerContent.copyright}
           </p>
         </div>
