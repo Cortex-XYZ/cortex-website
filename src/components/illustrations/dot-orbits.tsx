@@ -170,7 +170,7 @@ export function DotOrbits({ active, className }: Props) {
         dots.forEach(({ circle }) => circle.remove());
       };
     },
-    { dependencies: [active], scope: dotLayerRef },
+    { dependencies: [active], revertOnUpdate: true, scope: dotLayerRef },
   );
 
   return (

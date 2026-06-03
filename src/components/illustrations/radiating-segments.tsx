@@ -93,7 +93,7 @@ export function RadiatingSegments({ active, className }: Props) {
         lines.forEach((line) => line.remove());
       };
     },
-    { dependencies: [active], scope: rayLayerRef },
+    { dependencies: [active], revertOnUpdate: true, scope: rayLayerRef },
   );
 
   return (
