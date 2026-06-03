@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Mona_Sans, Open_Sans } from "next/font/google";
+import Script from "next/script";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
+
+const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
@@ -31,6 +34,14 @@ export default function RootLayout({
       className={`${monaSans.variable} ${openSans.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {plausibleDomain && (
+          <Script
+            defer
+            data-domain={plausibleDomain}
+            src="https://plausible.io/js/script.tagged-events.js"
+            strategy="afterInteractive"
+          />
+        )}
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />

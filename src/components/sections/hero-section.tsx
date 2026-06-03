@@ -42,7 +42,7 @@ export function HeroSection() {
               variant="primary"
               size="lg"
               animated={false}
-              className="px-4 sm:px-(--button-padding-inline)"
+              className="px-4 sm:px-(--button-padding-inline) plausible-event-name=CTA+Click plausible-event-location=hero plausible-event-label=primary"
             >
               {heroSection.primaryCta.label}
             </CortexButton>
@@ -50,7 +50,7 @@ export function HeroSection() {
               variant="subtleOutline"
               size="lg"
               animated={false}
-              className="px-4 sm:px-(--button-padding-inline)"
+              className="px-4 sm:px-(--button-padding-inline) plausible-event-name=CTA+Click plausible-event-location=hero plausible-event-label=secondary"
             >
               {heroSection.secondaryCta.label}
             </CortexButton>

@@ -171,7 +171,10 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-4">
-          <CortexButton asChild className="hidden sm:inline-flex font-bold">
+          <CortexButton
+            asChild
+            className="hidden sm:inline-flex font-bold plausible-event-name=CTA+Click plausible-event-location=header plausible-event-label=stake"
+          >
             <Link href={ctaButton.href}>{ctaButton.label}</Link>
           </CortexButton>
           <button

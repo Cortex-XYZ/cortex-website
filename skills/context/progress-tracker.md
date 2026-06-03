@@ -40,6 +40,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
 - Wired Sentry (`@sentry/nextjs` 10.x) using Next 16 instrumentation conventions: `src/instrumentation.ts` (Node + edge `register`, `onRequestError = Sentry.captureRequestError`), `src/instrumentation-client.ts` (browser init + `onRouterTransitionStart`), and `src/app/global-error.tsx` for client-rendered errors. `next.config.ts` is wrapped with `withSentryConfig` for source-map upload and per-deploy release tracking (defaults to `VERCEL_GIT_COMMIT_SHA`).
+- Wired Plausible analytics via a plain `next/script` tag in `src/app/layout.tsx`, gated on `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. Uses the `script.tagged-events.js` variant so CTA clicks can be tracked through `plausible-event-name=…` classes without any JS wiring. Tagged the four launch CTAs (header, mobile-nav, hero primary, hero secondary) with a single `CTA Click` event plus `location` + `label` props.
 
 ## Decisions
 
@@ -63,6 +64,10 @@ GitHub issue planning is complete. The production website build is ready to move
 - The app root loads Mona Sans and Open Sans once with `next/font/google`; Tailwind font utilities expose `font-mona` and `font-open`.
 - `src/components/ui/` is reserved for generated shadcn/ui components; custom Cortex components and wrappers live in `src/components/` outside `ui/`.
 - Service Cards are the canonical name for shader-backed service surfaces; future section code should use `services-section.tsx`.
+- D3 (analytics provider) → Plausible. Brochure-site scope needs pageviews, sources, top pages, and CTA events — Plausible covers that at ~1 KB with no cookies and is EU-friendly by default. PostHog rejected (SaaS-funnel-shaped, ~50 KB, needs a banner). GA4 rejected (mandatory EU banner, ~80 KB, degraded data without paid Ads attribution).
+- D4 (cookie-banner jurisdictions) → no banner. Plausible is cookieless and PII-free; no consent gate required for EU/UK/CA. Closed.
+- Plausible is wired via `next/script` directly (not `next-plausible`); v4 of that wrapper dropped the `domain`/`taggedEvents` props and requires a dashboard-generated script URL, which is more friction than the 6-line script tag.
+- Tagged-event convention for CTAs: a single `CTA Click` event with `plausible-event-location=<header|mobile-nav|hero|…>` and `plausible-event-label=<short identifier>` props. Reuse this shape for future CTAs instead of inventing new event names per surface.
 
 ## Open Questions
 
@@ -73,8 +78,9 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Latest Handoff
 
-- Changed: wired Sentry observability for the L1 issue (Sentry-only slice; analytics provider and cookie banner blocked on D3/D4).
-- Files touched: `package.json`, `bun.lock`, `next.config.ts`, `src/instrumentation.ts` (new), `src/instrumentation-client.ts` (new), `src/app/global-error.tsx` (new), `.env.example` (new), `.gitignore`, `skills/context/progress-tracker.md`.
+- Changed: completed L1 observability — Sentry instrumentation (Node, edge, browser, global-error) with source-map upload + per-deploy release tracking, and Plausible analytics with tagged-event CTA tracking. D3 closed (Plausible chosen); D4 closed (no banner needed because Plausible is cookieless).
+- Files touched: `package.json`, `bun.lock`, `next.config.ts`, `src/instrumentation.ts` (new), `src/instrumentation-client.ts` (new), `src/app/global-error.tsx` (new), `src/app/layout.tsx`, `src/components/layout/site-header.tsx`, `src/components/layout/mobile-nav.tsx`, `src/components/sections/hero-section.tsx`, `.env.example` (new), `.gitignore`, `skills/context/progress-tracker.md`.
 - Verification run: `bun run typecheck`, `bun run lint`, `bun run build` all clean.
-- Open questions: D3 (analytics provider) and D4 (cookie-banner jurisdictions) still need decisions before the rest of L1 lands. Sentry env vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) must be provisioned in Vercel — the Sentry marketplace integration auto-sets `SENTRY_AUTH_TOKEN`.
-- Next step: resolve D3/D4, then layer in the analytics provider and cookie banner under the same L1 issue.
+- Open questions: privacy policy still needs a one-line note disclosing cookieless Plausible analytics — `siteLinks.privacy` is in the nav/footer but the `/privacy` route has not been built yet (the link carries a `TODO` in `src/lib/content/links.ts:24`). Add the note as part of that page when it lands.
+- Provisioning: set Sentry env vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) in Vercel — the Sentry marketplace integration auto-sets `SENTRY_AUTH_TOKEN`. Set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` to the bare domain the site is served on; leaving it empty disables the tracker, so local/preview is silent by default.
+- Next step: continue building the remaining section components (`history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`). The privacy-policy note is a follow-up when the `/privacy` route is built.

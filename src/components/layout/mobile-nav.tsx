@@ -122,7 +122,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <Link
             href={ctaButton.href}
             onClick={onClose}
-            className="group flex items-center justify-between px-6 py-5 text-brand-cortex-orange"
+            className="group flex items-center justify-between px-6 py-5 text-brand-cortex-orange plausible-event-name=CTA+Click plausible-event-location=mobile-nav plausible-event-label=stake"
           >
             <span className="mobile-nav-cta-label">{ctaButton.label}</span>
             <ArrowRight className="size-6 animate-arrow-move-right mr-1.5" />
