@@ -22,7 +22,7 @@ export const footerContent = {
   title: "Build local. Connect human. Shape what is next.",
   description:
     "Get Cortex updates on local hubs, education tracks, events, services, and ways to support the network.",
-  tagline: "Open innovation, made local. Open to all.",
+  tagline: "Open innovation, made local.\nOpen to all.",
   email: contactEmail,
   newsletterCta: {
     label: "Subscribe",
