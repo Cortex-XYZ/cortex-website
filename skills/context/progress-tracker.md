@@ -39,6 +39,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
 - Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
+- Wired Sentry (`@sentry/nextjs` 10.x) using Next 16 instrumentation conventions: `src/instrumentation.ts` (Node + edge `register`, `onRequestError = Sentry.captureRequestError`), `src/instrumentation-client.ts` (browser init + `onRouterTransitionStart`), and `src/app/global-error.tsx` for client-rendered errors. `next.config.ts` is wrapped with `withSentryConfig` for source-map upload and per-deploy release tracking (defaults to `VERCEL_GIT_COMMIT_SHA`).
 
 ## Decisions
 
@@ -72,8 +73,8 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Latest Handoff
 
-- Changed: extracted the stable footer Tailwind class bundles into footer-scoped component classes under `@layer components` in `src/app/globals.css`. `SiteFooter` now uses `site-footer-*` class names while retaining the local helper logic for quote lines, tagline lines, social ordering, and the newsletter validation TODO. Social glyphs moved into `src/components/icons/social-glyphs.tsx` for reuse by future sections.
-- Files touched: `src/app/globals.css`, `src/components/layout/site-footer.tsx`, `src/components/icons/social-glyphs.tsx`, `src/lib/content/footer.ts`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: none for this refactor.
-- Next step: continue with the remaining content-wired sections.
+- Changed: wired Sentry observability for the L1 issue (Sentry-only slice; analytics provider and cookie banner blocked on D3/D4).
+- Files touched: `package.json`, `bun.lock`, `next.config.ts`, `src/instrumentation.ts` (new), `src/instrumentation-client.ts` (new), `src/app/global-error.tsx` (new), `.env.example` (new), `.gitignore`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run typecheck`, `bun run lint`, `bun run build` all clean.
+- Open questions: D3 (analytics provider) and D4 (cookie-banner jurisdictions) still need decisions before the rest of L1 lands. Sentry env vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) must be provisioned in Vercel — the Sentry marketplace integration auto-sets `SENTRY_AUTH_TOKEN`.
+- Next step: resolve D3/D4, then layer in the analytics provider and cookie banner under the same L1 issue.
