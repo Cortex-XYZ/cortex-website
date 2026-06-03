@@ -33,6 +33,7 @@ GitHub issue planning is complete. The production website build is ready to move
 - Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
 - Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
 - Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
+- Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
 
 ## Decisions
 
@@ -66,8 +67,8 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Latest Handoff
 
-- Changed: consolidated the footer into a single `SiteFooter` component per the GitHub issue checklist (SiteFooter file, CTA quote block, newsletter input UI only, contact email, About/Programs/Legal columns, social links, mobile single-column collapse, mounted in root layout). Newsletter is now UI-only (no mailto submit); columns collapse to one column on mobile.
-- Files touched: `src/components/layout/site-footer.tsx` (new, self-contained), `src/app/layout.tsx` (mount `SiteFooter`), `eslint.config.mjs` (ignore `claude-code-handoff/**`); removed `src/components/sections/footer-section.tsx`, `src/components/sections/footer-newsletter.tsx`, `src/components/icons/social.tsx`.
-- Verification run: `bunx tsc --noEmit` clean, `bun run lint` clean, `bun run build` green, served HTML confirmed via curl. Browser screenshots not captured — Claude-in-Chrome extension was not connected.
-- Open questions: Figma footer shows **8** social icons (adds GitHub, Facebook, Reddit) but `cortexSocialLinkKeys` in `src/lib/content/links.ts` defines only **5**. Rendered the 5 with real URLs; GitHub/Facebook/Reddit need URLs added to `externalLinks` + `cortexSocialLinkKeys` before they can ship.
-- Next step: confirm the 3 missing social URLs, then build the remaining content-wired sections.
+- Changed: extracted the stable footer Tailwind class bundles into footer-scoped component classes under `@layer components` in `src/app/globals.css`. `SiteFooter` now uses `site-footer-*` class names while retaining the local helper logic for quote lines, tagline lines, and social ordering. Corrected the extracted classes to match the working footer spacing and text values, including `lg:pt-13.75` on `.site-footer-container`.
+- Files touched: `src/app/globals.css`, `src/components/layout/site-footer.tsx`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green. Browser check on `localhost:3002` could not complete from Codex because the URL refused connections in this environment.
+- Open questions: none for this refactor.
+- Next step: continue with the remaining content-wired sections.
