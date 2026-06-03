@@ -22,17 +22,19 @@ function glyph(props: GlyphProps) {
   };
 }
 
-function XGlyph({ className, ...props }: GlyphProps) {
-  // Exported from Figma at the full 42×42 button viewBox (padding baked in).
-  // size-full takes priority over any size-N passed by the parent so the path
-  // lands at its native figma coordinates.
+function XGlyph(props: GlyphProps) {
+  // Figma exported the X at native 42×42 button coords — the path itself sits
+  // at x=13–29 / y=13–28. viewBox is cropped to that bbox (with ~1u margin)
+  // so the mark fills its size-N wrapper at the same visual scale as the
+  // other 24×24 glyphs. Width/height attrs are intentionally omitted so the
+  // parent's `size-5 lg:size-6` className controls rendered size.
   return (
     <svg
-      viewBox="0 0 42 42"
+      // {...glyph(props)}
+      viewBox="12 12 18 18"
       fill="none"
-      aria-hidden
-      className={cn(className, "size-full")}
-      {...props}
+      width={18}
+      height={18}
     >
       <path
         d="M13.039 12.9902L19.2171 21.2759L13 28.0106H14.4L19.8415 22.1126L24.239 28.0106H29L22.4756 19.2602L28.261 12.9902H26.8634L21.8512 18.4211L17.8024 12.9902H13.039ZM15.0976 14.0226H17.2854L26.9439 26.9758H24.7561L15.0976 14.0226Z"
