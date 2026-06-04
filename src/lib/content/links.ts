@@ -39,7 +39,8 @@ export type ExternalLinkChannel =
   | "instagram"
   | "tiktok"
   | "linkedin"
-  | "youtube";
+  | "youtube"
+  | "github"
 
 export type ExternalLink = {
   label: string;
@@ -84,6 +85,13 @@ export const externalLinks = {
     category: "cortex-social",
     channel: "youtube",
     ariaLabel: "Cortex Global on YouTube",
+  },
+  cortexGitHub: {
+    label: "GitHub",
+    href: "https://github.com/Cortex-XYZ",
+    category: "cortex-social",
+    channel: "github",
+    ariaLabel: "Cortex Global on GitHub",
   },
   categoryLabs: {
     label: "Category Labs",
@@ -151,12 +159,14 @@ export const externalLinks = {
 
 export type ExternalLinkKey = keyof typeof externalLinks;
 
+// Order matches the Figma footer spec exactly.
 export const cortexSocialLinkKeys = [
   "cortexX",
-  "cortexInstagram",
-  "cortexTikTok",
-  "cortexLinkedIn",
+  "cortexGitHub",
   "cortexYouTube",
+  "cortexInstagram",
+  "cortexLinkedIn",
+  "cortexTikTok",
 ] as const satisfies readonly ExternalLinkKey[];
 
 export const monadLinkKeys = [

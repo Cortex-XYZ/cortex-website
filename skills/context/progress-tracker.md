@@ -37,6 +37,8 @@ GitHub issue planning is complete. The production website build is ready to move
 - Kept `src/lib/content/mission.ts` content-focused by moving Mission illustration placement classes into a typed card-ID map in `mission-section.tsx`.
 - Matched the Mission intro paragraph font-size progression to the Hero paragraph sizing: `text-body-sm` at base and `text-body` from `sm` upward, without an `xl` size jump.
 - Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
+- Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
+- Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
 
 ## Decisions
 
@@ -65,13 +67,13 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`.
+1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`.
 2. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: refactored Mission so static intro/layout render from the server component, moved accordion/carousel interactivity into `mission-cards-client.tsx`, dynamically loaded the five GSAP illustration modules, memoized expanded cards, moved collapsed-card writing mode into CSS, and extracted the shared desktop Mission card height into `src/lib/layout/mission-layout.ts`.
-- Files touched: `src/components/sections/mission-section.tsx`, `src/components/sections/mission-cards-client.tsx`, `src/lib/layout/mission-layout.ts`, `src/app/globals.css`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run typecheck`, `bun run lint`, `bun run build`.
-- Open questions: none blocking.
-- Next step: continue building the remaining UI sections/components.
+- Changed: extracted the stable footer Tailwind class bundles into footer-scoped component classes under `@layer components` in `src/app/globals.css`. `SiteFooter` now uses `site-footer-*` class names while retaining the local helper logic for quote lines, tagline lines, social ordering, and the newsletter validation TODO. Social glyphs moved into `src/components/icons/social-glyphs.tsx` for reuse by future sections.
+- Files touched: `src/app/globals.css`, `src/components/layout/site-footer.tsx`, `src/components/icons/social-glyphs.tsx`, `src/lib/content/footer.ts`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
+- Open questions: none for this refactor.
+- Next step: continue with the remaining content-wired sections.
