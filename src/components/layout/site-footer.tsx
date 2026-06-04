@@ -10,6 +10,7 @@ import type { ExternalLinkChannel } from "@/lib/content/links";
 // Display order of the social links in the footer bottom bar.
 const SOCIAL_CHANNEL_ORDER: Partial<Record<ExternalLinkChannel, number>> = {
   x: 0,
+  github: 1,
   youtube: 2,
   instagram: 3,
   linkedin: 4,

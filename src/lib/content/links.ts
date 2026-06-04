@@ -41,8 +41,6 @@ export type ExternalLinkChannel =
   | "linkedin"
   | "youtube"
   | "github"
-  | "facebook"
-  | "reddit";
 
 export type ExternalLink = {
   label: string;
@@ -88,7 +86,6 @@ export const externalLinks = {
     channel: "youtube",
     ariaLabel: "Cortex Global on YouTube",
   },
-  // TODO: replace placeholder hrefs with real Cortex accounts when available.
   cortexGitHub: {
     label: "GitHub",
     href: "https://github.com/Cortex-XYZ",
@@ -96,20 +93,6 @@ export const externalLinks = {
     channel: "github",
     ariaLabel: "Cortex Global on GitHub",
   },
-  // cortexFacebook: {
-  //   label: "Facebook",
-  //   href: "https://www.facebook.com",
-  //   category: "cortex-social",
-  //   channel: "facebook",
-  //   ariaLabel: "Cortex Global on Facebook",
-  // },
-  // cortexReddit: {
-  //   label: "Reddit",
-  //   href: "https://www.reddit.com",
-  //   category: "cortex-social",
-  //   channel: "reddit",
-  //   ariaLabel: "Cortex Global on Reddit",
-  // },
   categoryLabs: {
     label: "Category Labs",
     href: "https://www.category.xyz/",
@@ -183,8 +166,6 @@ export const cortexSocialLinkKeys = [
   "cortexYouTube",
   "cortexInstagram",
   "cortexLinkedIn",
-  // "cortexFacebook",
-  // "cortexReddit",
   "cortexTikTok",
 ] as const satisfies readonly ExternalLinkKey[];
 

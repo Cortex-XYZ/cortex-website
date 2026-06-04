@@ -16,6 +16,19 @@ function XGlyph(props: GlyphProps) {
   );
 }
 
+function GitHubGlyph(props: GlyphProps) {
+  return (
+    <svg viewBox="0 0 42 42" fill="none" aria-hidden {...props}>
+      <path
+        d="M18 31V27C17.93 26.38 17.98 25.75 18.15 25.15C18.32 24.55 18.61 23.99 19 23.5C16 23.5 13 21.5 13 18C12.9185 16.7528 13.2719 15.5159 14 14.5C13.7 13.35 13.7 12.15 14 11C14 11 15 11 17 12.5C19.64 12 22.36 12 25 12.5C27 11 28 11 28 11C28.28 12.15 28.28 13.35 28 14.5C28.73 15.52 29.08 16.75 29 18C29 21.5 26 23.5 23 23.5C23.78 24.4901 24.1392 25.7473 24 27V31M18 27C13.49 29 13 25 11 25"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function InstagramGlyph(props: GlyphProps) {
   return (
     <svg viewBox="0 0 42 42" fill="none" aria-hidden {...props}>
@@ -88,6 +101,7 @@ export const SOCIAL_GLYPHS: Partial<
   Record<ExternalLinkChannel, (props: GlyphProps) => ReactElement>
 > = {
   x: XGlyph,
+  github: GitHubGlyph,
   instagram: InstagramGlyph,
   tiktok: TikTokGlyph,
   linkedin: LinkedInGlyph,
