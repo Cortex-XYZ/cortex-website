@@ -194,6 +194,12 @@
   --gradient-cortex-orange-stops:
     transparent 0%, var(--neutral-neural-gray) 50%,
     var(--brand-cortex-orange) 100%;
+  --gradient-history-connector-stops:
+    var(--brand-cortex-carbon) 0%,
+    color-mix(in srgb, var(--neutral-white) 5%, transparent) 96%;
+  --gradient-history-dot-stops:
+    #d34d00 0%,
+    var(--extended-volt-dark) 100%;
 
   --shader-orange-amber-color-a: var(--brand-cortex-orange);
   --shader-orange-amber-color-b: var(--brand-cortex-amber);
@@ -336,7 +342,7 @@
 
 @layer components {
   .site-container {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-24;
   }
 
   .mission-section {
@@ -637,6 +643,12 @@
   }
   html {
     @apply font-mona;
+  }
+  /* Smooth hash-anchor scroll for in-page navigation (hero CTAs etc.) */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 }
 
