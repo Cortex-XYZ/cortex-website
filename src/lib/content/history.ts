@@ -1,10 +1,19 @@
 import type { SectionContent } from "./types";
 
+export type HistoryMilestoneEntry = {
+  /** Orange prefix label rendered inline (e.g. "Africa", "North America"). */
+  label: string;
+  text: string;
+};
+
 export type HistoryMilestone = {
   id: string;
   dateLabel: string;
   title: string;
-  body: string;
+  /** Single-paragraph body. Mutually exclusive with `entries` in practice. */
+  body?: string;
+  /** Multi-entry body for milestones that group region-by-region detail. */
+  entries?: readonly HistoryMilestoneEntry[];
 };
 
 export const historySection = {
@@ -21,13 +30,13 @@ export const historySection = {
   milestones: [
     {
       id: "seed-planted",
-      dateLabel: "Feb 2025",
+      dateLabel: "Feb 2026",
       title: "Seed planted",
       body: "Cortex initiated its foundational program design and launched a global recruitment campaign to identify and prepare the next generation of regional leaders.",
     },
     {
       id: "orientation-planted",
-      dateLabel: "Mar 2025",
+      dateLabel: "Mar 2026",
       title: "Orientation and relationships planted",
       body: "28 core candidates onboarded through an intensive initial orientation, beginning the cross-border relationships and team dynamics behind the global network.",
     },
@@ -41,11 +50,24 @@ export const historySection = {
       id: "regional-activation",
       dateLabel: "Activation",
       title: "Regional activation",
-      body: "Africa / Lagos Blitz was executed by Cortex NG leaders. North America / ETH NY mobilization began with Cortex US East alongside new Miami events.Europe & Asia / Helsinki initiatives launched, Turkiye Blitz was revised for longer-term retention, and similar ecosystem strategies were deployed across India.",
+      entries: [
+        {
+          label: "Africa",
+          text: "Lagos Blitz was executed by Cortex NG leaders.",
+        },
+        {
+          label: "North America",
+          text: "ETH NY mobilization began with Cortex US East alongside new Miami events.",
+        },
+        {
+          label: "Europe & Asia",
+          text: "Helsinki initiatives launched, Turkiye Blitz was revised for longer-term retention, and similar ecosystem strategies were deployed across India.",
+        },
+      ],
     },
     {
       id: "cortex-connect",
-      dateLabel: "Q2 2026",
+      dateLabel: "Q3 2026",
       title: "Cortex connect",
       body: "Formal global hybrid events will connect local communities in person while linking them digitally around the world.",
     },

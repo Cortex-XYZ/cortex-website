@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { CortexButton } from "@/components/cortex-button";
 import { HeroWebglBackground } from "@/components/webgl/hero-webgl-background";
@@ -39,20 +40,26 @@ export function HeroSection() {
 
           <div className="flex w-full flex-nowrap gap-2 sm:w-auto sm:gap-4">
             <CortexButton
+              asChild
               variant="primary"
               size="lg"
               animated={false}
               className="px-4 sm:px-(--button-padding-inline)"
             >
-              {heroSection.primaryCta.label}
+              <Link href={heroSection.primaryCta.href}>
+                {heroSection.primaryCta.label}
+              </Link>
             </CortexButton>
             <CortexButton
+              asChild
               variant="subtleOutline"
               size="lg"
               animated={false}
               className="px-4 sm:px-(--button-padding-inline)"
             >
-              {heroSection.secondaryCta.label}
+              <Link href={heroSection.secondaryCta.href}>
+                {heroSection.secondaryCta.label}
+              </Link>
             </CortexButton>
           </div>
         </div>

@@ -72,8 +72,12 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Latest Handoff
 
-- Changed: extracted the stable footer Tailwind class bundles into footer-scoped component classes under `@layer components` in `src/app/globals.css`. `SiteFooter` now uses `site-footer-*` class names while retaining the local helper logic for quote lines, tagline lines, social ordering, and the newsletter validation TODO. Social glyphs moved into `src/components/icons/social-glyphs.tsx` for reuse by future sections.
-- Files touched: `src/app/globals.css`, `src/components/layout/site-footer.tsx`, `src/components/icons/social-glyphs.tsx`, `src/lib/content/footer.ts`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: none for this refactor.
-- Next step: continue with the remaining content-wired sections.
+- Changed: figma-pass on `HistorySection` (node `388-71` screenshot + Cortex/Label/Black CSS spec).
+  - **Content** (`src/lib/content/history.ts`): added `HistoryMilestoneEntry` type and made `body` optional so the `regional-activation` milestone can carry structured sub-entries (Africa / North America / Europe & Asia) — the component renders each entry's `label` in orange followed by its `text`. Date labels updated to match the figma (`Feb 2026`, `Mar 2026`, `Q3 2026`).
+  - **Component** (`src/components/sections/history-section.tsx`): restructured to the figma's 3-column layout at lg — col 1 holds the eyebrow (row 1) and the scroll callout (anchored to the regional-activation row via inline CSS variable + arbitrary `lg:[grid-row-start:var(--row)]`); col 2 holds the date label + dot marker right-justified onto a vertical rail (grid item, `lg:row-span-5 lg:justify-self-end`); col 3 holds the milestone title + body/entries.
+  - **Typography** matches the figma Cortex/Label/Black style for all uppercase labels (eyebrow, date, title): `font-mona text-label font-black uppercase leading-none tracking-[0.41em]` — 13 px Mona Sans 900 with 0.41em letter-spacing. Bodies use `font-open text-body-sm leading-relaxed text-text-secondary`.
+  - Mobile collapses to a single flex column in DOM order; the desktop callout's grid-row positioning is gated behind `lg:` so it doesn't break the mobile stack.
+- Files touched: `src/lib/content/history.ts`, `src/components/sections/history-section.tsx`, `skills/context/progress-tracker.md`.
+- Verification run: `bunx tsc --noEmit` clean, `bun run lint` clean, `bun run build` green.
+- Open questions: rail/dot alignment is within ~3.5 px (rail at col 2's right edge, dot center 4 px inside it) — visually clean but not pixel-perfect; if a tighter alignment is wanted, shift the dot by `-mr-[3.5px]` at lg. GSAP scroll-trigger reveal for the callout remains deferred to a follow-up animation ticket.
+- Next step: add the GSAP scroll-trigger reveal/pin for the callout, then continue with the remaining content-wired sections (`team-section`, `monad-section`, `services-section`, `events-section`).
