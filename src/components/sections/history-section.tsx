@@ -21,13 +21,14 @@ const CALLOUT_ROW =
 const LABEL_CLASSES =
   "font-mona text-label font-black uppercase tracking-[0.41em]";
 
-const MILESTONE_BODY_CLASSES =
-  "font-open text-body-sm leading-relaxed text-text-secondary";
+// Mobile body type per figma: Open Sans 400 14 / 20, #7C7C7C.
+const MOBILE_BODY_CLASSES =
+  "font-open text-body-xs leading-5 text-text-muted";
 
 function MilestoneBody({ milestone }: { milestone: HistoryMilestone }) {
   if (milestone.entries) {
     return (
-      <div className={`space-y-3 ${MILESTONE_BODY_CLASSES}`}>
+      <div className={`space-y-3 ${MOBILE_BODY_CLASSES}`}>
         {milestone.entries.map((entry) => (
           <p key={entry.label}>
             <span className="font-semibold text-brand-cortex-orange">
@@ -40,7 +41,7 @@ function MilestoneBody({ milestone }: { milestone: HistoryMilestone }) {
     );
   }
   if (milestone.body) {
-    return <p className={MILESTONE_BODY_CLASSES}>{milestone.body}</p>;
+    return <p className={MOBILE_BODY_CLASSES}>{milestone.body}</p>;
   }
   return null;
 }
@@ -95,45 +96,67 @@ export function HistorySection() {
           {historySection.title.toUpperCase()}
         </p>
 
+        {/*
+          Each row carries its own line inside the timeline-line column
+          (dot + flex-1 line) and ends at its content's body. The `gap-8`
+          between rows is empty space — no line through it — so the line
+          terminates at each row's body bottom and the next dot appears
+          after a 32 px clear gap, matching the figma mobile reference.
+          Last row omits the line so the rail ends at the Q3 2026 dot.
+        */}
         <ol className="mt-8 flex flex-col gap-8">
           {historySection.milestones.map((milestone, i) => {
             const isLast = i === historySection.milestones.length - 1;
             return (
               <li
                 key={milestone.id}
-                className="relative isolate flex items-start gap-3"
+                className="flex items-start gap-4 self-stretch"
               >
                 {/*
-                  Per-dot rail segment connecting this dot to the next dot.
-                  top-4 starts at this dot's bottom (mt-2 + size-2 = 16 px);
-                  -bottom-10 extends 40 px past this li's bottom = gap-8 (32)
-                  + next dot's mt-2 (8) = next dot's top. Suppressed on the
-                  last item so the line terminates at Q3 2026.
+                  Timeline-line column — 10 px wide, dot on top, gradient
+                  line below filling the remaining row height (`flex-1`).
+                  `self-stretch` lets the column take the row's full height
+                  so the line's bottom hugs the content column's bottom edge
+                  (which already includes the 40 px figma pb on the content
+                  side). The last row's line is suppressed.
                 */}
-                {!isLast && (
+                <div className="flex w-2.5 flex-col items-center self-stretch">
                   <span
                     aria-hidden
-                    className="absolute top-4 -bottom-10 left-1 -z-10 w-px bg-[linear-gradient(180deg,var(--gradient-history-connector-stops))]"
+                    className={cn(
+                      "size-2.5 shrink-0 rounded-full",
+                      isLast
+                        ? "border-[1.5px] border-text-muted bg-transparent"
+                        : "bg-action-primary",
+                    )}
                   />
-                )}
-                <span
-                  aria-hidden
-                  className={cn(
-                    "mt-2 size-2 shrink-0 rounded-full",
-                    isLast
-                      ? "border border-text-muted bg-bg-canvas"
-                      : "bg-action-primary",
+                  {!isLast && (
+                    /*
+                      Inline SVG would inherit its viewBox's 1:1353 aspect
+                      ratio as a min-content size in flexbox, blowing the
+                      line height past the body into empty space. Using a
+                      CSS gradient span instead — same `carbon → white at
+                      5 %` stops via `--gradient-history-connector-stops`,
+                      but no intrinsic-size trap, so `flex-1` shrinks to
+                      exactly the row's remaining height.
+                    */
+                    <span
+                      aria-hidden
+                      className="w-0.5 flex-1 bg-[linear-gradient(180deg,var(--gradient-history-connector-stops))]"
+                    />
                   )}
-                />
-                <div className="flex-1 space-y-3">
-                  <p
-                    className={`${LABEL_CLASSES} leading-none text-brand-cortex-orange`}
-                  >
+                </div>
+                {/*
+                  Content column — date / title / body stacked with 6 px gap
+                  and no bottom padding. The line ends at the body's bottom;
+                  the 32 px gap between this row and the next sits outside
+                  the column so it's clear of the line.
+                */}
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <p className="font-mona text-[11px] font-semibold uppercase leading-4 tracking-[2px] text-brand-cortex-orange">
                     {milestone.dateLabel}
                   </p>
-                  <h3
-                    className={`${LABEL_CLASSES} leading-tight text-text-primary`}
-                  >
+                  <h3 className="font-mona text-body-xs font-bold uppercase leading-5 tracking-[1px] text-text-secondary">
                     {milestone.title}
                   </h3>
                   <MilestoneBody milestone={milestone} />
@@ -168,15 +191,43 @@ export function HistorySection() {
           </p>
 
           {/*
-            Vertical rail — single absolute-positioned 1 px line anchored to
-            col 2's right edge (= 35 rem from the grid container's left).
-            `-z-10` keeps it behind the dots; `lg:isolate` on the grid
-            container contains the negative z-index.
+            Vertical rail — inline SVG mirroring the figma export (path +
+            linearGradient). `preserveAspectRatio="none"` lets the 1353-unit
+            viewBox stretch to the actual grid container height at runtime
+            while keeping the 1 px horizontal stroke crisp. Anchored to col
+            2's right edge (= 35 rem from the grid container's left); `-z-10`
+            keeps it behind the dots (contained by the grid's `lg:isolate`).
           */}
-          <div
+          <svg
             aria-hidden
-            className="hidden bg-[linear-gradient(180deg,var(--gradient-history-connector-stops))] lg:absolute lg:top-0 lg:bottom-0 lg:left-[35rem] lg:-z-10 lg:block lg:w-px lg:-translate-x-1/2"
-          />
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1 1353"
+            preserveAspectRatio="none"
+            fill="none"
+            className="hidden lg:absolute lg:top-0 lg:bottom-0 lg:left-[35rem] lg:-z-10 lg:block lg:h-full lg:w-px lg:-translate-x-1/2"
+          >
+            <path
+              d="M0.5 0V1353"
+              stroke="url(#history-rail-gradient)"
+            />
+            <defs>
+              <linearGradient
+                id="history-rail-gradient"
+                x1="1"
+                y1="0"
+                x2="1"
+                y2="1308.18"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="var(--brand-cortex-carbon)" />
+                <stop
+                  offset="0.956731"
+                  stopColor="white"
+                  stopOpacity="0.05"
+                />
+              </linearGradient>
+            </defs>
+          </svg>
 
           {/* Milestones */}
           {historySection.milestones.map((milestone, i) => (
