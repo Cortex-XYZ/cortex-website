@@ -39,6 +39,8 @@ GitHub issue planning is complete. The production website build is ready to move
 - Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
 - Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
+- Built the Services section (S6): `src/components/sections/services/services-section.tsx` renders the typed `servicesSection` content as five gradient Service Cards plus a sixth "Let's Talk" CTA tile with an inline arrow glyph. Each gradient card layers two soft radial-gradients (per-variant Figma ellipse positions) over a carbon base, exposed as `--gradient-service-{education,event,services,research,staking}` tokens. Card corners are square (`rounded-none`). A bottom `services-divider` line uses `linear-gradient(to right, orange → grey → transparent)` matching the Figma spec.
+- Responsive Services layout: at `lg` and up cards keep the original full-bleed gradient overlay (description on top, title at bottom inside the gradient). On mobile, gradient cards switch to `flex-col-reverse` with `background-size: 100% 13rem; background-position: top` so the gradient becomes a header block (title sits at the bottom of the block) and the description flows below on the page background, justified, edge-to-edge. The CTA tile is hidden on mobile (`hidden lg:flex`).
 
 ## Decisions
 
@@ -72,8 +74,8 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Latest Handoff
 
-- Changed: extracted the stable footer Tailwind class bundles into footer-scoped component classes under `@layer components` in `src/app/globals.css`. `SiteFooter` now uses `site-footer-*` class names while retaining the local helper logic for quote lines, tagline lines, social ordering, and the newsletter validation TODO. Social glyphs moved into `src/components/icons/social-glyphs.tsx` for reuse by future sections.
-- Files touched: `src/app/globals.css`, `src/components/layout/site-footer.tsx`, `src/components/icons/social-glyphs.tsx`, `src/lib/content/footer.ts`, `skills/context/progress-tracker.md`.
+- Changed: built S6 Services section. Added `src/components/sections/services/services-section.tsx` (five gradient cards + CTA tile, square corners, inline `CtaArrowGlyph`), wired it into `src/app/page.tsx`, and added the supporting `--gradient-service-*` tokens plus `.services-*` component classes (header, grid, card base, `--gradient` mobile modifier, divider) to `src/app/globals.css`. Responsive contract: desktop keeps the original full-bleed gradient overlay; mobile collapses the gradient to a 13rem header block with title overlay and pushes the justified description onto the page background. CTA tile is `hidden lg:flex`.
+- Files touched: `src/components/sections/services/services-section.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `skills/context/progress-tracker.md`.
 - Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: none for this refactor.
-- Next step: continue with the remaining content-wired sections.
+- Open questions: shader/WebGL fills (W1) and tag chips (issue #17) are still out of scope and tracked there.
+- Next step: continue with the remaining content-wired sections (history, team, monad, events).

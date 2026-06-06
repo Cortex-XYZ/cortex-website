@@ -195,6 +195,93 @@
     transparent 0%, var(--neutral-neural-gray) 50%,
     var(--brand-cortex-orange) 100%;
 
+  /* Services section card gradients (placeholders — swap per final spec). */
+  --gradient-service-education:
+    radial-gradient(
+      70% 55% at 74% 91%,
+      var(--brand-cortex-orange) 0%,
+      var(--brand-cortex-orange) 20%,
+      transparent 100%
+    ),
+    radial-gradient(
+      70% 55% at 17% 76%,
+      var(--brand-cortex-amber) 0%,
+      var(--brand-cortex-amber) 20%,
+      transparent 100%
+    ),
+    linear-gradient(
+      var(--brand-cortex-carbon),
+      var(--brand-cortex-carbon)
+    );
+  --gradient-service-event:
+    radial-gradient(
+      70% 55% at 44% 101%,
+      var(--brand-cortex-orange) 0%,
+      var(--brand-cortex-orange) 20%,
+      transparent 100%
+    ),
+    radial-gradient(
+      70% 55% at 88% 68%,
+      var(--brand-monad-purple) 0%,
+      var(--brand-monad-purple) 20%,
+      transparent 100%
+    ),
+    linear-gradient(
+      var(--brand-cortex-carbon),
+      var(--brand-cortex-carbon)
+    );
+  --gradient-service-services:
+    radial-gradient(
+      70% 55% at 74% 91%,
+      var(--vibrant-active-cyan) 0%,
+      var(--vibrant-active-cyan) 20%,
+      transparent 100%
+    ),
+    radial-gradient(
+      70% 55% at 17% 76%,
+      var(--brand-cortex-amber) 0%,
+      var(--brand-cortex-amber) 20%,
+      transparent 100%
+    ),
+    linear-gradient(
+      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white)),
+      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white))
+    );
+  --gradient-service-research:
+    radial-gradient(
+      70% 55% at 74% 91%,
+      var(--brand-cortex-orange) 0%,
+      var(--brand-cortex-orange) 20%,
+      transparent 100%
+    ),
+    radial-gradient(
+      70% 55% at 17% 76%,
+      var(--vibrant-signal-magenta) 0%,
+      var(--vibrant-signal-magenta) 20%,
+      transparent 100%
+    ),
+    linear-gradient(
+      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white)),
+      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white))
+    );
+  --gradient-service-staking:
+    radial-gradient(
+      70% 55% at 74% 91%,
+      var(--brand-cortex-orange) 0%,
+      var(--brand-cortex-orange) 20%,
+      transparent 100%
+    ),
+    radial-gradient(
+      70% 55% at 15% 94%,
+      var(--vibrant-electric-yellow) 0%,
+      var(--vibrant-electric-yellow) 20%,
+      transparent 100%
+    ),
+    linear-gradient(
+      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white)),
+      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white))
+    );
+
   --shader-orange-amber-color-a: var(--brand-cortex-orange);
   --shader-orange-amber-color-b: var(--brand-cortex-amber);
   --shader-orange-amber-background: var(--brand-cortex-carbon);
@@ -409,6 +496,120 @@
 
   .mission-pagination-dot {
     @apply size-2 rounded-full transition-colors;
+  }
+
+  .services-section {
+    @apply bg-bg-canvas py-12 md:py-16 xl:py-24;
+  }
+
+  .services-divider {
+    @apply mt-12 h-px w-full border-0 md:mt-16 xl:mt-20;
+    background-image: linear-gradient(
+      to right,
+      var(--brand-cortex-orange) 0%,
+      var(--neutral-neural-gray) 50%,
+      transparent 100%
+    );
+  }
+
+  .services-header {
+    @apply mb-10 flex flex-col gap-6 md:mb-12 lg:mb-16 lg:grid lg:grid-cols-[minmax(0,_368px)_minmax(0,_368px)_1fr] lg:gap-8 xl:gap-10;
+  }
+
+  .services-title {
+    @apply font-mona font-extrabold leading-[1] text-text-primary;
+    font-size: clamp(2.25rem, 5vw, var(--text-section-heading));
+  }
+
+  .services-period {
+    @apply text-action-primary;
+  }
+
+  .services-description {
+    @apply font-open text-body-sm text-text-secondary md:text-body lg:pt-1;
+  }
+
+  .services-grid {
+    @apply grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10;
+  }
+
+  .services-grid-item {
+    @apply flex justify-start;
+  }
+
+  .services-card {
+    @apply relative flex w-full flex-col justify-between overflow-hidden rounded-none p-6 lg:max-w-92;
+    height: 31.6875rem;
+  }
+
+  .services-card--gradient {
+    @apply h-auto flex-col-reverse justify-start gap-4 p-0 lg:h-[31.6875rem] lg:flex-col lg:justify-between lg:gap-0 lg:p-6;
+    background-repeat: no-repeat;
+    background-size: 100% 13rem;
+    background-position: top;
+  }
+
+  @media (min-width: 1024px) {
+    .services-card--gradient {
+      background-size: 100% 100%;
+    }
+  }
+
+  .services-card--gradient .services-card-title {
+    @apply flex min-h-52 items-end p-6 lg:block lg:min-h-0 lg:p-0;
+  }
+
+  .services-card--gradient .services-card-description {
+    @apply px-6 pb-6 lg:p-0;
+  }
+
+  .services-card--education {
+    background-image: var(--gradient-service-education);
+  }
+  .services-card--event {
+    background-image: var(--gradient-service-event);
+  }
+  .services-card--services {
+    background-image: var(--gradient-service-services);
+  }
+  .services-card--research {
+    background-image: var(--gradient-service-research);
+  }
+  .services-card--staking {
+    background-image: var(--gradient-service-staking);
+  }
+
+  .services-card-description {
+    @apply font-open text-body font-normal leading-snug text-text-primary/50 text-justify lg:max-w-72 lg:text-left;
+  }
+
+  .services-card-title {
+    @apply font-mona text-card-heading font-normal text-text-inverse;
+  }
+
+  .services-card--cta {
+    @apply border border-border-strong bg-transparent transition-colors;
+  }
+
+  .services-card--cta:hover {
+    @apply border-action-primary;
+  }
+
+  .services-cta-arrow {
+    @apply absolute right-6 size-25 text-text-secondary transition-colors;
+    bottom: 5.75rem;
+  }
+
+  .services-card--cta:hover .services-cta-arrow {
+    @apply text-text-primary;
+  }
+
+  .services-cta-title {
+    @apply mt-auto font-mona text-card-heading font-light text-text-muted transition-colors;
+  }
+
+  .services-card--cta:hover .services-cta-title {
+    @apply text-text-primary;
   }
 
   .site-header-shell {
