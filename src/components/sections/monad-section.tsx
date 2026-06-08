@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { MonadCardsStatic } from "@/components/sections/monad/monad-cards-static";
 import { MONAD_INTERACTIVE_CARDS } from "@/components/sections/monad/get-monad-interactive-cards";
 import { MonadSocialLinks } from "@/components/sections/monad/monad-social-links";
+import { SectionDivider } from "@/components/section-divider";
 import { monadSection } from "@/lib/content/monad";
 
 const MonadCardsClient = dynamic(
@@ -23,10 +24,10 @@ export function MonadSection() {
       data-monad-section
     >
       <div className="site-container">
-        <hr className="monad-section-divider" aria-hidden="true" />
+        <SectionDivider variant="purple" />
       </div>
-      <div className="site-container monad-intro">
-        <h2 id="monad-heading" className="monad-title">
+      <div className="site-container section-intro">
+        <h2 id="monad-heading" className="section-title monad-title">
           {monadSection.title}
         </h2>
         <p className="monad-description">{monadSection.description}</p>

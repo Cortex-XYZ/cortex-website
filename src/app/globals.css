@@ -432,7 +432,7 @@
 
 @layer components {
   .site-container {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-24;
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
   }
 
   .section-title {
@@ -516,117 +516,161 @@
   }
 
   .services-section {
-    @apply bg-bg-canvas py-12 md:py-16 xl:py-24;
+    scroll-margin-top: var(--site-header-height);
+    @apply bg-bg-canvas pb-12 text-text-primary xl:pb-24;
   }
 
-  .services-divider {
-    @apply mt-12 h-px w-full border-0 md:mt-16 xl:mt-20;
-    background-image: linear-gradient(
-      to right,
-      var(--brand-cortex-orange) 0%,
-      var(--neutral-neural-gray) 50%,
-      transparent 100%
-    );
-  }
-
-  .services-header {
-    @apply mb-10 flex flex-col gap-6 md:mb-12 lg:mb-16 lg:grid lg:grid-cols-[minmax(0,_368px)_minmax(0,_368px)_1fr] lg:gap-8 xl:gap-10;
+  .services-section .section-intro {
+    @apply pb-0 md:pb-0 xl:pb-0;
   }
 
   .services-title {
-    @apply font-mona font-extrabold leading-[1] text-text-primary;
-    font-size: clamp(2.25rem, 5vw, var(--text-section-heading));
+    @apply text-text-secondary;
   }
 
-  .services-period {
-    @apply text-action-primary;
+  .services-title-line {
+    @apply block whitespace-nowrap;
   }
 
   .services-description {
-    @apply font-open text-body-sm text-text-secondary md:text-body lg:pt-1;
+    @apply max-w-185 font-mona text-body-sm leading-[1.4] text-text-secondary xl:text-body;
   }
 
   .services-grid {
-    @apply grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10;
+    @apply mt-10 mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:mb-0;
   }
 
-  .services-grid-item {
-    @apply flex justify-start;
+  .service-card {
+    @apply relative flex flex-col overflow-hidden bg-brand-cortex-carbon;
   }
 
-  .services-card {
-    @apply relative flex w-full flex-col justify-between overflow-hidden rounded-none p-6 lg:max-w-92;
-    height: 31.6875rem;
+  .service-card-surface {
+    @apply relative h-52 shrink-0 overflow-hidden;
   }
 
-  .services-card--gradient {
-    @apply h-auto flex-col-reverse justify-start gap-4 p-0 lg:h-[31.6875rem] lg:flex-col lg:justify-between lg:gap-0 lg:p-6;
-    background-repeat: no-repeat;
-    background-size: 100% 13rem;
-    background-position: top;
+  .service-card-name {
+    @apply absolute bottom-5 left-5 z-10 font-mona text-[2.25rem] leading-none font-normal text-brand-cortex-carbon;
   }
 
-  @media (min-width: 1024px) {
-    .services-card--gradient {
-      background-size: 100% 100%;
-    }
+  .service-card-blob {
+    @apply pointer-events-none absolute aspect-square w-[65%] rounded-full;
+    left: var(--blob-left);
+    top: calc(var(--blob-top) + 10%);
+    transform: translate(-50%, -50%);
+    filter: blur(70px);
   }
 
-  .services-card--gradient .services-card-title {
-    @apply flex min-h-52 items-end p-6 lg:block lg:min-h-0 lg:p-0;
+  .service-card-description {
+    @apply px-5 pt-5 pb-6 font-mona text-body-sm leading-[1.5] text-text-secondary;
+    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .services-card--gradient .services-card-description {
-    @apply px-6 pb-6 lg:p-0;
+  .service-card:hover .service-card-description {
+    @apply text-text-secondary;
   }
 
-  .services-card--education {
-    background-image: var(--gradient-service-education);
-  }
-  .services-card--event {
-    background-image: var(--gradient-service-event);
-  }
-  .services-card--services {
-    background-image: var(--gradient-service-services);
-  }
-  .services-card--research {
-    background-image: var(--gradient-service-research);
-  }
-  .services-card--staking {
-    background-image: var(--gradient-service-staking);
+  .service-cta-card {
+    isolation: isolate;
+    @apply relative hidden content-end items-end gap-x-3 overflow-hidden border border-border-default bg-brand-cortex-carbon pb-6 pl-7 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-action-primary xl:grid;
+    aspect-ratio: 368 / 507;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    gap: var(--spacing-4);
+    transition:
+      border-color 0.36s ease,
+      background-color 0.36s ease;
   }
 
-  .services-card-description {
-    @apply font-open text-body font-normal leading-snug text-text-primary/50 text-justify lg:max-w-72 lg:text-left;
+  .service-cta-card::before,
+  .service-cta-card::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
   }
 
-  .services-card-title {
-    @apply font-mona text-card-heading font-normal text-text-inverse;
+  .service-cta-card::before {
+    inset: -58%;
+    z-index: 0;
+    opacity: 0;
+    transform-origin: center;
+    background: conic-gradient(
+      from 28deg,
+      transparent 0deg,
+      transparent 44deg,
+      color-mix(in srgb, var(--action-primary) 18%, transparent) 58deg,
+      var(--action-primary) 72deg,
+      var(--brand-cortex-amber) 88deg,
+      transparent 116deg,
+      transparent 188deg,
+      color-mix(in srgb, var(--brand-monad-purple) 62%, transparent) 208deg,
+      var(--brand-monad-purple) 226deg,
+      var(--vibrant-haze-purple) 240deg,
+      color-mix(in srgb, var(--brand-monad-purple) 72%, transparent) 254deg,
+      transparent 282deg,
+      transparent 360deg
+    );
+    transition: opacity 0.36s ease;
   }
 
-  .services-card--cta {
-    @apply border border-border-strong bg-transparent transition-colors;
+  .service-cta-card::after {
+    inset: 1px;
+    z-index: 0;
+    opacity: 1;
+    background: var(--brand-cortex-carbon);
   }
 
-  .services-card--cta:hover {
-    @apply border-action-primary;
+  .service-cta-card:is(:hover, :focus-visible) {
+    border-color: transparent;
   }
 
-  .services-cta-arrow {
-    @apply absolute right-6 size-25 text-text-secondary transition-colors;
-    bottom: 5.75rem;
+  .service-cta-card:is(:hover, :focus-visible)::before {
+    opacity: 1;
+    animation: service-cta-edge-trace 3.2s linear infinite;
   }
 
-  .services-card--cta:hover .services-cta-arrow {
-    @apply text-text-primary;
+  .service-cta-title {
+    @apply relative z-10 font-mona text-card-heading leading-none font-normal text-text-muted;
+    transition: color 0.36s ease;
   }
 
-  .services-cta-title {
-    @apply mt-auto font-mona text-card-heading font-light text-text-muted transition-colors;
+  .service-cta-card:is(:hover, :focus-visible) .service-cta-title {
+    @apply text-text-secondary;
   }
 
-  .services-card--cta:hover .services-cta-title {
-    @apply text-text-primary;
+  .service-cta-arrow {
+    @apply relative z-10 mb-(--text-card-heading) w-18 shrink-0 text-border-default;
+    transform-origin: 100% 0%;
+    transition:
+      color 0.36s ease,
+      filter 0.36s ease,
+      transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .service-cta-arrow path {
+    transition: stroke-dashoffset 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .service-cta-arrow .cta-arrow-signal {
+    opacity: 0;
+    stroke: var(--brand-cortex-amber);
+    stroke-dasharray: 0.18 1;
+    stroke-dashoffset: 0.1;
+    transition: opacity 0.24s ease;
+  }
+
+  .service-cta-card:is(:hover, :focus-visible) .service-cta-arrow {
+    color: var(--action-primary);
+    filter: drop-shadow(
+      0 0 14px color-mix(in srgb, var(--action-primary) 46%, transparent)
+    );
+    transform: translate(0.375rem, -0.375rem);
+  }
+
+  .service-cta-card:is(:hover, :focus-visible)
+    .service-cta-arrow
+    .cta-arrow-signal {
+    opacity: 1;
+    animation: service-cta-arrow-trace 1.15s linear infinite;
   }
 
   .history-section {
@@ -750,13 +794,6 @@
     @apply bg-bg-canvas text-text-primary xl:border-y xl:border-border-default;
   }
 
-  .team-section-divider {
-    @apply h-px w-full border-0 xl:hidden;
-    background-image: linear-gradient(
-      -90deg,
-      var(--gradient-cortex-orange-stops)
-    );
-  }
 
   .team-container {
     @apply flex flex-col items-center gap-10 py-16 md:gap-16;
@@ -772,7 +809,7 @@
   }
 
   .team-title {
-    @apply w-full max-w-none font-mona text-[2rem] leading-[1.1875] font-extrabold text-text-secondary;
+    @apply w-full max-w-none text-text-secondary;
   }
 
   .team-title span {
@@ -819,7 +856,7 @@
   }
 
   .team-member-bio {
-    @apply max-w-80 font-mona text-[0.875rem] leading-[1.571] text-text-secondary;
+    @apply max-w-80 font-mona text-[1rem] leading-[1.571] text-text-secondary;
   }
 
   .team-member-metrics {
@@ -845,25 +882,13 @@
     @apply bg-bg-canvas text-text-primary;
   }
 
-  .monad-section-divider {
-    @apply h-px w-full border-0 xl:hidden;
-    background-image: linear-gradient(
-      90deg,
-      var(--brand-monad-purple),
-      transparent
-    );
-  }
-
-  .monad-intro {
-    @apply grid gap-5 py-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-center md:gap-x-12 md:py-16 xl:grid-cols-[minmax(0,23rem)_minmax(0,46.5rem)] xl:gap-x-28 xl:py-24;
-  }
 
   .monad-title {
-    @apply max-w-80 font-mona text-[2rem] leading-[1.1] font-extrabold text-brand-monad-purple md:max-w-100 md:text-hero-mobile xl:max-w-92 xl:text-section-heading xl:leading-none;
+    @apply max-w-80 text-brand-monad-purple md:max-w-100 xl:max-w-92;
   }
 
   .monad-description {
-    @apply max-w-185 font-open text-body-xs leading-[1.4] text-text-secondary sm:text-body-sm xl:text-body;
+    @apply max-w-185 font-open text-body-sm leading-[1.4] text-text-secondary xl:text-body;
   }
 
   .monad-band {
@@ -976,7 +1001,7 @@
   }
 
   .monad-social-link {
-    @apply flex size-[2.375rem] items-center justify-center rounded-full bg-bg-canvas p-0 text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary xl:size-[2.625rem];
+    @apply flex size-9.5 items-center justify-center rounded-full bg-bg-canvas p-0 text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary xl:size-[2.625rem];
     transition:
       background-color 0.3s ease,
       color 0.3s ease,
@@ -1074,7 +1099,7 @@
   }
 
   .monad-dialog-body {
-    @apply flex flex-col gap-3 font-mona text-base leading-[1.5] font-light text-text-secondary;
+    @apply flex flex-col gap-3 font-mona text-base leading-normal font-light text-text-secondary;
   }
 
   .monad-dialog-links {
@@ -1093,7 +1118,65 @@
     @apply size-6 shrink-0;
   }
 
+  .section-divider {
+    @apply h-px w-full border-0 xl:hidden;
+  }
+
+  .section-divider--orange {
+    background-image: linear-gradient(
+      90deg,
+      var(--gradient-cortex-orange-stops)
+    );
+  }
+
+  .section-divider--orange-reverse {
+    background-image: linear-gradient(
+      -90deg,
+      var(--gradient-cortex-orange-stops)
+    );
+  }
+
+  .section-divider--purple {
+    background-image: linear-gradient(
+      90deg,
+      var(--brand-monad-purple),
+      transparent
+    );
+  }
+
+  @variant lg {
+    .service-card {
+      aspect-ratio: 368 / 507;
+    }
+
+    .service-card-surface {
+      @apply absolute inset-0 h-auto;
+    }
+
+    .service-card-blob {
+      @apply w-[85%];
+      top: var(--blob-top);
+      filter: blur(80px);
+    }
+
+    .service-card-name {
+      @apply bottom-6 left-7 text-card-heading;
+    }
+
+    .service-card-description {
+      @apply absolute top-7 left-7 right-7 z-10 p-0 text-body leading-[1.4] text-neutral-white/50;
+    }
+
+    .service-card:hover .service-card-description {
+      @apply text-text-secondary;
+    }
+  }
+
   @variant xl {
+    .services-grid {
+      @apply mt-12 grid-cols-3;
+    }
+
     .monad-band-meta {
       @apply col-start-1 row-start-1 flex flex-col items-start justify-between;
     }
@@ -1236,7 +1319,7 @@
     }
 
     .team-title {
-      @apply max-w-92 text-section-heading leading-none;
+      @apply max-w-92;
     }
 
     .team-list {
@@ -2160,6 +2243,21 @@
   }
 }
 
+@keyframes service-cta-edge-trace {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes service-cta-arrow-trace {
+  from {
+    stroke-dashoffset: 0.1;
+  }
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
 @keyframes monad-overlay-in {
   from {
     opacity: 0;
@@ -2194,6 +2292,33 @@
     animation: none;
     box-shadow: var(--history-dot-glow-rest);
     will-change: auto;
+  }
+
+  .service-cta-card,
+  .service-cta-card::before,
+  .service-cta-card::after,
+  .service-cta-title,
+  .service-cta-arrow,
+  .service-cta-arrow path {
+    transition: none;
+  }
+
+  .service-cta-card:is(:hover, :focus-visible)::before,
+  .service-cta-card:is(:hover, :focus-visible)
+    .service-cta-arrow
+    .cta-arrow-signal {
+    animation: none;
+  }
+
+  .service-cta-card:is(:hover, :focus-visible) .service-cta-arrow {
+    filter: none;
+    transform: none;
+  }
+
+  .service-cta-card:is(:hover, :focus-visible)
+    .service-cta-arrow
+    .cta-arrow-signal {
+    opacity: 0;
   }
 
   .monad-topic-button,

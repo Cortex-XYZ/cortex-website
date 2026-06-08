@@ -18,7 +18,7 @@ export type ServiceCard = {
 
 export const servicesSection = {
   id: "services",
-  title: "Services are the main utility layer.",
+  title: "Services are\nthe main\nutility layer.",
   description:
     "Cortex turns local trust into useful programming, practical support, and service infrastructure for builders, partners, and communities.",
   cards: [

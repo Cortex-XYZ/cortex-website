@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
+import { SectionDivider } from "@/components/section-divider";
 import { teamSection, type TeamMember } from "@/lib/content/team";
 import { splitTrailingAccent } from "@/lib/split-trailing-accent";
 
@@ -37,7 +38,11 @@ function TeamSocialLink({ member }: { member: TeamMember }) {
 
 function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
-    <article className="team-member" data-team-member data-team-member-id={member.id}>
+    <article
+      className="team-member"
+      data-team-member
+      data-team-member-id={member.id}
+    >
       <Image
         className="team-member-photo"
         src={member.image.src}
@@ -59,7 +64,10 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
 
       <ul className="team-member-metrics" aria-label={`${member.name} metrics`}>
         {member.metrics.map((metric, index) => (
-          <li key={teamMetricKey(member.id, index)} className="team-member-metric">
+          <li
+            key={teamMetricKey(member.id, index)}
+            className="team-member-metric"
+          >
             {metric.label}
           </li>
         ))}
@@ -81,12 +89,12 @@ export function TeamSection() {
       data-team-section
     >
       <div className="site-container">
-        <hr className="team-section-divider" aria-hidden="true" />
+        <SectionDivider variant="orange-reverse" />
       </div>
       <div className="site-container team-container">
         <header className="team-header" data-team-header>
           <p className="team-eyebrow">{teamSection.eyebrow}</p>
-          <h2 id="team-heading" className="team-title">
+          <h2 id="team-heading" className="section-title team-title">
             {teamTitle}
             {teamTitleAccent ? (
               <span aria-hidden="true">{teamTitleAccent}</span>
