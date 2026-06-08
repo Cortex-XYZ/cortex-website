@@ -194,13 +194,6 @@
   --gradient-cortex-orange-stops:
     transparent 0%, var(--neutral-neural-gray) 50%,
     var(--brand-cortex-orange) 100%;
-  --gradient-history-connector-stops:
-    var(--brand-cortex-carbon) 0%,
-    color-mix(in srgb, var(--neutral-white) 5%, transparent) 96%;
-  --gradient-history-dot-stops:
-    #d34d00 0%,
-    var(--extended-volt-dark) 100%;
-
   --shader-orange-amber-color-a: var(--brand-cortex-orange);
   --shader-orange-amber-color-b: var(--brand-cortex-amber);
   --shader-orange-amber-background: var(--brand-cortex-carbon);
@@ -432,6 +425,196 @@
 
   .mission-pagination-dot {
     @apply size-2 rounded-full transition-colors;
+  }
+
+  .history-section {
+    --history-mobile-stem-stops:
+      color-mix(in srgb, var(--action-primary) 40%, transparent) 0%,
+      color-mix(in srgb, var(--action-primary) 12%, transparent) 30%,
+      color-mix(in srgb, var(--neutral-white) 5%, transparent) 65%,
+      transparent 100%;
+    --history-desktop-line-stops:
+      transparent 0%,
+      color-mix(in srgb, var(--neutral-white) 10%, transparent) 12%,
+      color-mix(in srgb, var(--neutral-white) 18%, transparent) 50%,
+      color-mix(in srgb, var(--neutral-white) 10%, transparent) 88%,
+      transparent 100%;
+    --history-dot-gradient: linear-gradient(
+      180deg,
+      var(--action-primary) 0%,
+      var(--extended-volt-dark) 100%
+    );
+    --history-dot-glow-rest: 0 0 6px 2px
+      color-mix(in srgb, var(--action-primary) 35%, transparent);
+    --history-dot-glow-peak: 0 0 12px 4px
+      color-mix(in srgb, var(--action-primary) 55%, transparent);
+
+    scroll-margin-top: var(--site-header-height);
+    @apply bg-bg-canvas text-text-primary;
+  }
+
+  .history-container {
+    @apply relative flex flex-col gap-8 py-12 md:py-16;
+  }
+
+  .history-eyebrow {
+    @apply font-mona text-label leading-none font-extrabold text-action-primary uppercase;
+    letter-spacing: 0.3125rem;
+  }
+
+  .history-timeline {
+    @apply relative flex flex-col overflow-visible;
+  }
+
+  .history-timeline-list {
+    @apply m-0 flex list-none flex-col p-0;
+  }
+
+  .history-timeline-line {
+    @apply pointer-events-none absolute hidden w-px origin-top;
+  }
+
+  .history-milestone {
+    @apply grid min-w-0 grid-cols-[0.625rem_minmax(0,1fr)] gap-x-4;
+  }
+
+  .history-milestone-date {
+    @apply col-start-2 row-start-1 font-mona text-[11px] leading-none font-semibold text-action-primary uppercase;
+    letter-spacing: 0.125rem;
+  }
+
+  .history-milestone-axis {
+    @apply col-start-1 row-span-2 row-start-1 flex self-stretch flex-col items-center;
+    padding-top: 0.0625rem;
+  }
+
+  .history-milestone-dot {
+    @apply relative z-10 size-2.5 shrink-0 rounded-full border-0 bg-action-primary;
+  }
+
+  .history-milestone:last-child .history-milestone-dot {
+    animation: history-dot-glow 1.8s ease-in-out infinite;
+    box-shadow: var(--history-dot-glow-rest);
+    will-change: box-shadow;
+  }
+
+  .history-milestone-stem {
+    @apply w-0.5 flex-1;
+    background: linear-gradient(180deg, var(--history-mobile-stem-stops));
+  }
+
+  .history-milestone:last-child .history-milestone-stem {
+    @apply hidden;
+  }
+
+  .history-milestone-copy {
+    @apply col-start-2 row-start-2 flex min-w-0 flex-col gap-1.5 pt-1.5 pb-10;
+  }
+
+  .history-milestone:last-child .history-milestone-copy {
+    @apply pb-2;
+  }
+
+  .history-milestone-title {
+    @apply font-mona text-body-sm leading-5 font-bold text-text-secondary uppercase;
+    letter-spacing: 0.0625rem;
+  }
+
+  .history-milestone-body {
+    @apply flex flex-col gap-5 font-mona text-body-sm leading-[1.3] font-normal text-text-muted;
+  }
+
+  .history-milestone-body strong {
+    @apply font-bold text-action-primary;
+  }
+
+  .history-summary {
+    @apply flex flex-col font-mona text-body leading-6.5 text-text-secondary;
+  }
+
+  .history-summary-dot {
+    @apply hidden size-3 rounded-full bg-action-primary;
+  }
+
+  .history-summary strong {
+    @apply font-semibold text-action-primary;
+  }
+
+  @variant xl {
+    .history-container {
+      @apply grid grid-cols-[minmax(0,18.5rem)_minmax(0,39.375rem)] grid-rows-[auto_1fr] gap-x-36 py-40;
+    }
+
+    .history-eyebrow {
+      @apply col-start-1 row-start-1 font-black tracking-(--text-label-letter-spacing);
+    }
+
+    .history-timeline {
+      @apply col-start-2 row-span-2 row-start-1;
+    }
+
+    .history-timeline-line {
+      @apply block -top-40.75 -bottom-40.25 left-38;
+      background: linear-gradient(180deg, var(--history-desktop-line-stops));
+    }
+
+    .history-milestone {
+      @apply grid-cols-[6.125rem_1.375rem_minmax(0,26.5rem)] gap-x-10.75;
+    }
+
+    .history-milestone-date {
+      @apply col-start-1 row-start-1 pt-1 text-label font-black tracking-(--text-label-letter-spacing) whitespace-nowrap;
+    }
+
+    .history-milestone[data-history-milestone-id="regional-activation"]
+      .history-milestone-date,
+    .history-milestone[data-history-milestone-id="cortex-connect"]
+      .history-milestone-date {
+      @apply justify-self-end;
+    }
+
+    .history-milestone-axis {
+      @apply col-start-2 row-start-1 flex size-5.5 items-center justify-center pt-0;
+    }
+
+    .history-milestone-dot {
+      background: var(--history-dot-gradient);
+      @apply size-5 border-[0.3125rem] border-bg-canvas;
+    }
+
+    .history-milestone:last-child .history-milestone-dot {
+      animation: none;
+      box-shadow: none;
+      will-change: auto;
+    }
+
+    .history-milestone-stem {
+      @apply hidden;
+    }
+
+    .history-milestone-copy {
+      @apply col-start-3 row-start-1 gap-4.5 pt-1 pb-25;
+    }
+
+    .history-milestone:last-child .history-milestone-copy {
+      @apply pb-0;
+    }
+
+    .history-milestone-title {
+      @apply text-label leading-none font-black tracking-(--text-label-letter-spacing);
+    }
+
+    .history-milestone-body {
+      @apply text-body-sm text-text-secondary;
+    }
+
+    .history-summary {
+      @apply col-start-1 row-start-2 mb-20 self-end gap-3.75 text-body-sm font-normal;
+    }
+
+    .history-summary-dot {
+      @apply block;
+    }
   }
 
   .site-header-shell {
@@ -958,7 +1141,7 @@
     }
 
     .event-description {
-      @apply max-w-128 text-[1rem];
+      @apply max-w-lg text-[1rem];
     }
 
     .event-title {
@@ -1215,5 +1398,23 @@
   }
   50% {
     transform: translateY(4px);
+  }
+}
+
+@keyframes history-dot-glow {
+  0%,
+  100% {
+    box-shadow: var(--history-dot-glow-rest);
+  }
+  50% {
+    box-shadow: var(--history-dot-glow-peak);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-milestone:last-child .history-milestone-dot {
+    animation: none;
+    box-shadow: var(--history-dot-glow-rest);
+    will-change: auto;
   }
 }
