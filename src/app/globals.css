@@ -468,7 +468,13 @@
   }
 
   .mission-card-title {
-    @apply font-mona leading-none text-text-primary max-md:text-[2.25rem] max-md:font-semibold md:text-section-heading md:font-medium xl:text-card-heading xl:font-semibold;
+    @apply font-mona leading-none text-text-primary max-md:text-[2.25rem] max-md:font-semibold md:text-section-heading md:font-medium xl:font-semibold;
+  }
+
+  @media (width >= 80rem) {
+    .mission-card-title {
+      font-size: clamp(3rem, 5.5dvh, 3.75rem);
+    }
   }
 
   .mission-card-title-spaced {
@@ -480,7 +486,7 @@
   }
 
   .mission-desktop-card-trigger {
-    @apply relative shrink-0 overflow-hidden rounded-2xl border border-border-default bg-background text-left transition-all duration-500;
+    @apply relative shrink-0 overflow-hidden rounded-2xl border border-border-default bg-background text-left transition-[width] duration-500 ease-in-out;
   }
 
   .mission-collapsed-card-button {

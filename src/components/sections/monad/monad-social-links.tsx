@@ -2,6 +2,7 @@
 
 import {
   CategoryLabsGlyph,
+  MiplandGlyph,
   MonadFoundationGlyph,
 } from "@/components/icons/monad-social-glyphs";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
@@ -10,7 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FileText, LayoutGrid } from "lucide-react";
+import { FileText } from "lucide-react";
 import { monadSection } from "@/lib/content/monad";
 import type { ExternalLinkChannel } from "@/lib/content/links";
 
@@ -22,7 +23,7 @@ const WEBSITE_GLYPHS: Record<
 > = {
   monadFoundation: MonadFoundationGlyph,
   monadDocs: FileText,
-  mipland: LayoutGrid,
+  mipland: MiplandGlyph,
   categoryLabs: CategoryLabsGlyph,
 };
 
@@ -33,7 +34,7 @@ function MonadSocialGlyph({ link }: { link: MonadSectionLink }) {
   if (SocialGlyph) return <SocialGlyph className="size-full" />;
 
   const WebsiteGlyph = WEBSITE_GLYPHS[link.key];
-  if (WebsiteGlyph) return <WebsiteGlyph className="size-4.5" />;
+  if (WebsiteGlyph) return <WebsiteGlyph className="size-5" />;
 
   return null;
 }
