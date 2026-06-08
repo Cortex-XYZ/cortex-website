@@ -195,93 +195,6 @@
     transparent 0%, var(--neutral-neural-gray) 50%,
     var(--brand-cortex-orange) 100%;
 
-  /* Services section card gradients (placeholders — swap per final spec). */
-  --gradient-service-education:
-    radial-gradient(
-      70% 55% at 74% 91%,
-      var(--brand-cortex-orange) 0%,
-      var(--brand-cortex-orange) 20%,
-      transparent 100%
-    ),
-    radial-gradient(
-      70% 55% at 17% 76%,
-      var(--brand-cortex-amber) 0%,
-      var(--brand-cortex-amber) 20%,
-      transparent 100%
-    ),
-    linear-gradient(
-      var(--brand-cortex-carbon),
-      var(--brand-cortex-carbon)
-    );
-  --gradient-service-event:
-    radial-gradient(
-      70% 55% at 44% 101%,
-      var(--brand-cortex-orange) 0%,
-      var(--brand-cortex-orange) 20%,
-      transparent 100%
-    ),
-    radial-gradient(
-      70% 55% at 88% 68%,
-      var(--brand-monad-purple) 0%,
-      var(--brand-monad-purple) 20%,
-      transparent 100%
-    ),
-    linear-gradient(
-      var(--brand-cortex-carbon),
-      var(--brand-cortex-carbon)
-    );
-  --gradient-service-services:
-    radial-gradient(
-      70% 55% at 74% 91%,
-      var(--vibrant-active-cyan) 0%,
-      var(--vibrant-active-cyan) 20%,
-      transparent 100%
-    ),
-    radial-gradient(
-      70% 55% at 17% 76%,
-      var(--brand-cortex-amber) 0%,
-      var(--brand-cortex-amber) 20%,
-      transparent 100%
-    ),
-    linear-gradient(
-      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white)),
-      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white))
-    );
-  --gradient-service-research:
-    radial-gradient(
-      70% 55% at 74% 91%,
-      var(--brand-cortex-orange) 0%,
-      var(--brand-cortex-orange) 20%,
-      transparent 100%
-    ),
-    radial-gradient(
-      70% 55% at 17% 76%,
-      var(--vibrant-signal-magenta) 0%,
-      var(--vibrant-signal-magenta) 20%,
-      transparent 100%
-    ),
-    linear-gradient(
-      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white)),
-      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white))
-    );
-  --gradient-service-staking:
-    radial-gradient(
-      70% 55% at 74% 91%,
-      var(--brand-cortex-orange) 0%,
-      var(--brand-cortex-orange) 20%,
-      transparent 100%
-    ),
-    radial-gradient(
-      70% 55% at 15% 94%,
-      var(--vibrant-electric-yellow) 0%,
-      var(--vibrant-electric-yellow) 20%,
-      transparent 100%
-    ),
-    linear-gradient(
-      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white)),
-      color-mix(in srgb, var(--brand-cortex-carbon) 98%, var(--neutral-white))
-    );
-
   --shader-orange-amber-color-a: var(--brand-cortex-orange);
   --shader-orange-amber-color-b: var(--brand-cortex-amber);
   --shader-orange-amber-background: var(--brand-cortex-carbon);
@@ -844,6 +757,10 @@
 
   .team-member-name {
     @apply font-mona text-[1.375rem] leading-normal font-bold text-text-primary;
+  }
+
+  .team-member-name-link {
+    @apply text-inherit no-underline;
   }
 
   .team-social-link {

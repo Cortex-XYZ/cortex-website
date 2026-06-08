@@ -10,7 +10,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { CortexMark } from "@/components/logos/cortex-mark";
-import { ctaButton, navItems } from "@/lib/content/nav";
+import { aboutNavItem, ctaButton, directNavLinks } from "@/lib/content/nav";
 import { cn } from "@/lib/utils";
 
 interface MobileNavProps {
@@ -21,11 +21,6 @@ interface MobileNavProps {
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const [isAboutOpen, setIsAboutOpen] = useState(true);
 
-  const aboutItem = navItems.find((item) => item.megaNav);
-  const directLinks = navItems.filter(
-    (item): item is { label: string; href: string } => !item.megaNav,
-  );
-
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
       <SheetContent
@@ -34,7 +29,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         aria-describedby={undefined}
         className="mobile-nav-panel"
       >
-        <SheetTitle className="sr-only">Navigati on</SheetTitle>
+        <SheetTitle className="sr-only">Navigation</SheetTitle>
 
         {/* Top bar */}
         <div className="mobile-nav-topbar">
@@ -48,7 +43,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
         {/* Nav items */}
         <nav className="flex flex-1 flex-col overflow-y-auto px-6 pt-4">
-          {aboutItem?.megaNav && (
+          {aboutNavItem?.megaNav && (
             <>
               <button
                 className="flex w-full items-center justify-between py-4 text-left"
@@ -56,7 +51,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 aria-expanded={isAboutOpen}
               >
                 <span className="mobile-nav-primary-text">
-                  {aboutItem.label}
+                  {aboutNavItem.label}
                 </span>
                 <ChevronDown
                   className={cn(
@@ -74,7 +69,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               >
                 <div className="overflow-hidden">
                   <div className="flex flex-col pb-3 pl-2 pt-1">
-                    {aboutItem.megaNav.map((column, i) => (
+                    {aboutNavItem.megaNav.map((column, i) => (
                       <div key={column.heading}>
                         {i > 0 && (
                           <div className="my-5 h-px w-full bg-neutral-neural-dark" />
@@ -104,7 +99,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             </>
           )}
 
-          {directLinks.map((item) => (
+          {directNavLinks.map((item) => (
             <Link
               key={item.href}
               href={item.href}

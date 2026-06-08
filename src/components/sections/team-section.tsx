@@ -54,7 +54,16 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
 
       <div className="team-member-copy">
         <div className="team-member-name-row">
-          <h3 className="team-member-name">{member.name}</h3>
+          <h3 className="team-member-name">
+            <a
+              href={getXHref(member.xHandle)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="team-member-name-link"
+            >
+              {member.name}
+            </a>
+          </h3>
           <TeamSocialLink member={member} />
         </div>
 

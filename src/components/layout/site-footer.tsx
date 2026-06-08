@@ -45,15 +45,15 @@ function getTaglineLines(tagline: string) {
     .filter(Boolean);
 }
 
-export function SiteFooter() {
-  const quoteLines = getQuoteLines(footerContent.title);
-  const taglineLines = getTaglineLines(footerContent.tagline);
-  const socialLinks = [...footerContent.socialLinks].sort(
-    (a, b) =>
-      (a.channel ? (SOCIAL_CHANNEL_ORDER[a.channel] ?? 99) : 99) -
-      (b.channel ? (SOCIAL_CHANNEL_ORDER[b.channel] ?? 99) : 99),
-  );
+const QUOTE_LINES = getQuoteLines(footerContent.title);
+const TAGLINE_LINES = getTaglineLines(footerContent.tagline);
+const SOCIAL_LINKS = [...footerContent.socialLinks].sort(
+  (a, b) =>
+    (a.channel ? (SOCIAL_CHANNEL_ORDER[a.channel] ?? 99) : 99) -
+    (b.channel ? (SOCIAL_CHANNEL_ORDER[b.channel] ?? 99) : 99),
+);
 
+export function SiteFooter() {
   return (
     <footer
       id={footerContent.id}
@@ -65,7 +65,7 @@ export function SiteFooter() {
         <div className="site-footer-cta">
           <div className="site-footer-copy">
             <h2 id="site-footer-heading" className="site-footer-heading">
-              {quoteLines.map((line, i) => (
+              {QUOTE_LINES.map((line, i) => (
                 <span key={i} className="block">
                   {line.text}
                   {line.period && (
@@ -129,7 +129,7 @@ export function SiteFooter() {
                 <CortexWordmark className="site-footer-wordmark" />
               </Link>
               <p className="site-footer-tagline">
-                {taglineLines.map((line) => (
+                {TAGLINE_LINES.map((line) => (
                   <span key={line} className="block">
                     {line}
                   </span>
@@ -161,7 +161,7 @@ export function SiteFooter() {
               Desktop: hairline above, copyright left, social right. */}
           <div className="site-footer-bottom">
             <ul className="site-footer-social-list">
-              {socialLinks.map((social) => {
+              {SOCIAL_LINKS.map((social) => {
                 const channel = social.channel;
                 if (!channel) return null;
                 const Glyph = SOCIAL_GLYPHS[channel];

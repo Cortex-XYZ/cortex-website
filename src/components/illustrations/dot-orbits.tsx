@@ -5,7 +5,6 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, useGSAP } from "@/lib/gsap-setup";
 import { cn } from "@/lib/utils";
 
-
 const SVG_NS = "http://www.w3.org/2000/svg";
 const CENTER = 300;
 const DOT_RADIUS = 6;

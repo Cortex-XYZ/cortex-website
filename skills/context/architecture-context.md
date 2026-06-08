@@ -48,9 +48,12 @@ All app code lives under `src/`. Use a structure close to:
 ```txt
 src/
   app/
-    layout.tsx              # mounts Navbar + Footer; loads fonts; metadata defaults
-    page.tsx                # composes sections in order
+    layout.tsx              # root layout: fonts, metadata, SiteHeader. No footer (so 404 has no footer)
+    not-found.tsx           # 404 page (uses root layout only)
     globals.css             # CSS custom properties + @theme inline + @layer components
+    (site)/
+      layout.tsx            # site layout: flex-1 wrapper + SiteFooter
+      page.tsx              # composes sections in order
   components/
     cortex-button.tsx       # Cortex-styled wrapper over shadcn Button
     ui/                     # generated shadcn primitives — DO NOT edit
@@ -87,11 +90,14 @@ Keep section ownership clear so teammates can work in parallel:
 
 Global chrome lives in `src/components/layout/`:
 
-- `src/components/layout/site-header.tsx`
+- `src/components/layout/site-header.tsx` — server component composing client islands
+- `src/components/layout/header/site-header-shell.tsx` — client: scroll detection (`data-scrolled`)
+- `src/components/layout/header/header-mega-nav.tsx` — client: About dropdown with escape/click-outside
+- `src/components/layout/header/site-header-mobile-menu.tsx` — client: lazy-loaded MobileNav via `next/dynamic`
 - `src/components/layout/mobile-nav.tsx`
 - `src/components/layout/site-footer.tsx`
 
-For v1, `site-header.tsx` should implement the desktop `About` mega nav from Figma, while `Services` and `Contact` stay direct top-level links. The nav should read from `src/lib/content/nav.ts` so later top-level mega nav groups can be added without rewriting the header structure. `mobile-nav.tsx` should mirror the same nav content with nested groups inside the hamburger sheet.
+For v1, `site-header.tsx` implements the desktop `About` mega nav from Figma, while `Services` and `Contact` stay direct top-level links. The nav reads from `src/lib/content/nav.ts` so later top-level mega nav groups can be added without rewriting the header structure. `mobile-nav.tsx` mirrors the same nav content with nested groups inside the hamburger sheet.
 
 ## Data And Content
 

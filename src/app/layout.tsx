@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Mona_Sans, Open_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
@@ -34,8 +33,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <TooltipProvider>
           <SiteHeader />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
+          {children}
         </TooltipProvider>
       </body>
     </html>
