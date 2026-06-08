@@ -5,6 +5,7 @@ import { CortexWordmark } from "@/components/logos/cortex-wordmark";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
 import { footerContent } from "@/lib/content/footer";
 import type { ExternalLinkChannel } from "@/lib/content/links";
+import { splitTrailingAccent } from "@/lib/split-trailing-accent";
 
 // --- Social ordering ---------------------------------------------------------
 // Display order of the social links in the footer bottom bar.
@@ -31,11 +32,10 @@ function getQuoteLines(title: string) {
     .split(/(?<=\.)\s+/)
     .map((sentence) => sentence.trim())
     .filter(Boolean)
-    .map((sentence) =>
-      sentence.endsWith(".")
-        ? { text: sentence.slice(0, -1), period: true }
-        : { text: sentence, period: false },
-    );
+    .map((sentence) => {
+      const { text, accent } = splitTrailingAccent(sentence);
+      return { text, period: accent !== null };
+    });
 }
 
 function getTaglineLines(tagline: string) {

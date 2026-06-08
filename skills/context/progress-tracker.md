@@ -76,3 +76,7 @@ Foundation work and parallel section implementation are underway. The homepage c
 
 1. Continue with remaining section: `services-section`.
 2. Add hero visual treatment.
+
+## Latest Handoff
+
+- Team section ported from stage-2 (c698b51, c338959). `.team-*` CSS classes in `globals.css`, `@variant md` before `@variant xl` (cascade order matters), shared `splitTrailingAccent()` used by team + footer, `TeamSection` added to page between History and Events.
