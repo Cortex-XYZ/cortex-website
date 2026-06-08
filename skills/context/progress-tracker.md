@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-GitHub issue planning is complete. The production website build is ready to move into foundation implementation and parallel section work.
+Foundation work and parallel section implementation are underway. The homepage currently ships Hero, Mission, Events, and the global footer. Remaining v1 sections (`history`, `team`, `monad`, `services`) still need to be built and wired to their content modules.
 
 ## Completed
 
@@ -39,6 +39,8 @@ GitHub issue planning is complete. The production website build is ready to move
 - Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
 - Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
+- Shipped Upcoming Events: static `CortexEvent` content (CONNEX Tech Fest seed), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), and hourly ISR date filtering on the homepage.
+- Added shared hooks (`use-reduced-motion`, `use-is-desktop`, `use-on-mount`) and reduced-motion static frames on all five Pattern Studio illustrations.
 
 ## Decisions
 
@@ -62,22 +64,28 @@ GitHub issue planning is complete. The production website build is ready to move
 - The app root loads Mona Sans and Open Sans once with `next/font/google`; Tailwind font utilities expose `font-mona` and `font-open`.
 - `src/components/ui/` is reserved for generated shadcn/ui components; custom Cortex components and wrappers live in `src/components/` outside `ui/`.
 - Service Cards are the canonical name for shader-backed service surfaces; future section code should use `services-section.tsx`.
+- Events are static TypeScript in `events.ts` for v1; desktop interactivity gates at `xl` via `useIsDesktop`.
 
 ## Open Questions
 
+- Final CONNEX copy and Luma event URL before launch.
+- Events scroll-enter CSS exists but is not wired yet.
+
 ## Next Steps
 
-1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`.
-2. Add the hero visual treatment using the approved brand-pattern or shader direction.
+1. Continue with the remaining content-wired sections: `history-section`, `team-section`, `monad-section`, `services-section`.
+2. Add hero visual treatment.
 
 ## Latest Handoff
 
-- Changed: figma-pass on `HistorySection` (node `388-71` screenshot + Cortex/Label/Black CSS spec).
-  - **Content** (`src/lib/content/history.ts`): added `HistoryMilestoneEntry` type and made `body` optional so the `regional-activation` milestone can carry structured sub-entries (Africa / North America / Europe & Asia) — the component renders each entry's `label` in orange followed by its `text`. Date labels updated to match the figma (`Feb 2026`, `Mar 2026`, `Q3 2026`).
-  - **Component** (`src/components/sections/history-section.tsx`): restructured to the figma's 3-column layout at lg — col 1 holds the eyebrow (row 1) and the scroll callout (anchored to the regional-activation row via inline CSS variable + arbitrary `lg:[grid-row-start:var(--row)]`); col 2 holds the date label + dot marker right-justified onto a vertical rail (grid item, `lg:row-span-5 lg:justify-self-end`); col 3 holds the milestone title + body/entries.
-  - **Typography** matches the figma Cortex/Label/Black style for all uppercase labels (eyebrow, date, title): `font-mona text-label font-black uppercase leading-none tracking-[0.41em]` — 13 px Mona Sans 900 with 0.41em letter-spacing. Bodies use `font-open text-body-sm leading-relaxed text-text-secondary`.
-  - Mobile collapses to a single flex column in DOM order; the desktop callout's grid-row positioning is gated behind `lg:` so it doesn't break the mobile stack.
-- Files touched: `src/lib/content/history.ts`, `src/components/sections/history-section.tsx`, `skills/context/progress-tracker.md`.
+- Changed: merged S3 History timeline and Upcoming Events onto the homepage (Hero → Mission → History → Events).
+  - History — figma-pass on `HistorySection` (node `388-71` screenshot + Cortex/Label/Black CSS spec).
+    - **Content** (`src/lib/content/history.ts`): added `HistoryMilestoneEntry` type and made `body` optional so the `regional-activation` milestone can carry structured sub-entries (Africa / North America / Europe & Asia) — the component renders each entry's `label` in orange followed by its `text`. Date labels updated to match the figma (`Feb 2026`, `Mar 2026`, `Q3 2026`).
+    - **Component** (`src/components/sections/history-section.tsx`): restructured to the figma's 3-column layout at lg — col 1 holds the eyebrow (row 1) and the scroll callout (anchored to the regional-activation row via inline CSS variable + arbitrary `lg:[grid-row-start:var(--row)]`); col 2 holds the date label + dot marker right-justified onto a vertical rail (grid item, `lg:row-span-5 lg:justify-self-end`); col 3 holds the milestone title + body/entries.
+    - **Typography** matches the figma Cortex/Label/Black style for all uppercase labels (eyebrow, date, title): `font-mona text-label font-black uppercase leading-none tracking-[0.41em]` — 13 px Mona Sans 900 with 0.41em letter-spacing. Bodies use `font-open text-body-sm leading-relaxed text-text-secondary`.
+    - Mobile collapses to a single flex column in DOM order; the desktop callout's grid-row positioning is gated behind `lg:` so it doesn't break the mobile stack.
+  - Events — static `CortexEvent` content (CONNEX Tech Fest seed), responsive cards, poster/countdown/RSVP, desktop cursor preview at `xl+`, hourly ISR date filtering, shared `use-reduced-motion` / `use-is-desktop` / `use-on-mount` hooks, and reduced-motion static frames across the Pattern Studio illustrations.
+- Files touched: `src/lib/content/history.ts`, `src/components/sections/history-section.tsx`, `src/lib/content/events.ts`, `src/lib/content/links.ts`, `src/lib/events/*`, `src/lib/split-trailing-accent.ts`, `src/components/sections/events-section.tsx`, `src/components/sections/events/*`, `src/hooks/use-reduced-motion.ts`, `src/hooks/use-is-desktop.ts`, `src/hooks/use-on-mount.ts`, `src/components/illustrations/*.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `public/images/events/627.png`, `skills/context/progress-tracker.md`.
 - Verification run: `bunx tsc --noEmit` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: rail/dot alignment is within ~3.5 px (rail at col 2's right edge, dot center 4 px inside it) — visually clean but not pixel-perfect; if a tighter alignment is wanted, shift the dot by `-mr-[3.5px]` at lg. GSAP scroll-trigger reveal for the callout remains deferred to a follow-up animation ticket.
-- Next step: add the GSAP scroll-trigger reveal/pin for the callout, then continue with the remaining content-wired sections (`team-section`, `monad-section`, `services-section`, `events-section`).
+- Open questions: rail/dot alignment is within ~3.5 px (rail at col 2's right edge, dot center 4 px inside it) — visually clean but not pixel-perfect; if a tighter alignment is wanted, shift the dot by `-mr-[3.5px]` at lg. GSAP scroll-trigger reveal for the callout remains deferred to a follow-up animation ticket. Final CONNEX copy and Luma URL still pending.
+- Next step: add the GSAP scroll-trigger reveal/pin for the History callout, then continue with the remaining content-wired sections (`team-section`, `monad-section`, `services-section`).

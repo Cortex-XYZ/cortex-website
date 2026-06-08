@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { cn } from "@/lib/utils";
@@ -80,6 +81,7 @@ type Props = {
 };
 
 export function SteppedLattice({ active, className }: Props) {
+  const reduceMotion = useReducedMotion();
   const layerRef = useRef<SVGGElement>(null);
 
   useGSAP(
@@ -148,11 +150,6 @@ export function SteppedLattice({ active, className }: Props) {
 
       // Populated static frame: midpoint column count.
       drawLattice(STATIC_COLUMNS);
-
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       if (!active || reduceMotion) {
         return () => {
           paths.forEach((p) => p.remove());
@@ -180,7 +177,7 @@ export function SteppedLattice({ active, className }: Props) {
         dots.forEach((r) => r.remove());
       };
     },
-    { dependencies: [active], revertOnUpdate: true, scope: layerRef },
+    { dependencies: [active, reduceMotion], revertOnUpdate: true, scope: layerRef },
   );
 
   return (
