@@ -67,13 +67,13 @@ GitHub issue planning is complete. The production website build is ready to move
 
 ## Next Steps
 
-1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`.
+1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`.
 2. Add the hero visual treatment using the approved brand-pattern or shader direction.
 
 ## Latest Handoff
 
-- Changed: extracted the stable footer Tailwind class bundles into footer-scoped component classes under `@layer components` in `src/app/globals.css`. `SiteFooter` now uses `site-footer-*` class names while retaining the local helper logic for quote lines, tagline lines, social ordering, and the newsletter validation TODO. Social glyphs moved into `src/components/icons/social-glyphs.tsx` for reuse by future sections.
-- Files touched: `src/app/globals.css`, `src/components/layout/site-footer.tsx`, `src/components/icons/social-glyphs.tsx`, `src/lib/content/footer.ts`, `skills/context/progress-tracker.md`.
+- Changed: shipped the Upcoming Events landing-page section. Extended `src/lib/content/events.ts` with a `CortexEventCategory` union (onboarding / blitz / product / global), a `CortexEventHub` union, and four seeded events matching the design. Added `src/components/sections/events-section.tsx` — a server component rendering the title, divided list of event rows, brand-color-coded `CategoryBadge` pill, `CortexHubChip` (CortexMark + 2-line CORTEX/HUB label), event title + description in a 2-col grid on `lg+`, and a date + `MapPin` location row. Wired into `src/app/page.tsx` after the mission section.
+- Files touched: `src/lib/content/events.ts`, `src/components/sections/events-section.tsx`, `src/app/page.tsx`, `skills/context/progress-tracker.md`.
 - Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: none for this refactor.
-- Next step: continue with the remaining content-wired sections.
+- Open questions: none — events list is hardcoded against the four sample events from the brief and will be replaced with the real Luma-backed list when URLs land.
+- Next step: continue with the remaining content-wired sections (`history-section`, `team-section`, `monad-section`, `services-section`).
