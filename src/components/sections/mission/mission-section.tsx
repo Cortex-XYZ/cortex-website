@@ -40,7 +40,7 @@ function MissionIntro({ className }: { className?: string }) {
 
 export function MissionSection() {
   return (
-    <section className="mission-section">
+    <section id={missionSection.id} className="mission-section">
       <div className="site-container flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-start xl:gap-11">
         {/* Mobile + tablet - intro at top */}
         <MissionIntro className="xl:hidden" />

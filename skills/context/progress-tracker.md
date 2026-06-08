@@ -43,6 +43,7 @@ Foundation work and parallel section implementation are underway. The homepage c
 - Responsive Services layout: at `lg` and up cards keep the original full-bleed gradient overlay (description on top, title at bottom inside the gradient). On mobile, gradient cards switch to `flex-col-reverse` with `background-size: 100% 13rem; background-position: top` so the gradient becomes a header block (title sits at the bottom of the block) and the description flows below on the page background, justified, edge-to-edge. The CTA tile is hidden on mobile (`hidden lg:flex`).
 - Shipped Upcoming Events: static `CortexEvent` content (CONNEX Tech Fest seed), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), and hourly ISR date filtering on the homepage.
 - Added shared hooks (`use-reduced-motion`, `use-is-desktop`, `use-on-mount`) and reduced-motion static frames on all five Pattern Studio illustrations.
+- Monad section `.monad-*` CSS classes, GSAP hover/dialog animations, `MonadCardsClient` with Radix dialog (desktop) + Sheet (mobile), `gsap-setup.ts` shared module replacing per-file `registerPlugin`, `useIsDesktop` extracted to shared hook, `TooltipProvider` added to layout, `monad.ts` switched to flat string paragraphs + `detailLinks`.
 
 ## Decisions
 
@@ -75,13 +76,13 @@ Foundation work and parallel section implementation are underway. The homepage c
 
 ## Next Steps
 
-1. Continue with the remaining content-wired sections: `history-section`, `team-section`, `monad-section`, `services-section`.
+1. Continue with remaining section: `services-section`.
 2. Add hero visual treatment.
 
 ## Latest Handoff
 
-- Changed: merged S6 Services and Upcoming Events sections onto the homepage. Services adds `src/components/sections/services/services-section.tsx` (five gradient cards + CTA tile, square corners, inline `CtaArrowGlyph`) plus `--gradient-service-*` tokens and `.services-*` component classes (header, grid, card base, `--gradient` mobile modifier, divider) in `src/app/globals.css`. Events adds the static `CortexEvent` content, responsive cards, poster/countdown/RSVP, desktop cursor preview at `xl+`, and hourly ISR date filtering, alongside the shared `use-reduced-motion` / `use-is-desktop` / `use-on-mount` hooks and reduced-motion static frames across the Pattern Studio illustrations. Both sections wired into `src/app/page.tsx` (Hero → Mission → Services → Events).
-- Files touched: `src/components/sections/services/services-section.tsx`, `src/components/sections/events-section.tsx`, `src/components/sections/events/*`, `src/lib/content/events.ts`, `src/lib/content/links.ts`, `src/lib/events/*`, `src/lib/split-trailing-accent.ts`, `src/hooks/use-reduced-motion.ts`, `src/hooks/use-is-desktop.ts`, `src/hooks/use-on-mount.ts`, `src/components/illustrations/*.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `public/images/events/627.png`, `skills/context/progress-tracker.md`.
+- Changed: merged S6 Services section into the homepage on top of dev's History, Team, and Monad sections. Services adds `src/components/sections/services/services-section.tsx` (five gradient cards + CTA tile, square corners, inline `CtaArrowGlyph`) plus `--gradient-service-*` tokens and `.services-*` component classes (header, grid, card base, `--gradient` mobile modifier, divider) in `src/app/globals.css`. Final homepage order: Hero → Mission → History → Team → Monad → Services → Events.
+- Files touched: `src/components/sections/services/services-section.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `skills/context/progress-tracker.md`.
 - Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
 - Open questions: shader/WebGL fills (W1) and tag chips (issue #17) are still out of scope and tracked there. Final CONNEX copy and Luma URL still pending.
-- Next step: continue with the remaining content-wired sections (`history-section`, `team-section`, `monad-section`).
+- Next step: hero visual treatment (W1).

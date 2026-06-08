@@ -1,13 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  memo,
-  useCallback,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { memo, useCallback, useRef, useState } from "react";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { cn } from "@/lib/utils";
 import { MISSION_CARD_HEIGHT_STYLE } from "@/components/sections/mission/mission-layout";
 import type {
@@ -102,39 +97,6 @@ const MISSION_ILLUSTRATION_PLACEMENTS = {
     sizeClass: "size-[11.5rem] md:size-[18rem] xl:size-[20rem]",
   },
 } satisfies Record<MissionCardId, MissionIllustrationPlacement>;
-
-const DESKTOP_MQL = "(min-width: 1280px)";
-
-let desktopMediaQuery: MediaQueryList | null = null;
-
-function getDesktopMediaQuery(): MediaQueryList {
-  if (desktopMediaQuery === null) {
-    desktopMediaQuery = window.matchMedia(DESKTOP_MQL);
-  }
-  return desktopMediaQuery;
-}
-
-function subscribeDesktop(onChange: () => void): () => void {
-  const mql = getDesktopMediaQuery();
-  mql.addEventListener("change", onChange);
-  return () => mql.removeEventListener("change", onChange);
-}
-
-function getDesktopSnapshot(): boolean {
-  return getDesktopMediaQuery().matches;
-}
-
-function getDesktopServerSnapshot(): boolean {
-  return false;
-}
-
-function useIsDesktop() {
-  return useSyncExternalStore(
-    subscribeDesktop,
-    getDesktopSnapshot,
-    getDesktopServerSnapshot,
-  );
-}
 
 const MissionExpandedCard = memo(function MissionExpandedCard({
   card,

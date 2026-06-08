@@ -170,11 +170,11 @@ export const cortexSocialLinkKeys = [
 ] as const satisfies readonly ExternalLinkKey[];
 
 export const monadLinkKeys = [
+  "monadX",
+  "monadYouTube",
   "monadFoundation",
   "monadDocs",
   "mipland",
-  "monadYouTube",
-  "monadX",
   "categoryLabs",
 ] as const satisfies readonly ExternalLinkKey[];
 

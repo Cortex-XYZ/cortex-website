@@ -4,12 +4,18 @@ export type HistoryMilestone = {
   id: string;
   dateLabel: string;
   title: string;
-  body: string;
+  body: readonly HistoryMilestoneBody[];
 };
+
+export type HistoryMilestoneBody =
+  | string
+  | {
+      accent: string;
+      text: string;
+    };
 
 export const historySection = {
   id: "history",
-  eyebrow: "History",
   title: "History",
   /**
    * Scroll-triggered callout that appears left of the timeline near the later
@@ -21,33 +27,54 @@ export const historySection = {
   milestones: [
     {
       id: "seed-planted",
-      dateLabel: "Feb 2025",
+      dateLabel: "Feb 2026",
       title: "Seed planted",
-      body: "Cortex initiated its foundational program design and launched a global recruitment campaign to identify and prepare the next generation of regional leaders.",
+      body: [
+        "Cortex initiated its foundational program design and launched a global recruitment campaign to identify and prepare the next generation of regional leaders.",
+      ],
     },
     {
       id: "orientation-planted",
-      dateLabel: "Mar 2025",
+      dateLabel: "Mar 2026",
       title: "Orientation and relationships planted",
-      body: "28 core candidates onboarded through an intensive initial orientation, beginning the cross-border relationships and team dynamics behind the global network.",
+      body: [
+        "28 core candidates onboarded through an intensive initial orientation, beginning the cross-border relationships and team dynamics behind the global network.",
+      ],
     },
     {
       id: "leadership-program",
       dateLabel: "Apr 2026",
       title: "Leadership program executed",
-      body: "A rigorous three-week leadership program met three times a week, using portfolio-based milestones to translate theory into immediate, localized action.",
+      body: [
+        "A rigorous three-week leadership program met three times a week, using portfolio-based milestones to translate theory into immediate, localized action.",
+      ],
     },
     {
       id: "regional-activation",
       dateLabel: "Activation",
       title: "Regional activation",
-      body: "Africa / Lagos Blitz was executed by Cortex NG leaders. North America / ETH NY mobilization began with Cortex US East alongside new Miami events.Europe & Asia / Helsinki initiatives launched, Turkiye Blitz was revised for longer-term retention, and similar ecosystem strategies were deployed across India.",
+      body: [
+        {
+          accent: "Africa /",
+          text: " Lagos Blitz was executed by Cortex NG leaders.",
+        },
+        {
+          accent: "North America /",
+          text: " ETH NY mobilization began with Cortex US East alongside new Miami events.",
+        },
+        {
+          accent: "Europe & Asia /",
+          text: " Helsinki initiatives launched, Turkiye Blitz was revised for longer-term retention, and similar ecosystem strategies were deployed across India.",
+        },
+      ],
     },
     {
       id: "cortex-connect",
-      dateLabel: "Q2 2026",
+      dateLabel: "Q3 2026",
       title: "Cortex connect",
-      body: "Formal global hybrid events will connect local communities in person while linking them digitally around the world.",
+      body: [
+        "Formal global hybrid events will connect local communities in person while linking them digitally around the world.",
+      ],
     },
   ] satisfies readonly HistoryMilestone[],
 } as const satisfies SectionContent & {
