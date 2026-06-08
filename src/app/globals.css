@@ -540,7 +540,389 @@
     @apply font-semibold text-action-primary;
   }
 
+  .monad-section {
+    scroll-margin-top: var(--site-header-height);
+    @apply bg-bg-canvas text-text-primary;
+  }
+
+  .monad-section-divider {
+    @apply h-px w-full border-0 xl:hidden;
+    background-image: linear-gradient(
+      90deg,
+      var(--brand-monad-purple),
+      transparent
+    );
+  }
+
+  .monad-intro {
+    @apply grid gap-5 py-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-center md:gap-x-12 md:py-16 xl:grid-cols-[minmax(0,23rem)_minmax(0,46.5rem)] xl:gap-x-28 xl:py-24;
+  }
+
+  .monad-title {
+    @apply max-w-80 font-mona text-[2rem] leading-[1.1] font-extrabold text-brand-monad-purple md:max-w-100 md:text-hero-mobile xl:max-w-92 xl:text-section-heading xl:leading-none;
+  }
+
+  .monad-description {
+    @apply max-w-185 font-open text-body-xs leading-[1.4] text-text-secondary sm:text-body-sm xl:text-body;
+  }
+
+  .monad-band {
+    @apply bg-brand-monad-purple;
+  }
+
+  .monad-band-container {
+    @apply flex flex-col gap-0 py-10 md:py-14 xl:grid xl:min-h-163 xl:grid-cols-[minmax(0,17.25rem)_minmax(0,47.5rem)] xl:items-stretch xl:justify-between xl:gap-x-20 xl:py-20;
+  }
+
+  .monad-band-meta {
+    @apply contents;
+  }
+
+  .monad-eyebrow {
+    @apply order-1 font-mona text-label leading-none font-extrabold text-brand-cortex-carbon uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .monad-topic-list {
+    @apply order-2 flex list-none flex-col gap-5 py-8 md:py-10 xl:grid xl:grid-cols-2 xl:gap-10 xl:py-0;
+  }
+
+  .monad-topic-item {
+    @apply min-w-0;
+  }
+
+  .monad-topic-button {
+    isolation: isolate;
+    @apply relative flex h-14 w-full cursor-pointer items-center justify-between overflow-hidden rounded-full border-0 bg-bg-canvas px-6 text-left outline-none xl:h-58 xl:justify-center xl:rounded-[3.625rem] xl:px-10;
+    transition:
+      transform 0.36s ease,
+      background-color 0.36s ease;
+  }
+
+  .monad-topic-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    background:
+      radial-gradient(
+        circle at 82% 12%,
+        color-mix(in srgb, var(--brand-monad-purple) 35%, transparent) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        circle at 10% 100%,
+        color-mix(in srgb, var(--brand-cortex-orange) 18%, transparent) 0%,
+        transparent 54%
+      );
+    transition: opacity 0.36s ease;
+  }
+
+  @media (width >= 80rem) {
+    .monad-topic-button[data-active="true"],
+    .monad-topic-button:hover {
+      background-color: color-mix(
+        in srgb,
+        var(--brand-cortex-carbon) 86%,
+        var(--brand-monad-purple)
+      );
+    }
+
+    .monad-topic-button[data-active="true"]::before,
+    .monad-topic-button:hover::before {
+      opacity: 1;
+    }
+  }
+
+  .monad-topic-button:focus-visible {
+    @apply outline-2 outline-offset-4 outline-action-primary;
+  }
+
+  .monad-topic-bg {
+    @apply hidden;
+  }
+
+  .monad-topic-hover-shape {
+    @apply pointer-events-none absolute inset-0 hidden items-center justify-center text-bg-canvas;
+  }
+
+  .monad-topic-hover-shape svg {
+    @apply size-full;
+  }
+
+  .monad-topic-label {
+    @apply relative z-10 truncate font-open text-[0.75rem] leading-none font-bold text-text-muted uppercase xl:font-mona xl:text-label xl:font-black xl:tracking-(--text-label-letter-spacing) xl:text-text-secondary;
+    letter-spacing: 0.03em;
+  }
+
+  .monad-topic-button[data-monad-card-id="nitro-and-programs"]
+    .monad-topic-label {
+    color: transparent;
+    background-image: linear-gradient(
+      90deg,
+      var(--brand-monad-purple) 0%,
+      var(--brand-cortex-amber) 100%
+    );
+    background-clip: text;
+  }
+
+  .monad-topic-arrow {
+    @apply size-5 shrink-0 text-action-primary xl:hidden;
+  }
+
+  .monad-social-list {
+    @apply order-3 flex list-none items-center justify-center gap-3 pt-2 pb-3 md:pt-3 md:pb-4 xl:justify-start xl:pt-0 xl:pb-0;
+  }
+
+  .monad-social-link {
+    @apply flex size-[2.375rem] items-center justify-center rounded-full bg-bg-canvas p-0 text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary xl:size-[2.625rem];
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  @media (width >= 80rem) {
+    .monad-social-link:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .monad-dialog-overlay {
+    @apply fixed inset-0 z-50 bg-neutral-black/60;
+  }
+
+  .monad-dialog-surface {
+    --monad-dialog-carbon: #0a0a0a;
+    --monad-dialog-ring-x: 100%;
+    --monad-dialog-ring-y: -3%;
+    --monad-dialog-ring-w: 70%;
+    --monad-dialog-ring-h: 80%;
+    --monad-dialog-ring-carbon-mid: 30%;
+    --monad-dialog-ring-purple: 50%;
+    --monad-dialog-ring-purple-fade: 60%;
+    --monad-dialog-ring-carbon-out: 85%;
+    --monad-dialog-gradient:
+      radial-gradient(
+        ellipse var(--monad-dialog-ring-w) var(--monad-dialog-ring-h) at
+          var(--monad-dialog-ring-x) var(--monad-dialog-ring-y),
+        var(--monad-dialog-carbon) 0%,
+        color-mix(
+            in srgb,
+            var(--monad-dialog-carbon) 82%,
+            var(--brand-monad-purple)
+          )
+          var(--monad-dialog-ring-carbon-mid),
+        var(--brand-monad-purple) var(--monad-dialog-ring-purple),
+        color-mix(
+            in srgb,
+            var(--brand-monad-purple) 58%,
+            var(--monad-dialog-carbon)
+          )
+          var(--monad-dialog-ring-purple-fade),
+        var(--monad-dialog-carbon) var(--monad-dialog-ring-carbon-out)
+      ),
+      radial-gradient(
+        ellipse 92% 104% at 7% 74%,
+        var(--monad-dialog-carbon) 0%,
+        var(--monad-dialog-carbon) 40%,
+        color-mix(in srgb, var(--monad-dialog-carbon) 92%, transparent) 52%,
+        color-mix(in srgb, var(--monad-dialog-carbon) 58%, transparent) 62%,
+        transparent 73%
+      ),
+      var(--monad-dialog-carbon);
+  }
+
+  .monad-sheet-panel {
+    @apply relative max-h-[82vh] gap-0 overflow-hidden rounded-t-3xl border-0 bg-brand-cortex-carbon! p-0 text-text-primary shadow-none outline-none;
+    box-shadow: 0 -24px 80px
+      color-mix(in srgb, var(--neutral-black) 46%, transparent);
+  }
+
+  [data-monad-detail-sheet] [data-slot="sheet-overlay"] {
+    @apply bg-neutral-black/60 backdrop-blur-none;
+  }
+
+  [data-monad-detail-sheet] [data-slot="sheet-content"].monad-sheet-panel {
+    background-color: var(--brand-cortex-carbon) !important;
+  }
+
+  .monad-dialog-handle {
+    @apply absolute top-4 left-1/2 z-20 h-1 w-10 -translate-x-1/2 rounded-full bg-text-muted;
+  }
+
+  .monad-dialog-surface {
+    @apply pointer-events-none absolute inset-0 z-0 hidden;
+  }
+
+  .monad-dialog-close {
+    @apply absolute top-2 -right-1 z-30 hidden size-10 cursor-pointer items-center justify-center rounded-full bg-transparent text-action-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary xl:flex;
+  }
+
+  .monad-dialog-close svg {
+    @apply size-7;
+  }
+
+  .monad-dialog-content {
+    @apply relative z-10 flex flex-col gap-4 px-6 pt-14 pb-10;
+  }
+
+  .monad-dialog-title {
+    @apply font-open text-[0.8125rem] leading-normal font-bold text-brand-monad-purple uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .monad-dialog-body {
+    @apply flex flex-col gap-3 font-mona text-base leading-[1.5] font-light text-text-secondary;
+  }
+
+  .monad-dialog-links {
+    @apply mt-2 flex list-none flex-wrap items-center gap-x-4 gap-y-2;
+  }
+
+  .monad-dialog-link {
+    @apply inline-flex items-center gap-1.5 font-open text-body-xs font-semibold text-brand-monad-purple underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary xl:text-action-primary;
+  }
+
+  .monad-dialog-link[data-channel="x"] {
+    @apply flex-col gap-1;
+  }
+
+  .monad-dialog-link-icon {
+    @apply size-6 shrink-0;
+  }
+
   @variant xl {
+    .monad-band-meta {
+      @apply col-start-1 row-start-1 flex flex-col items-start justify-between;
+    }
+
+    .monad-topic-list {
+      @apply col-start-2 row-start-1;
+    }
+
+    .monad-topic-button {
+      overflow: visible;
+      background-color: transparent !important;
+    }
+
+    .monad-topic-bg {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-color: var(--color-bg-canvas);
+      clip-path: url(#monad-card-squircle);
+      --bg-s: 1;
+      transform: scale(var(--bg-s));
+      transform-origin: center;
+    }
+
+    .monad-topic-button::before {
+      clip-path: url(#monad-card-squircle);
+    }
+
+    .monad-topic-button[data-active="true"],
+    .monad-topic-button:hover {
+      z-index: 3;
+      transform: none;
+    }
+
+    .monad-topic-button[data-active="true"] .monad-topic-bg {
+      --bg-s: 0.01;
+    }
+
+    .monad-topic-button[data-active="true"]::before,
+    .monad-topic-button:hover::before {
+      opacity: 0;
+    }
+
+    .monad-topic-hover-shape {
+      @apply flex;
+      inset: auto;
+      top: 50%;
+      left: 50%;
+      width: 128%;
+      height: 128%;
+      --shape-s: 0.08;
+      --shape-o: 0;
+      opacity: var(--shape-o);
+      transform: translate(-50%, -50%) scale(var(--shape-s));
+      transform-origin: center;
+    }
+
+    .monad-topic-button[data-active="true"] .monad-topic-hover-shape {
+      --shape-s: 1.18;
+      --shape-o: 1;
+    }
+
+    .monad-dialog-overlay[data-state="open"] {
+      animation: monad-overlay-in 0.18s ease-out both;
+    }
+
+    .monad-dialog-overlay[data-state="closed"] {
+      animation: monad-overlay-out 0.14s ease-in both;
+    }
+
+    .monad-dialog-panel {
+      @apply fixed z-50 overflow-visible bg-transparent text-text-primary outline-none;
+      inset: auto;
+      top: 50%;
+      left: 50%;
+      width: min(
+        51.25rem,
+        calc(100vw - 8rem),
+        calc((100vh - 10rem) * 820 / 545)
+      );
+      height: auto;
+      aspect-ratio: 820 / 545;
+      max-height: none;
+      translate: -50% -50%;
+      background-color: transparent !important;
+    }
+
+    .monad-dialog-panel[data-state="closed"] {
+      animation: monad-dialog-out 0.16s ease-in both;
+    }
+
+    .monad-dialog-handle {
+      @apply hidden;
+    }
+
+    .monad-dialog-surface {
+      display: block;
+      overflow: hidden;
+      clip-path: url(#monad-dialog-shape);
+      background-color: var(--monad-dialog-carbon) !important;
+      background: var(--monad-dialog-gradient);
+      transform-origin: center;
+    }
+
+    .monad-dialog-content {
+      @apply mx-auto h-full w-131.25 justify-center gap-8 px-0 py-0;
+    }
+
+    .monad-dialog-title {
+      @apply text-center font-mona text-label leading-none font-black tracking-(--text-label-letter-spacing) text-text-secondary;
+    }
+
+    .monad-dialog-body {
+      @apply font-mona text-body text-text-secondary;
+    }
+
+    .monad-dialog-links {
+      @apply mt-0 justify-start;
+    }
+
+    .monad-dialog-link {
+      @apply text-body-sm leading-normal font-light text-action-primary;
+    }
+
+    .monad-dialog-link-icon {
+      @apply size-7;
+    }
+
     .history-container {
       @apply grid grid-cols-[minmax(0,18.5rem)_minmax(0,39.375rem)] grid-rows-[auto_1fr] gap-x-36 py-40;
     }
@@ -1411,10 +1793,53 @@
   }
 }
 
+@keyframes monad-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes monad-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes monad-dialog-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .history-milestone:last-child .history-milestone-dot {
     animation: none;
     box-shadow: var(--history-dot-glow-rest);
     will-change: auto;
+  }
+
+  .monad-topic-button,
+  .monad-topic-button::before,
+  .monad-social-link,
+  .monad-dialog-close {
+    transition: none;
+  }
+
+  .monad-dialog-overlay[data-state],
+  .monad-dialog-panel[data-state],
+  [data-monad-detail-sheet] [data-slot="sheet-content"],
+  [data-monad-detail-sheet] [data-slot="sheet-overlay"] {
+    animation-duration: 0.01ms;
   }
 }
