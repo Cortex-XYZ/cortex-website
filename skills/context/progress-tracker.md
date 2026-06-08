@@ -73,9 +73,9 @@ Foundation work and parallel section implementation are underway. The homepage c
 
 ## Next Steps
 
-1. Continue with the remaining content-wired sections:`team-section`, `monad-section`, `services-section`.
+1. Continue with remaining sections: `monad-section`, `services-section`.
 2. Add hero visual treatment.
 
 ## Latest Handoff
 
-- CSS-class component replacing inline Tailwind, `.history-*` classes in `globals.css` (mobile + `@variant xl` desktop), unified `HistoryMilestoneBody[]` type in `history.ts`.
+- Team section ported from stage-2 (c698b51, c338959). `.team-*` CSS classes in `globals.css`, `@variant md` before `@variant xl` (cascade order matters), shared `splitTrailingAccent()` used by team + footer, `TeamSection` added to page between History and Events.
