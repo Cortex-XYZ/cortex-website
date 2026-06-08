@@ -1,52 +1,62 @@
-import type { ExternalHref } from "./types";
-import type { SectionContent } from "./types";
+import type { ContentImage, ExternalHref, SectionContent } from "./types";
 
-export type CortexEventCategory =
-  | "onboarding"
-  | "blitz"
-  | "product"
-  | "global";
-
-export type CortexEventHub = "NGA" | "NYC" | "IND" | "GLOBAL";
+export type EventLocation = {
+  city: string;
+  region?: string;
+};
 
 export type CortexEvent = {
   id: string;
-  category: CortexEventCategory;
-  categoryLabel: string;
-  hub: CortexEventHub;
+  label: string;
   title: string;
-  /** Machine-readable ISO date for the `dateTime` attribute. */
+  /** ISO calendar date (YYYY-MM-DD), interpreted as UTC midnight. */
   date: string;
   dateLabel: string;
-  location: string;
+  location: EventLocation;
   description: string;
+  image?: ContentImage;
   /** External registration/detail URL (currently Luma, may change). */
   url?: ExternalHref;
+  rsvpLabel?: string;
 };
 
 export const eventsSection = {
   id: "events",
-  title: "Upcoming Events.",
-  description: "",
-  emptyState: "No upcoming events right now. Check back soon.",
-  // Content-driven: whatever ships in this array at launch is what the
-  // section renders. Each event's `url` should point to its Luma page.
+  titleLines: ["Upcoming", "Events."],
+  followUp: {
+    title: "More events are coming soon.",
+    description:
+      "New hub sessions, builder meetups, and partner gatherings will appear here as dates lock.",
+  },
+  rsvpLabel: "RSVP",
   events: [
     {
-      id: "us-east-dev-blitz",
-      category: "blitz",
-      categoryLabel: "Blitz / Devs",
-      hub: "NYC",
-      title: "US East dev blitz",
-      date: "2026-06-07",
-      dateLabel: "June 7, 2026",
-      location: "New York",
+      id: "cortex-connex-tech-fest",
+      label: "GLOBAL",
+      title: "Cortex CONNEX Tech Fest",
+      date: "2026-06-27",
+      dateLabel: "Jun 27, 2026",
+      location: {
+        city: "Online",
+        region: "GLOBAL",
+      },
+      // TODO: Replace placeholder description with final CONNEX Tech Fest copy before launch.
       description:
-        "A builder-focused program for engineering support, technical education, and planning around ETH NY with Cortex US East leaders.",
-      url: "https://lu.ma/cortex-us-east-dev-blitz",
+        "Placeholder event description for Cortex CONNEX Tech Fest. This copy should be changed before launch.",
+      image: {
+        src: "/images/events/627.png",
+        alt: "Cortex CONNEX Tech Festival poster for June 27, 2026",
+      },
+      // TODO: Temporary Luma profile link — replace with the CONNEX Tech Fest event page URL once available.
+      url: "https://luma.com/user/Cortex_Global",
     },
   ] satisfies readonly CortexEvent[],
-} as const satisfies SectionContent & {
-  emptyState: string;
+} as const satisfies Pick<SectionContent, "id"> & {
+  titleLines: readonly string[];
+  followUp: {
+    title: string;
+    description: string;
+  };
+  rsvpLabel: string;
   events: readonly CortexEvent[];
 };

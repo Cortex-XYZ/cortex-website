@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-GitHub issue planning is complete. The production website build is ready to move into foundation implementation and parallel section work.
+Foundation work and parallel section implementation are underway. The homepage currently ships Hero, Mission, Events, and the global footer. Remaining v1 sections (`history`, `team`, `monad`, `services`) still need to be built and wired to their content modules.
 
 ## Completed
 
@@ -39,6 +39,8 @@ GitHub issue planning is complete. The production website build is ready to move
 - Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
 - Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
+- Shipped Upcoming Events: static `CortexEvent` content (CONNEX Tech Fest seed), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), and hourly ISR date filtering on the homepage.
+- Added shared hooks (`use-reduced-motion`, `use-is-desktop`, `use-on-mount`) and reduced-motion static frames on all five Pattern Studio illustrations.
 
 ## Decisions
 
@@ -62,18 +64,20 @@ GitHub issue planning is complete. The production website build is ready to move
 - The app root loads Mona Sans and Open Sans once with `next/font/google`; Tailwind font utilities expose `font-mona` and `font-open`.
 - `src/components/ui/` is reserved for generated shadcn/ui components; custom Cortex components and wrappers live in `src/components/` outside `ui/`.
 - Service Cards are the canonical name for shader-backed service surfaces; future section code should use `services-section.tsx`.
+- Events are static TypeScript in `events.ts` for v1; desktop interactivity gates at `xl` via `useIsDesktop`.
 
 ## Open Questions
 
+- Final CONNEX copy and Luma event URL before launch.
+- Events scroll-enter CSS exists but is not wired yet.
+
 ## Next Steps
 
-1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`.
-2. Add the hero visual treatment using the approved brand-pattern or shader direction.
+1. Continue with the remaining content-wired sections: `history-section`, `team-section`, `monad-section`, `services-section`.
+2. Add hero visual treatment.
 
 ## Latest Handoff
 
-- Changed: shipped the Upcoming Events landing-page section. Extended `src/lib/content/events.ts` with a `CortexEventCategory` union (onboarding / blitz / product / global), a `CortexEventHub` union, and four seeded events matching the design. Added `src/components/sections/events-section.tsx` — a server component rendering the title, divided list of event rows, brand-color-coded `CategoryBadge` pill, `CortexHubChip` (CortexMark + 2-line CORTEX/HUB label), event title + description in a 2-col grid on `lg+`, and a date + `MapPin` location row. Wired into `src/app/page.tsx` after the mission section.
-- Files touched: `src/lib/content/events.ts`, `src/components/sections/events-section.tsx`, `src/app/page.tsx`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: none — events list is hardcoded against the four sample events from the brief and will be replaced with the real Luma-backed list when URLs land.
+- Status: Hero, Mission, Events, and footer are on the homepage; content modules exist for history, team, Monad, and services.
+- Files touched: `src/lib/content/events.ts`, `src/lib/content/links.ts`, `src/lib/events/*`, `src/lib/split-trailing-accent.ts`, `src/components/sections/events-section.tsx`, `src/components/sections/events/*`, `src/hooks/use-reduced-motion.ts`, `src/hooks/use-is-desktop.ts`, `src/hooks/use-on-mount.ts`, `src/components/illustrations/*.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `public/images/events/627.png`.
 - Next step: continue with the remaining content-wired sections (`history-section`, `team-section`, `monad-section`, `services-section`).
