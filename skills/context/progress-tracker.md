@@ -41,6 +41,7 @@ Foundation work and parallel section implementation are underway. The homepage c
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
 - Shipped Upcoming Events: static `CortexEvent` content (CONNEX Tech Fest seed), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), and hourly ISR date filtering on the homepage.
 - Added shared hooks (`use-reduced-motion`, `use-is-desktop`, `use-on-mount`) and reduced-motion static frames on all five Pattern Studio illustrations.
+- Monad section `.monad-*` CSS classes, GSAP hover/dialog animations, `MonadCardsClient` with Radix dialog (desktop) + Sheet (mobile), `gsap-setup.ts` shared module replacing per-file `registerPlugin`, `useIsDesktop` extracted to shared hook, `TooltipProvider` added to layout, `monad.ts` switched to flat string paragraphs + `detailLinks`.
 
 ## Decisions
 
@@ -73,7 +74,7 @@ Foundation work and parallel section implementation are underway. The homepage c
 
 ## Next Steps
 
-1. Continue with remaining sections: `monad-section`, `services-section`.
+1. Continue with remaining section: `services-section`.
 2. Add hero visual treatment.
 
 ## Latest Handoff
