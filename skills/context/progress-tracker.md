@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-GitHub issue planning is complete. The production website build is ready to move into foundation implementation and parallel section work.
+Foundation work and parallel section implementation are underway. The homepage currently ships Hero, Mission, Events, and the global footer. Remaining v1 sections (`history`, `team`, `monad`, `services`) still need to be built and wired to their content modules.
 
 ## Completed
 
@@ -41,6 +41,8 @@ GitHub issue planning is complete. The production website build is ready to move
 - Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
 - Built the Services section (S6): `src/components/sections/services/services-section.tsx` renders the typed `servicesSection` content as five gradient Service Cards plus a sixth "Let's Talk" CTA tile with an inline arrow glyph. Each gradient card layers two soft radial-gradients (per-variant Figma ellipse positions) over a carbon base, exposed as `--gradient-service-{education,event,services,research,staking}` tokens. Card corners are square (`rounded-none`). A bottom `services-divider` line uses `linear-gradient(to right, orange → grey → transparent)` matching the Figma spec.
 - Responsive Services layout: at `lg` and up cards keep the original full-bleed gradient overlay (description on top, title at bottom inside the gradient). On mobile, gradient cards switch to `flex-col-reverse` with `background-size: 100% 13rem; background-position: top` so the gradient becomes a header block (title sits at the bottom of the block) and the description flows below on the page background, justified, edge-to-edge. The CTA tile is hidden on mobile (`hidden lg:flex`).
+- Shipped Upcoming Events: static `CortexEvent` content (CONNEX Tech Fest seed), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), and hourly ISR date filtering on the homepage.
+- Added shared hooks (`use-reduced-motion`, `use-is-desktop`, `use-on-mount`) and reduced-motion static frames on all five Pattern Studio illustrations.
 
 ## Decisions
 
@@ -64,18 +66,22 @@ GitHub issue planning is complete. The production website build is ready to move
 - The app root loads Mona Sans and Open Sans once with `next/font/google`; Tailwind font utilities expose `font-mona` and `font-open`.
 - `src/components/ui/` is reserved for generated shadcn/ui components; custom Cortex components and wrappers live in `src/components/` outside `ui/`.
 - Service Cards are the canonical name for shader-backed service surfaces; future section code should use `services-section.tsx`.
+- Events are static TypeScript in `events.ts` for v1; desktop interactivity gates at `xl` via `useIsDesktop`.
 
 ## Open Questions
 
+- Final CONNEX copy and Luma event URL before launch.
+- Events scroll-enter CSS exists but is not wired yet.
+
 ## Next Steps
 
-1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`.
-2. Add the hero visual treatment using the approved brand-pattern or shader direction.
+1. Continue with the remaining content-wired sections: `history-section`, `team-section`, `monad-section`, `services-section`.
+2. Add hero visual treatment.
 
 ## Latest Handoff
 
-- Changed: built S6 Services section. Added `src/components/sections/services/services-section.tsx` (five gradient cards + CTA tile, square corners, inline `CtaArrowGlyph`), wired it into `src/app/page.tsx`, and added the supporting `--gradient-service-*` tokens plus `.services-*` component classes (header, grid, card base, `--gradient` mobile modifier, divider) to `src/app/globals.css`. Responsive contract: desktop keeps the original full-bleed gradient overlay; mobile collapses the gradient to a 13rem header block with title overlay and pushes the justified description onto the page background. CTA tile is `hidden lg:flex`.
-- Files touched: `src/components/sections/services/services-section.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `skills/context/progress-tracker.md`.
+- Changed: merged S6 Services and Upcoming Events sections onto the homepage. Services adds `src/components/sections/services/services-section.tsx` (five gradient cards + CTA tile, square corners, inline `CtaArrowGlyph`) plus `--gradient-service-*` tokens and `.services-*` component classes (header, grid, card base, `--gradient` mobile modifier, divider) in `src/app/globals.css`. Events adds the static `CortexEvent` content, responsive cards, poster/countdown/RSVP, desktop cursor preview at `xl+`, and hourly ISR date filtering, alongside the shared `use-reduced-motion` / `use-is-desktop` / `use-on-mount` hooks and reduced-motion static frames across the Pattern Studio illustrations. Both sections wired into `src/app/page.tsx` (Hero → Mission → Services → Events).
+- Files touched: `src/components/sections/services/services-section.tsx`, `src/components/sections/events-section.tsx`, `src/components/sections/events/*`, `src/lib/content/events.ts`, `src/lib/content/links.ts`, `src/lib/events/*`, `src/lib/split-trailing-accent.ts`, `src/hooks/use-reduced-motion.ts`, `src/hooks/use-is-desktop.ts`, `src/hooks/use-on-mount.ts`, `src/components/illustrations/*.tsx`, `src/app/globals.css`, `src/app/page.tsx`, `public/images/events/627.png`, `skills/context/progress-tracker.md`.
 - Verification run: `bun run typecheck` clean, `bun run lint` clean, `bun run build` green.
-- Open questions: shader/WebGL fills (W1) and tag chips (issue #17) are still out of scope and tracked there.
-- Next step: continue with the remaining content-wired sections (history, team, monad, events).
+- Open questions: shader/WebGL fills (W1) and tag chips (issue #17) are still out of scope and tracked there. Final CONNEX copy and Luma URL still pending.
+- Next step: continue with the remaining content-wired sections (`history-section`, `team-section`, `monad-section`).

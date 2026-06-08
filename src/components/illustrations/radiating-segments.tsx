@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export function RadiatingSegments({ active, className }: Props) {
+  const reduceMotion = useReducedMotion();
   const rayLayerRef = useRef<SVGGElement>(null);
 
   useGSAP(
@@ -59,11 +61,6 @@ export function RadiatingSegments({ active, className }: Props) {
           }
         }
       }
-
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       // Populated static frame: midpoint count (~40), evenly spaced.
       drawRays(STATIC_RAYS);
 
@@ -93,7 +90,7 @@ export function RadiatingSegments({ active, className }: Props) {
         lines.forEach((line) => line.remove());
       };
     },
-    { dependencies: [active], revertOnUpdate: true, scope: rayLayerRef },
+    { dependencies: [active, reduceMotion], revertOnUpdate: true, scope: rayLayerRef },
   );
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,7 @@ type Props = {
 };
 
 export function NodeMesh({ active, className }: Props) {
+  const reduceMotion = useReducedMotion();
   const layerRef = useRef<SVGGElement>(null);
 
   useGSAP(
@@ -133,11 +135,6 @@ export function NodeMesh({ active, className }: Props) {
           }
         }
       }
-
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       if (!active || reduceMotion) {
         return () => {
           while (layerElement.firstChild) {
@@ -194,7 +191,7 @@ export function NodeMesh({ active, className }: Props) {
         }
       };
     },
-    { dependencies: [active], revertOnUpdate: true, scope: layerRef },
+    { dependencies: [active, reduceMotion], revertOnUpdate: true, scope: layerRef },
   );
 
   return (
