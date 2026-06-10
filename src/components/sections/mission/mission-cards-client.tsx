@@ -1,13 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  memo,
-  useCallback,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { memo, useCallback, useRef, useState } from "react";
+import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { cn } from "@/lib/utils";
 import { MISSION_CARD_HEIGHT_STYLE } from "@/components/sections/mission/mission-layout";
 import type {
@@ -82,59 +77,26 @@ const ILLUSTRATIONS = {
 
 const MISSION_ILLUSTRATION_PLACEMENTS = {
   pulse: {
-    topClass: "top-[12.5rem] md:top-[14.5rem] xl:top-[20rem]",
-    sizeClass: "size-[13.5rem] md:size-[22rem] xl:size-[24rem]",
+    topClass: "top-[12.5rem] md:top-[14.5rem] xl:top-[60%] xl:-translate-y-1/2",
+    sizeClass: "size-[13.5rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
   },
   disciplines: {
-    topClass: "top-[12rem] md:top-[14rem] xl:top-[17.5rem]",
-    sizeClass: "size-[13rem] md:size-[22rem] xl:size-[24rem]",
+    topClass: "top-[12rem] md:top-[14rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
+    sizeClass: "size-[13rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
   },
   collections: {
-    topClass: "top-[13.5rem] md:top-[14.5rem] xl:top-[21.1rem]",
-    sizeClass: "size-[11.5rem] md:size-[20rem] xl:size-[21.25rem]",
+    topClass: "top-[13.5rem] md:top-[14.5rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
+    sizeClass: "size-[11.5rem] md:size-[20rem] xl:size-[clamp(16rem,36dvh,24rem)]",
   },
   ideas: {
-    topClass: "top-[12.8rem] md:top-[14.5rem] xl:top-[18rem]",
-    sizeClass: "size-[14rem] md:size-[22rem] xl:size-[24rem]",
+    topClass: "top-[12.8rem] md:top-[14.5rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
+    sizeClass: "size-[14rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
   },
   culture: {
-    topClass: "top-[14.5rem] md:top-[15.5rem] xl:top-[22.5rem]",
-    sizeClass: "size-[11.5rem] md:size-[18rem] xl:size-[20rem]",
+    topClass: "top-[14.5rem] md:top-[15.5rem] xl:top-[60%] xl:-translate-y-1/2",
+    sizeClass: "size-[11.5rem] md:size-[18rem] xl:size-[clamp(16rem,36dvh,24rem)]",
   },
 } satisfies Record<MissionCardId, MissionIllustrationPlacement>;
-
-const DESKTOP_MQL = "(min-width: 1280px)";
-
-let desktopMediaQuery: MediaQueryList | null = null;
-
-function getDesktopMediaQuery(): MediaQueryList {
-  if (desktopMediaQuery === null) {
-    desktopMediaQuery = window.matchMedia(DESKTOP_MQL);
-  }
-  return desktopMediaQuery;
-}
-
-function subscribeDesktop(onChange: () => void): () => void {
-  const mql = getDesktopMediaQuery();
-  mql.addEventListener("change", onChange);
-  return () => mql.removeEventListener("change", onChange);
-}
-
-function getDesktopSnapshot(): boolean {
-  return getDesktopMediaQuery().matches;
-}
-
-function getDesktopServerSnapshot(): boolean {
-  return false;
-}
-
-function useIsDesktop() {
-  return useSyncExternalStore(
-    subscribeDesktop,
-    getDesktopSnapshot,
-    getDesktopServerSnapshot,
-  );
-}
 
 const MissionExpandedCard = memo(function MissionExpandedCard({
   card,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Mona_Sans, Open_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const monaSans = Mona_Sans({
@@ -31,9 +31,10 @@ export default function RootLayout({
       className={`${monaSans.variable} ${openSans.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SiteHeader />
-        <div className="flex-1">{children}</div>
-        <SiteFooter />
+        <TooltipProvider>
+          <SiteHeader />
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );
