@@ -5,16 +5,8 @@ import { EventCardRsvp } from "@/components/sections/events/event-card-rsvp";
 import { EventCountdown } from "@/components/sections/events/event-countdown";
 import { CortexMark } from "@/components/logos/cortex-mark";
 import { eventsSection, type CortexEvent } from "@/lib/content/events";
-import { getUtcDateKey } from "@/lib/events/countdown";
+import { getUpcomingEvents } from "@/lib/events/upcoming";
 import { splitTrailingAccent } from "@/lib/split-trailing-accent";
-
-
-function getUpcomingEvents(
-  events: readonly CortexEvent[],
-  today = getUtcDateKey(new Date()),
-) {
-  return events.filter((event) => event.date >= today);
-}
 
 function EventLockup({ region }: { region?: string }) {
   return (
@@ -36,9 +28,7 @@ function EventMetaDetails({
   event: CortexEvent;
 }) {
   return (
-    <div
-      className={`event-meta-details${className ? ` ${className}` : ""}`}
-    >
+    <div className={`event-meta-details${className ? ` ${className}` : ""}`}>
       <time dateTime={event.date}>{event.dateLabel}</time>
       <span className="event-location">
         <MapPin className="event-location-icon" aria-hidden="true" />
@@ -82,7 +72,10 @@ function EventCardContent({ event }: { event: CortexEvent }) {
         <EventCardLink event={event}>
           <>
             <div className="event-card-primary">
-              <div className="event-tags" aria-label="Event category and region">
+              <div
+                className="event-tags"
+                aria-label="Event category and region"
+              >
                 <span className="event-pill">{event.label}</span>
                 <EventLockup region={event.location.region} />
               </div>

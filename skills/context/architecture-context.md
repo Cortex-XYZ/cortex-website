@@ -110,6 +110,8 @@ Recommended pattern:
 - no CMS or external content source yet
 - revisit content source later based on team workflow and editing needs
 
+The root layout and homepage route export `revalidate = EVENTS_DATE_REVALIDATE_SECONDS` (3600) from `src/lib/events/upcoming.ts` so date-aware event UI—`HeaderUpcomingEvent` in the site header and `EventsSection` on the homepage—can re-run filtering after event dates pass without a manual rebuild. Event content is still hardcoded TypeScript, so hourly revalidation only refreshes which events are shown—not content from an external source. Events whose `date` is earlier than the current UTC `YYYY-MM-DD` are hidden from the Upcoming Events list; when no upcoming events remain, the Events section renders only its follow-up bridge copy.
+
 ## Invariants
 
 - The site is dark-first.

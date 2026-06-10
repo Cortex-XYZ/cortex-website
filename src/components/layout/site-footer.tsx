@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HashLink } from "@/components/hash-link";
 import { CortexButton } from "@/components/cortex-button";
 import { CortexMark } from "@/components/logos/cortex-mark";
 import { CortexWordmark } from "@/components/logos/cortex-wordmark";
@@ -90,12 +91,12 @@ export function SiteFooter() {
           <div className="site-footer-newsletter-region">
             <div className="site-footer-newsletter">
               <div className="site-footer-email-shell">
-                <label htmlFor="footer-email" className="sr-only">
+                <label htmlFor={footerContent.emailInputId} className="sr-only">
                   Email address
                 </label>
                 {/* TODO: add validation */}
                 <input
-                  id="footer-email"
+                  id={footerContent.emailInputId}
                   type="email"
                   name="email"
                   autoComplete="email"
@@ -145,9 +146,9 @@ export function SiteFooter() {
                   <ul className="site-footer-link-list">
                     {column.links.map((link) => (
                       <li key={`${column.title}-${link.href}-${link.label}`}>
-                        <Link href={link.href} className="site-footer-nav-link">
+                        <HashLink href={link.href} className="site-footer-nav-link">
                           {link.label}
-                        </Link>
+                        </HashLink>
                       </li>
                     ))}
                   </ul>

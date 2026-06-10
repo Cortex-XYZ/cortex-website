@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { HashLink } from "@/components/hash-link";
+import { reconcileHashFocusOnDialogClose } from "@/lib/hash-navigation";
 import { useState } from "react";
 import { ArrowRight, ChevronDown, X } from "lucide-react";
 import {
@@ -28,6 +29,11 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         showCloseButton={false}
         aria-describedby={undefined}
         className="mobile-nav-panel"
+        onCloseAutoFocus={(event) => {
+          if (reconcileHashFocusOnDialogClose()) {
+            event.preventDefault();
+          }
+        }}
       >
         <SheetTitle className="sr-only">Navigation</SheetTitle>
 
@@ -79,7 +85,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                             {column.heading}
                           </p>
                           {column.links.map((link) => (
-                            <Link
+                            <HashLink
                               key={link.href}
                               href={link.href}
                               onClick={onClose}
@@ -88,7 +94,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                               <span className="mobile-nav-link-label">
                                 {link.label}
                               </span>
-                            </Link>
+                            </HashLink>
                           ))}
                         </div>
                       </div>
@@ -100,28 +106,28 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           )}
 
           {directNavLinks.map((item) => (
-            <Link
+            <HashLink
               key={item.href}
               href={item.href}
               onClick={onClose}
               className="mobile-nav-primary-text block py-4"
             >
               {item.label}
-            </Link>
+            </HashLink>
           ))}
         </nav>
 
         {/* CTA */}
         <div className="shrink-0">
           <div className="h-px w-full bg-neutral-neural-dark" />
-          <Link
+          <HashLink
             href={ctaButton.href}
             onClick={onClose}
             className="group flex items-center justify-between px-6 py-5 text-brand-cortex-orange"
           >
             <span className="mobile-nav-cta-label">{ctaButton.label}</span>
             <ArrowRight className="size-6 animate-arrow-move-right mr-1.5" />
-          </Link>
+          </HashLink>
           <div className="h-1 w-full bg-brand-cortex-orange" />
         </div>
       </SheetContent>

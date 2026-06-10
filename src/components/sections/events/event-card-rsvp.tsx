@@ -1,5 +1,3 @@
-"use client";
-
 import { CortexButton } from "@/components/cortex-button";
 import type { CortexEvent } from "@/lib/content/events";
 
