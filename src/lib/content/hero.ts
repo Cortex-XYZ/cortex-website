@@ -13,7 +13,7 @@ export const heroSection = {
   paragraphs: [
     {
       emphasis: "Cortex",
-      text: "serves all individual, business, and community needs from our local hubs — local citizens providing expertise, guidance, and connection to the top industry professionals in all verticals — around the world.",
+      text: "serves all individual, business, and community needs from our local hubs —\nlocal citizens providing expertise, guidance, and connection to the top industry professionals in all verticals — around the world.",
     },
     {
       text: "Everything for Everyone. Everywhere.",

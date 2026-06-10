@@ -1,20 +1,25 @@
-import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { HashLink } from "@/components/hash-link";
 import { CortexButton } from "@/components/cortex-button";
+import { HeaderUpcomingEvent } from "@/components/layout/header/header-upcoming-event";
 import { HeroWebglBackground } from "@/components/webgl/hero-webgl-background";
 import { heroSection } from "@/lib/content/hero";
+import { siteLinks } from "@/lib/content/links";
 
 export function HeroSection() {
   const titleLines = heroSection.title.split("\n");
 
   return (
-    <section className="relative isolate min-h-svh overflow-hidden bg-bg-canvas">
+    <section className="hero-section">
       <HeroWebglBackground />
 
-      <div className="site-container relative z-10 flex min-h-svh items-center pt-(--site-header-height)">
-        <div className="flex max-w-3xl flex-col items-start gap-8 py-24">
-          <div className="flex flex-col gap-6">
-            <h1 className="font-mona text-hero-mobile text-text-primary sm:text-hero lg:text-display">
+      <div className="hero-container">
+        {/* Title + subtitle + CTAs */}
+        <div className="flex w-full flex-1 flex-col items-center gap-5 text-center sm:max-w-xl sm:flex-initial sm:items-start sm:gap-6 sm:text-left md:gap-16 md:py-24 lg:max-w-3xl lg:gap-10">
+          <div className="flex flex-1 flex-col gap-4 sm:flex-initial sm:gap-4 md:gap-10 lg:gap-6">
+            <HeaderUpcomingEvent className="mb-8 inline-flex self-center sm:hidden" />
+
+            <h1 className="font-mona text-[2.25rem] leading-[1.05] font-semibold text-text-primary sm:text-hero-mobile md:text-hero lg:text-[3.25rem] lg:leading-none">
               {titleLines.map((line, i) => (
                 <span key={i}>
                   {i > 0 && <br />}
@@ -22,59 +27,69 @@ export function HeroSection() {
                 </span>
               ))}
             </h1>
-            <div className="flex max-w-3xl flex-col gap-6 font-open text-body-sm text-text-secondary sm:text-body">
-              {heroSection.paragraphs.map((p, i) => (
-                <p key={i}>
-                  {p.emphasis && (
-                    <>
-                      <strong className="font-mona font-semibold text-text-primary">
-                        {p.emphasis}
-                      </strong>{" "}
-                    </>
-                  )}
+            <div className="hero-subtitle">
+              {/* First paragraph (description) — always visible */}
+              <p className="hero-subtitle-lead">
+                {heroSection.paragraphs[0].emphasis && (
+                  <>
+                    <strong className="hero-subtitle-emphasis">
+                      {heroSection.paragraphs[0].emphasis}
+                    </strong>{" "}
+                  </>
+                )}
+                {heroSection.paragraphs[0].text}
+              </p>
+              {heroSection.paragraphs.slice(1).map((p, i) => (
+                <p
+                  key={i}
+                  className={i === 0 ? "hero-paragraph-lead" : "hero-paragraph-rest"}
+                >
                   {p.text}
                 </p>
               ))}
             </div>
           </div>
 
-          <div className="flex w-full flex-nowrap gap-2 sm:w-auto sm:gap-4">
+          {/* CTAs — full-width stack on mobile, inline row on sm+ */}
+          <div className="hero-cta-group">
             <CortexButton
-              asChild
               variant="primary"
               size="lg"
               animated={false}
-              className="px-4 sm:px-(--button-padding-inline)"
+              className="hero-cta-button"
+              asChild
             >
-              <Link href={heroSection.primaryCta.href}>
+              <HashLink href={heroSection.primaryCta.href}>
                 {heroSection.primaryCta.label}
-              </Link>
+              </HashLink>
             </CortexButton>
             <CortexButton
-              asChild
               variant="subtleOutline"
               size="lg"
               animated={false}
-              className="px-4 sm:px-(--button-padding-inline)"
+              className="hero-cta-button"
+              asChild
             >
-              <Link href={heroSection.secondaryCta.href}>
+              <HashLink href={heroSection.secondaryCta.href}>
                 {heroSection.secondaryCta.label}
-              </Link>
+              </HashLink>
             </CortexButton>
           </div>
         </div>
       </div>
 
-      <div
-        className="absolute inset-x-0 bottom-8 z-20 flex cursor-pointer justify-center sm:bottom-10"
+      <a
+        href={siteLinks.mission.href}
+        className="hero-scroll-cue"
         data-hero-scroll-cue
+        aria-label={`Scroll to ${siteLinks.mission.label}`}
       >
         <ChevronDown
           aria-hidden="true"
-          className="size-7 text-text-secondary motion-safe:animate-arrow-move-down sm:size-8"
+          className="hero-scroll-cue-icon"
           strokeWidth={2.25}
         />
-      </div>
+      </a>
     </section>
   );
 }

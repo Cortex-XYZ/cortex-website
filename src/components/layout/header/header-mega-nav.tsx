@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { HashLink } from "@/components/hash-link";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { MegaNavColumn } from "@/lib/content/nav";
@@ -70,7 +70,7 @@ export function HeaderMegaNav({ label, columns }: HeaderMegaNavProps) {
         )}
         role="menu"
       >
-        <div className="mega-nav-indicator" />
+        <div className="mega-nav-indicator" aria-hidden="true" />
         <div className="flex">
           {columns.map((column, columnIndex) => (
             <div
@@ -85,7 +85,7 @@ export function HeaderMegaNav({ label, columns }: HeaderMegaNavProps) {
                 {column.links.map((link, linkIndex) => (
                   <div key={`${link.href}-${link.label}`}>
                     {linkIndex > 0 && <div className="mega-nav-separator" />}
-                    <Link
+                    <HashLink
                       href={link.href}
                       role="menuitem"
                       onClick={() => setIsOpen(false)}
@@ -95,7 +95,7 @@ export function HeaderMegaNav({ label, columns }: HeaderMegaNavProps) {
                       <span className="mega-nav-link-description">
                         {link.description}
                       </span>
-                    </Link>
+                    </HashLink>
                   </div>
                 ))}
               </div>

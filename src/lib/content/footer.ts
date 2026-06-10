@@ -19,6 +19,7 @@ export type FooterColumn = {
 
 export const footerContent = {
   id: "footer",
+  emailInputId: "footer-email",
   title: "Build local. Connect human. Shape what is next.",
   description:
     "Get Cortex updates on local hubs, education tracks, events, services, and ways to support the network.",
@@ -60,6 +61,7 @@ export const footerContent = {
   copyright: "© 2026 Cortex Global. All rights reserved.",
 } as const satisfies SectionContent & {
   tagline: string;
+  emailInputId: string;
   email: typeof contactEmail;
   newsletterCta: ContentCta;
   columns: readonly FooterColumn[];

@@ -1,9 +1,18 @@
-import {
-  MissionDesktopCards,
-  MissionMobileCards,
-} from "@/components/sections/mission/mission-cards-client";
+import dynamic from "next/dynamic";
 import { MISSION_CARD_HEIGHT_STYLE } from "@/components/sections/mission/mission-layout";
 import { missionSection } from "@/lib/content/mission";
+
+const MissionDesktopCards = dynamic(() =>
+  import("@/components/sections/mission/mission-cards-client").then(
+    (mod) => mod.MissionDesktopCards,
+  ),
+);
+
+const MissionMobileCards = dynamic(() =>
+  import("@/components/sections/mission/mission-cards-client").then(
+    (mod) => mod.MissionMobileCards,
+  ),
+);
 
 function missionParagraphKey(
   paragraph: (typeof missionSection.paragraphs)[number],
@@ -54,11 +63,11 @@ export function MissionSection() {
           <MissionIntro />
         </div>
 
-        {/* Desktop - accordion card stack */}
+        {/* Desktop accordion — client island defers GSAP */}
         <MissionDesktopCards cards={missionSection.cards} />
       </div>
 
-      {/* Mobile + tablet - horizontal card carousel (width differs at md+) */}
+      {/* Mobile + tablet carousel — client island defers GSAP */}
       <MissionMobileCards cards={missionSection.cards} />
     </section>
   );
