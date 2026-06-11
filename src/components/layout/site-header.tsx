@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HashLink } from "@/components/hash-link";
+import { HomeLink } from "@/components/home-link";
 import { CortexButton } from "@/components/cortex-button";
 import { HeaderMegaNav } from "@/components/layout/header/header-mega-nav";
 import { HeaderUpcomingEvent } from "@/components/layout/header/header-upcoming-event";
@@ -14,14 +15,14 @@ export function SiteHeader() {
     <SiteHeaderShell>
       <div className="site-container site-header-bar">
         <div className="flex items-center gap-12">
-          <Link
+          <HomeLink
             href="/"
             aria-label="Cortex Global home"
             className="flex shrink-0 items-center gap-2"
           >
             <CortexMark className="size-6 w-auto text-brand-cortex-orange" />
             <CortexWordmark className="size-6 w-auto text-text-secondary" />
-          </Link>
+          </HomeLink>
 
           <nav className="hidden items-center gap-16 lg:flex">
             {aboutNavItem?.megaNav && (

@@ -1,10 +1,9 @@
 import dynamic from "next/dynamic";
-import { MISSION_CARD_HEIGHT_STYLE } from "@/components/sections/mission/mission-layout";
 import { missionSection } from "@/lib/content/mission";
 
-const MissionDesktopCards = dynamic(() =>
+const MissionDesktopStack = dynamic(() =>
   import("@/components/sections/mission/mission-cards-client").then(
-    (mod) => mod.MissionDesktopCards,
+    (mod) => mod.MissionDesktopStack,
   ),
 );
 
@@ -50,24 +49,15 @@ function MissionIntro({ className }: { className?: string }) {
 export function MissionSection() {
   return (
     <section id={missionSection.id} className="mission-section">
-      <div className="site-container flex flex-col gap-6 md:gap-8 xl:flex-row xl:items-start xl:gap-11">
-        {/* Mobile + tablet - intro at top */}
-        <MissionIntro className="xl:hidden" />
-
-        {/* Desktop - intro bottom-aligned to card stack */}
-        <div
-          className="hidden w-[334px] shrink-0 flex-col xl:flex"
-          style={MISSION_CARD_HEIGHT_STYLE}
-        >
-          <div className="flex-1" aria-hidden />
-          <MissionIntro />
-        </div>
-
-        {/* Desktop accordion — client island defers GSAP */}
-        <MissionDesktopCards cards={missionSection.cards} />
+      <div className="site-container flex flex-col gap-6 md:gap-8 xl:hidden">
+        <MissionIntro />
       </div>
 
-      {/* Mobile + tablet carousel — client island defers GSAP */}
+      <MissionDesktopStack
+        cards={missionSection.cards}
+        intro={<MissionIntro />}
+      />
+
       <MissionMobileCards cards={missionSection.cards} />
     </section>
   );

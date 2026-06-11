@@ -4,6 +4,12 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ArrowRight, X } from "lucide-react";
 import { type MouseEvent, useCallback, useMemo, useRef, useState } from "react";
 import { DESKTOP_MQL, useIsDesktop } from "@/hooks/use-is-desktop";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import {
+  setMonadTopicRestingState,
+  setupMonadTopicEnter,
+} from "@/components/sections/monad/monad-topic-enter";
+import { deferGsapSetup } from "@/lib/gsap-defer-setup";
 import { gsap, useGSAP } from "@/lib/gsap-setup";
 import { MonadHoverShape } from "@/components/icons/monad-hover-shapes";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
@@ -17,7 +23,81 @@ type MonadCardsClientProps = {
   cards: readonly MonadInteractiveCard[];
 };
 
-const REDUCE_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+const MONAD_SECTION_SELECTOR = "[data-monad-section]";
+
+type MonadHoverState = "enter" | "leave";
+
+function animateMonadHover(btn: HTMLButtonElement, state: MonadHoverState) {
+  const bg = btn.querySelector<HTMLElement>(".monad-topic-bg");
+  const shape = btn.querySelector<HTMLElement>(".monad-topic-hover-shape");
+  if (!shape) return;
+  const children = shape.querySelectorAll("circle, rect");
+
+  gsap.killTweensOf(shape);
+  gsap.killTweensOf(children);
+  if (bg) gsap.killTweensOf(bg);
+
+  if (state === "enter") {
+    const tl = gsap.timeline();
+    if (bg) {
+      tl.to(bg, { "--bg-s": 0.01, duration: 0.25, ease: "power3.in" }, 0);
+    }
+    tl.fromTo(
+      shape,
+      { "--shape-s": 0.08, "--shape-o": 0 },
+      {
+        "--shape-s": 1.18,
+        "--shape-o": 1,
+        duration: 0.32,
+        ease: "power3.out",
+      },
+      0,
+    ).fromTo(
+      children,
+      { scale: 0, transformOrigin: "center center" },
+      {
+        scale: 1,
+        duration: 0.2,
+        stagger: 0.03,
+        ease: "back.out(1.7)",
+      },
+      0.05,
+    );
+    return;
+  }
+
+  const tl = gsap.timeline();
+  tl.to(shape, {
+    "--shape-s": 0.08,
+    "--shape-o": 0,
+    duration: 0.28,
+    ease: "power2.in",
+    clearProps: "--shape-s,--shape-o",
+  });
+  tl.to(
+    children,
+    {
+      scale: 0,
+      duration: 0.15,
+      stagger: 0.02,
+      ease: "power2.in",
+      clearProps: "transform",
+    },
+    0,
+  );
+  if (bg) {
+    tl.to(
+      bg,
+      {
+        "--bg-s": 1,
+        duration: 0.35,
+        ease: "power2.out",
+        clearProps: "--bg-s",
+      },
+      0,
+    );
+  }
+}
 
 function MonadDialogLinks({
   links,
@@ -86,8 +166,11 @@ function MonadDetailCopy({
 
 export function MonadCardsClient({ cards }: MonadCardsClientProps) {
   const isDesktop = useIsDesktop();
+  const reduceMotion = useReducedMotion();
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const topicListRef = useRef<HTMLUListElement>(null);
+  const activeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const cardById = useMemo(
     () => new Map(cards.map((card) => [card.id, card])),
@@ -101,6 +184,7 @@ export function MonadCardsClient({ cards }: MonadCardsClientProps) {
     (event: MouseEvent<HTMLButtonElement>) => {
       const cardId = event.currentTarget.dataset.monadCardId;
       if (cardId) {
+        activeButtonRef.current = event.currentTarget;
         setSelectedCardId(cardId);
       }
     },
@@ -109,143 +193,63 @@ export function MonadCardsClient({ cards }: MonadCardsClientProps) {
 
   const handleMouseEnter = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
-      if (!isDesktop || window.matchMedia(REDUCE_MOTION_QUERY).matches) return;
-      const btn = event.currentTarget;
-      const bg = btn.querySelector<HTMLElement>(".monad-topic-bg");
-      const shape = btn.querySelector<HTMLElement>(".monad-topic-hover-shape");
-      if (!shape) return;
-      const children = shape.querySelectorAll("circle, rect");
-
-      gsap.killTweensOf(shape);
-      gsap.killTweensOf(children);
-      if (bg) gsap.killTweensOf(bg);
-
-      const tl = gsap.timeline();
-      if (bg) {
-        tl.to(bg, { "--bg-s": 0.01, duration: 0.25, ease: "power3.in" }, 0);
-      }
-      tl.fromTo(
-        shape,
-        { "--shape-s": 0.08, "--shape-o": 0 },
-        {
-          "--shape-s": 1.18,
-          "--shape-o": 1,
-          duration: 0.32,
-          ease: "power3.out",
-        },
-        0,
-      ).fromTo(
-        children,
-        { scale: 0, transformOrigin: "center center" },
-        {
-          scale: 1,
-          duration: 0.2,
-          stagger: 0.03,
-          ease: "back.out(1.7)",
-        },
-        0.05,
-      );
+      if (!isDesktop || reduceMotion) return;
+      animateMonadHover(event.currentTarget, "enter");
     },
-    [isDesktop],
+    [isDesktop, reduceMotion],
   );
 
   const handleMouseLeave = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       if (!isDesktop) return;
       if (event.currentTarget.dataset.active === "true") return;
-      const btn = event.currentTarget;
-      const bg = btn.querySelector<HTMLElement>(".monad-topic-bg");
-      const shape = btn.querySelector<HTMLElement>(".monad-topic-hover-shape");
-      if (!shape) return;
-      const children = shape.querySelectorAll("circle, rect");
-
-      gsap.killTweensOf(shape);
-      gsap.killTweensOf(children);
-      if (bg) gsap.killTweensOf(bg);
-
-      const tl = gsap.timeline();
-      tl.to(shape, {
-        "--shape-s": 0.08,
-        "--shape-o": 0,
-        duration: 0.28,
-        ease: "power2.in",
-        clearProps: "--shape-s,--shape-o",
-      });
-      tl.to(
-        children,
-        {
-          scale: 0,
-          duration: 0.15,
-          stagger: 0.02,
-          ease: "power2.in",
-          clearProps: "transform",
-        },
-        0,
-      );
-      if (bg) {
-        tl.to(
-          bg,
-          {
-            "--bg-s": 1,
-            duration: 0.35,
-            ease: "power2.out",
-            clearProps: "--bg-s",
-          },
-          0,
-        );
-      }
+      animateMonadHover(event.currentTarget, "leave");
     },
     [isDesktop],
   );
 
   const handleOpenChange = useCallback((nextOpen: boolean) => {
     if (!nextOpen) {
-      const activeBtn = document.querySelector<HTMLElement>(
-        '.monad-topic-button[data-active="true"]',
-      );
+      const activeBtn = activeButtonRef.current;
       if (activeBtn) {
-        const bg = activeBtn.querySelector<HTMLElement>(".monad-topic-bg");
-        const shape = activeBtn.querySelector<HTMLElement>(
-          ".monad-topic-hover-shape",
-        );
-        if (shape) {
-          const children = shape.querySelectorAll("circle, rect");
-          gsap.killTweensOf(shape);
-          gsap.killTweensOf(children);
-          gsap.to(shape, {
-            "--shape-s": 0.08,
-            "--shape-o": 0,
-            duration: 0.28,
-            ease: "power2.in",
-            clearProps: "--shape-s,--shape-o",
-          });
-          gsap.to(children, {
-            scale: 0,
-            duration: 0.15,
-            ease: "power2.in",
-            clearProps: "transform",
-          });
-        }
-        if (bg) {
-          gsap.killTweensOf(bg);
-          gsap.to(bg, {
-            "--bg-s": 1,
-            duration: 0.35,
-            ease: "power2.out",
-            clearProps: "--bg-s",
-          });
-        }
+        animateMonadHover(activeBtn, "leave");
       }
+      activeButtonRef.current = null;
       setSelectedCardId(null);
     }
   }, []);
 
   useGSAP(
     () => {
+      const listRoot = topicListRef.current;
+      if (!listRoot) return;
+
+      const section = listRoot.closest<HTMLElement>(MONAD_SECTION_SELECTOR);
+      if (!section) return;
+
+      if (reduceMotion) {
+        setMonadTopicRestingState(listRoot);
+        return;
+      }
+
+      return deferGsapSetup(() => {
+        const root = topicListRef.current;
+        if (!root) return;
+
+        const sectionEl = root.closest<HTMLElement>(MONAD_SECTION_SELECTOR);
+        if (!sectionEl) return;
+
+        return setupMonadTopicEnter(root, sectionEl);
+      });
+    },
+    { scope: topicListRef, dependencies: [reduceMotion, cards.length] },
+  );
+
+  useGSAP(
+    () => {
       const panel = panelRef.current;
       if (selectedCard === null || panel === null) return;
 
-      const reduceMotion = window.matchMedia(REDUCE_MOTION_QUERY).matches;
       if (reduceMotion) {
         gsap.set(panel, { autoAlpha: 1, clearProps: "transform" });
         return;
@@ -301,7 +305,7 @@ export function MonadCardsClient({ cards }: MonadCardsClientProps) {
 
       return () => matchMedia.revert();
     },
-    { dependencies: [selectedCard], scope: panelRef },
+    { dependencies: [selectedCard, reduceMotion], scope: panelRef },
   );
 
   return (
@@ -316,9 +320,13 @@ export function MonadCardsClient({ cards }: MonadCardsClientProps) {
           </clipPath>
         </defs>
       </svg>
-      <ul className="monad-topic-list" aria-label="Monad topics">
+      <ul
+        ref={topicListRef}
+        className="monad-topic-list"
+        aria-label="Monad topics"
+      >
         {cards.map((card) => (
-          <li key={card.id} className="monad-topic-item">
+          <li key={card.id} className="monad-topic-item" data-monad-topic>
             <button
               id={card.anchorId}
               type="button"

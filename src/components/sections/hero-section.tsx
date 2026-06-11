@@ -10,14 +10,14 @@ export function HeroSection() {
   const titleLines = heroSection.title.split("\n");
 
   return (
-    <section className="hero-section">
+    <section id={heroSection.id} className="hero-section">
       <HeroWebglBackground />
 
       <div className="hero-container">
         {/* Title + subtitle + CTAs */}
         <div className="flex w-full flex-1 flex-col items-center gap-5 text-center sm:max-w-xl sm:flex-initial sm:items-start sm:gap-6 sm:text-left md:gap-16 md:py-24 lg:max-w-3xl lg:gap-10">
           <div className="flex flex-1 flex-col gap-4 sm:flex-initial sm:gap-4 md:gap-10 lg:gap-6">
-            <HeaderUpcomingEvent className="mb-8 inline-flex self-center sm:hidden" />
+            <HeaderUpcomingEvent className="-mt-4 mb-8 inline-flex self-center sm:hidden" />
 
             <h1 className="font-mona text-[2.25rem] leading-[1.05] font-semibold text-text-primary sm:text-hero-mobile md:text-hero lg:text-[3.25rem] lg:leading-none">
               {titleLines.map((line, i) => (
@@ -78,7 +78,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <a
+      <HashLink
         href={siteLinks.mission.href}
         className="hero-scroll-cue"
         data-hero-scroll-cue
@@ -89,7 +89,7 @@ export function HeroSection() {
           className="hero-scroll-cue-icon"
           strokeWidth={2.25}
         />
-      </a>
+      </HashLink>
     </section>
   );
 }

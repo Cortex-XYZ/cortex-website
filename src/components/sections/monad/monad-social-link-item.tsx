@@ -30,6 +30,7 @@ export function MonadSocialLinkItem({
           rel="noopener noreferrer"
           aria-label={ariaLabel}
           className="monad-social-link"
+          data-monad-social-link
           data-monad-link-key={linkKey}
         >
           {children}
