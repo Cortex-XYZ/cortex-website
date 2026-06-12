@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HashLink } from "@/components/hash-link";
+import { HomeLink } from "@/components/home-link";
 import { CortexButton } from "@/components/cortex-button";
 import { CortexMark } from "@/components/logos/cortex-mark";
 import { CortexWordmark } from "@/components/logos/cortex-wordmark";
@@ -121,14 +122,14 @@ export function SiteFooter() {
           {/* Brand lockup + link columns — mobile: middle, desktop: top */}
           <div className="site-footer-brand-nav">
             <div className="site-footer-brand">
-              <Link
+              <HomeLink
                 href="/"
                 aria-label="Cortex Global home"
                 className="site-footer-home-link"
               >
                 <CortexMark className="site-footer-mark" />
                 <CortexWordmark className="site-footer-wordmark" />
-              </Link>
+              </HomeLink>
               <p className="site-footer-tagline">
                 {TAGLINE_LINES.map((line) => (
                   <span key={line} className="block">

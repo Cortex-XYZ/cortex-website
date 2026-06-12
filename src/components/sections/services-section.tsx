@@ -1,13 +1,19 @@
+import dynamic from "next/dynamic";
 import type { CSSProperties } from "react";
 import { HashLink } from "@/components/hash-link";
 import { CtaArrow } from "@/components/icons/cta-arrow";
-import { SectionDivider } from "@/components/section-divider";
 import {
   servicesSection,
   type ServiceCard,
   type ServiceVisualVariant,
 } from "@/lib/content/services";
 import { splitTrailingAccent } from "@/lib/split-trailing-accent";
+
+const ServicesScrollMotion = dynamic(() =>
+  import("@/components/sections/services/services-scroll-motion").then(
+    (mod) => mod.ServicesScrollMotion,
+  ),
+);
 
 type BlobConfig = {
   color: string;
@@ -71,42 +77,50 @@ export function ServicesSection() {
   const servicesTitleLines = servicesTitle.split("\n");
 
   return (
-    <section className="services-section" id="services" data-services-section>
-      <div className="site-container section-intro" data-services-header>
-        <h2 className="section-title services-title">
-          {servicesTitleLines.map((line, index) => (
-            <span key={line} className="services-title-line">
-              {line}
-              {index === servicesTitleLines.length - 1 &&
-              servicesTitleAccent ? (
-                <span className="text-action-primary">
-                  {servicesTitleAccent}
-                </span>
-              ) : null}
-            </span>
-          ))}
-        </h2>
-        <p className="services-description">{servicesSection.description}</p>
-      </div>
-
-      <div className="site-container">
-        <div className="services-grid" data-services-grid>
-          {servicesSection.cards.map((card) => (
-            <ServiceCardItem key={card.id} card={card} />
-          ))}
-          <HashLink
-            href={servicesSection.cta.href}
-            className="service-cta-card"
-            data-services-cta
-          >
-            <span className="service-cta-title">
-              {servicesSection.cta.label}
-            </span>
-            <CtaArrow className="service-cta-arrow" aria-hidden="true" />
-          </HashLink>
+    <section
+      className="services-section"
+      id="services"
+      data-services-section
+      data-services-enter-pending
+    >
+      <ServicesScrollMotion>
+        <div className="site-container section-intro" data-services-header>
+          <h2 className="section-title services-title" data-services-title>
+            {servicesTitleLines.map((line, index) => (
+              <span key={line} className="services-title-line">
+                {line}
+                {index === servicesTitleLines.length - 1 &&
+                servicesTitleAccent ? (
+                  <span className="text-action-primary">
+                    {servicesTitleAccent}
+                  </span>
+                ) : null}
+              </span>
+            ))}
+          </h2>
+          <p className="services-description" data-services-description>
+            {servicesSection.description}
+          </p>
         </div>
-        <SectionDivider variant="orange-reverse" />
-      </div>
+
+        <div className="site-container">
+          <div className="services-grid" data-services-grid>
+            {servicesSection.cards.map((card) => (
+              <ServiceCardItem key={card.id} card={card} />
+            ))}
+            <HashLink
+              href={servicesSection.cta.href}
+              className="service-cta-card"
+              data-services-cta
+            >
+              <span className="service-cta-title">
+                {servicesSection.cta.label}
+              </span>
+              <CtaArrow className="service-cta-arrow" aria-hidden="true" />
+            </HashLink>
+          </div>
+        </div>
+      </ServicesScrollMotion>
     </section>
   );
 }

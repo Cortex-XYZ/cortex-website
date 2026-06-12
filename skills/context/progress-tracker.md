@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-All seven homepage sections are built and wired. Homepage order: Hero, Mission, History, Team, Monad, Services, Events. Global footer and header ship in layout. Focus shifts to visual polish and hero treatment.
+All seven homepage sections are built, wired, and animated (scroll-driven entrances, hash navigation, hero WebGL globe). Homepage order: Hero, Mission, History, Team, Monad, Services, Events. Global footer and header ship in layout. Focus shifts to og/SEO.
 
 ## Completed
 
@@ -11,7 +11,7 @@ All seven homepage sections are built and wired. Homepage order: Hero, Mission, 
 - Brand guidance (`skills/BRAND.md`), design system (`skills/DESIGN.md`), agent context (`skills/context/`).
 - Design tokens mapped to CSS custom properties + Tailwind 4 `@theme inline` in `globals.css`.
 - `CortexButton` wrapper with Cortex token variants (Primary, Subtle Outline, Secondary, Ghost).
-- GSAP + ScrollTrigger motion runtime; `gsap-setup.ts` shared module. ScrollSmoother deferred post-launch.
+- GSAP + ScrollTrigger motion runtime; `gsap-setup.ts` shared module, reveal helpers in `scroll-trigger.ts`, post-mount setup via `gsap-defer-setup.ts`. ScrollSmoother deferred post-launch.
 - Shared hooks: `use-reduced-motion`, `use-is-desktop`, `use-on-mount`.
 - Five Pattern Studio animated SVG starters in `skills/examples/` (algorithmic generation, no static SVG deps).
 - CI workflow: Bun setup, frozen lockfile, lint, typecheck, build.
@@ -20,12 +20,19 @@ All seven homepage sections are built and wired. Homepage order: Hero, Mission, 
 ### Sections
 
 - **Hero** -- full-bleed with isolated `HeroWebglBackground` layer, responsive typography, inner `.site-container`. Interactive WebGL globe (R3F/Three.js) in `src/components/webgl/globe/` (surface, hubs, arcs, atmosphere, starfield, shaders, layout, colors modules); baked static WebP/PNG fallback for mobile (`<1024px`), no-WebGL, and reduced motion via `hero-globe-static.ts` + `GlobeCanvasErrorBoundary`. Hero copy uses `.hero-*` component classes in `globals.css`; CTAs use `HashLink`.
-- **Mission** -- desktop accordion cards, mobile snap carousel with pagination dots, per-card illustrations, reduced-motion support. Card height capped via `min(px, dvh)` for viewport fit. Illustration placements use dvh-based responsive sizing.
+- **Mission** -- desktop accordion cards with scroll pin-stack, mobile snap carousel with pagination dots, per-card illustrations, reduced-motion support. Card height capped via `min(px, dvh)` for viewport fit. Illustration placements use dvh-based responsive sizing.
 - **History** -- timeline section.
 - **Team** -- team member cards. Member names link to X profile (tappable on mobile/tablet).
 - **Monad** -- GSAP hover/dialog animations, `MonadCardsClient` with Radix dialog (desktop) + Sheet (mobile), `TooltipProvider` in layout.
 - **Services** -- blob-based static gradient cards with conic-gradient hover animation on CTA tile, responsive layout. Shared `section-title` / `section-intro` classes. Old `--gradient-service-*` CSS vars removed.
 - **Events** -- static `CortexEvent` content (CONNEX Tech Fest), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), hourly ISR date filtering.
+
+### Motion
+
+- Scroll entrances for History, Events, Services, Team, Monad: per-section `*-enter.ts` + `*-scroll-motion.tsx` client islands, tunables in `*-scroll.ts`; SSR-safe pending states (`[data-*-enter-pending]`) in `globals.css`.
+- Mission desktop: entrance sequence + ScrollTrigger pin-stack with discrete scroll steps; click-to-expand and reduced-motion behavior preserved.
+- Hash scroll spy keeps `/#section` in sync while scrolling (`history.replaceState`); smooth scroll for short hops, instant beyond ~1.25 viewports; resilient to interrupted tweens and deep links into client-only islands (MutationObserver retry).
+- Global scroll-to-top FAB; hero scroll cue routes through `HashLink`; `html` uses `scroll-auto` (CSS smooth scroll conflicts with ScrollTrigger).
 
 ### Layout
 
@@ -55,13 +62,18 @@ All seven homepage sections are built and wired. Homepage order: Hero, Mission, 
 ## Open Questions
 
 - Final CONNEX copy and Luma event URL before launch.
-- Events scroll-enter animation wired but not triggered yet.
 
 ## Next Steps
 
-1. Scroll-triggered section entrance animations.
-2. Visual polish pass across all sections.
+1. og image and description.
+2. SEO, tracking, analytics.
+3. Terms of use and privacy policy pages.
+4. Staking page.
 
 ## Latest Handoff
 
-Shipped the hero visual treatment: interactive hero WebGL globe with static fallbacks, same-page hash navigation, header upcoming-event promo with hourly ISR, hero CSS component classes, deferred GSAP/Mission bundles, and dedup of typography/radius tokens in `globals.css` (literals in `:root`, `@theme inline` maps via `var()`). Added deps: `three`, `@react-three/fiber`, `@react-three/drei`, `@types/three`. Verified `bun run typecheck` and `bun run lint`; sandbox `bun run build` failed only on the restricted Google Fonts fetch — confirm with a local build.
+Shipped scroll-driven section animations (ported from stage-2). `ScrollTrigger` registered in `gsap-setup.ts`; shared reveal helpers in `scroll-trigger.ts` (`createBatchReveal`, `createScrollReveal`, reduced-motion resting state). Each section gets a code-split client island — `*-enter.ts` + `*-scroll-motion.tsx` with tunables in `*-scroll.ts` — for History, Events, Services, Team, and Monad. Mission desktop adds an entrance sequence plus a ScrollTrigger pin-stack (`mission-entrance.ts`, `mission-pin-stack.ts`) that advances cards on discrete scroll steps while preserving click-to-expand; reduced motion keeps click-only. Monad topic cards render client-only via `monad-topic-cards.tsx` (`ssr: false`) to avoid hydrating GSAP inline styles (orphaned `monad-cards-static.tsx` removed). Global scroll-to-top FAB (`scroll-to-top-button.tsx`) fades in past the header scroll threshold.
+
+Hash navigation (`hash-navigation.ts`): scroll spy updates `/#section` via `history.replaceState` while scrolling and pauses during programmatic scroll; hash links use GSAP smooth scroll for short hops, instant jump beyond ~1.25 viewport heights; `html` uses `scroll-auto` since CSS smooth scroll fights ScrollTrigger. Hardening on top of the port: the spy resumes when a tween is interrupted (`onAutoKill`/`onComplete` → shared settle), deep links into not-yet-mounted client islands retry via MutationObserver (3s cap), and the hero scroll cue routes through `HashLink` for header-offset-aware scrolling. Behavior verified with Playwright checks; `bun run typecheck` and `bun run lint` pass.
+
+Previously: hero WebGL globe with static fallbacks, header upcoming-event promo with hourly ISR, and `globals.css` token dedup. Deps added then: `three`, `@react-three/fiber`, `@react-three/drei`, `@types/three`.

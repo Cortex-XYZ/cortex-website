@@ -16,7 +16,8 @@ export function SectionDivider({
   className,
 }: SectionDividerProps) {
   return (
-    <hr
+    <div
+      role="separator"
       className={`section-divider ${VARIANT_CLASS[variant]}${className ? ` ${className}` : ""}`}
       aria-hidden="true"
     />
