@@ -83,16 +83,19 @@ export function GlobeCanvas({
   reducedMotion,
   rotationY,
   onReady,
+  active = true,
 }: {
   reducedMotion: boolean;
   rotationY: number;
   onReady?: () => void;
+  /** When false (hero off-screen), the frameloop idles to save CPU/GPU. */
+  active?: boolean;
 }) {
   return (
     <Canvas
       dpr={resolveGlobeDpr()}
       resize={{ scroll: false }}
-      frameloop={reducedMotion ? "demand" : "always"}
+      frameloop={reducedMotion || !active ? "demand" : "always"}
       gl={{
         antialias: true,
         alpha: true,

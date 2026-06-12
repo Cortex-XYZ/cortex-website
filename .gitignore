@@ -42,3 +42,4 @@ next-env.d.ts
 
 # Local reference bundle (raw Figma exports, drop-in stubs) — not for the repo.
 claude-code-handoff
+.lighthouse
