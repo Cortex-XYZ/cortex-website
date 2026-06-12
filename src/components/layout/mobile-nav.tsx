@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { HashLink } from "@/components/hash-link";
+import { reconcileHashFocusOnDialogClose } from "@/lib/hash-navigation";
 import { useState } from "react";
 import { ArrowRight, ChevronDown, X } from "lucide-react";
 import {
@@ -10,7 +11,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { CortexMark } from "@/components/logos/cortex-mark";
-import { ctaButton, navItems } from "@/lib/content/nav";
+import { aboutNavItem, ctaButton, directNavLinks } from "@/lib/content/nav";
 import { cn } from "@/lib/utils";
 
 interface MobileNavProps {
@@ -21,11 +22,6 @@ interface MobileNavProps {
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const [isAboutOpen, setIsAboutOpen] = useState(true);
 
-  const aboutItem = navItems.find((item) => item.megaNav);
-  const directLinks = navItems.filter(
-    (item): item is { label: string; href: string } => !item.megaNav,
-  );
-
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
       <SheetContent
@@ -33,8 +29,13 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         showCloseButton={false}
         aria-describedby={undefined}
         className="mobile-nav-panel"
+        onCloseAutoFocus={(event) => {
+          if (reconcileHashFocusOnDialogClose()) {
+            event.preventDefault();
+          }
+        }}
       >
-        <SheetTitle className="sr-only">Navigati on</SheetTitle>
+        <SheetTitle className="sr-only">Navigation</SheetTitle>
 
         {/* Top bar */}
         <div className="mobile-nav-topbar">
@@ -48,7 +49,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
         {/* Nav items */}
         <nav className="flex flex-1 flex-col overflow-y-auto px-6 pt-4">
-          {aboutItem?.megaNav && (
+          {aboutNavItem?.megaNav && (
             <>
               <button
                 className="flex w-full items-center justify-between py-4 text-left"
@@ -56,7 +57,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 aria-expanded={isAboutOpen}
               >
                 <span className="mobile-nav-primary-text">
-                  {aboutItem.label}
+                  {aboutNavItem.label}
                 </span>
                 <ChevronDown
                   className={cn(
@@ -74,7 +75,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               >
                 <div className="overflow-hidden">
                   <div className="flex flex-col pb-3 pl-2 pt-1">
-                    {aboutItem.megaNav.map((column, i) => (
+                    {aboutNavItem.megaNav.map((column, i) => (
                       <div key={column.heading}>
                         {i > 0 && (
                           <div className="my-5 h-px w-full bg-neutral-neural-dark" />
@@ -84,7 +85,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                             {column.heading}
                           </p>
                           {column.links.map((link) => (
-                            <Link
+                            <HashLink
                               key={link.href}
                               href={link.href}
                               onClick={onClose}
@@ -93,7 +94,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                               <span className="mobile-nav-link-label">
                                 {link.label}
                               </span>
-                            </Link>
+                            </HashLink>
                           ))}
                         </div>
                       </div>
@@ -104,29 +105,29 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             </>
           )}
 
-          {directLinks.map((item) => (
-            <Link
+          {directNavLinks.map((item) => (
+            <HashLink
               key={item.href}
               href={item.href}
               onClick={onClose}
               className="mobile-nav-primary-text block py-4"
             >
               {item.label}
-            </Link>
+            </HashLink>
           ))}
         </nav>
 
         {/* CTA */}
         <div className="shrink-0">
           <div className="h-px w-full bg-neutral-neural-dark" />
-          <Link
+          <HashLink
             href={ctaButton.href}
             onClick={onClose}
             className="group flex items-center justify-between px-6 py-5 text-brand-cortex-orange plausible-event-name=CTA+Click plausible-event-location=mobile-nav plausible-event-label=stake"
           >
             <span className="mobile-nav-cta-label">{ctaButton.label}</span>
             <ArrowRight className="size-6 animate-arrow-move-right mr-1.5" />
-          </Link>
+          </HashLink>
           <div className="h-1 w-full bg-brand-cortex-orange" />
         </div>
       </SheetContent>

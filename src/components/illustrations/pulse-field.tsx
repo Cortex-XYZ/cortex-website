@@ -1,11 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, useGSAP } from "@/lib/gsap-setup";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(useGSAP);
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const CENTER = 300;
@@ -35,6 +33,7 @@ type Props = {
 // it just runs the wave while active and shows a populated static frame
 // (baseline radii) when inactive or when reduced motion is requested.
 export function PulseField({ active, className }: Props) {
+  const reduceMotion = useReducedMotion();
   const dotLayerRef = useRef<SVGGElement>(null);
 
   useGSAP(
@@ -63,11 +62,6 @@ export function PulseField({ active, className }: Props) {
           dots.push({ circle, baseRadius, distance });
         }
       }
-
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       if (!active || reduceMotion) {
         return () => {
           dots.forEach(({ circle }) => circle.remove());
@@ -114,7 +108,7 @@ export function PulseField({ active, className }: Props) {
         dots.forEach(({ circle }) => circle.remove());
       };
     },
-    { dependencies: [active], revertOnUpdate: true, scope: dotLayerRef },
+    { dependencies: [active, reduceMotion], revertOnUpdate: true, scope: dotLayerRef },
   );
 
   return (

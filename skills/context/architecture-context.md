@@ -48,9 +48,12 @@ All app code lives under `src/`. Use a structure close to:
 ```txt
 src/
   app/
-    layout.tsx              # mounts Navbar + Footer; loads fonts; metadata defaults
-    page.tsx                # composes sections in order
+    layout.tsx              # root layout: fonts, metadata, SiteHeader. No footer (so 404 has no footer)
+    not-found.tsx           # 404 page (uses root layout only)
     globals.css             # CSS custom properties + @theme inline + @layer components
+    (site)/
+      layout.tsx            # site layout: flex-1 wrapper + SiteFooter
+      page.tsx              # composes sections in order
   components/
     cortex-button.tsx       # Cortex-styled wrapper over shadcn Button
     ui/                     # generated shadcn primitives — DO NOT edit
@@ -87,11 +90,14 @@ Keep section ownership clear so teammates can work in parallel:
 
 Global chrome lives in `src/components/layout/`:
 
-- `src/components/layout/site-header.tsx`
+- `src/components/layout/site-header.tsx` — server component composing client islands
+- `src/components/layout/header/site-header-shell.tsx` — client: scroll detection (`data-scrolled`)
+- `src/components/layout/header/header-mega-nav.tsx` — client: About dropdown with escape/click-outside
+- `src/components/layout/header/site-header-mobile-menu.tsx` — client: lazy-loaded MobileNav via `next/dynamic`
 - `src/components/layout/mobile-nav.tsx`
 - `src/components/layout/site-footer.tsx`
 
-For v1, `site-header.tsx` should implement the desktop `About` mega nav from Figma, while `Services` and `Contact` stay direct top-level links. The nav should read from `src/lib/content/nav.ts` so later top-level mega nav groups can be added without rewriting the header structure. `mobile-nav.tsx` should mirror the same nav content with nested groups inside the hamburger sheet.
+For v1, `site-header.tsx` implements the desktop `About` mega nav from Figma, while `Services` and `Contact` stay direct top-level links. The nav reads from `src/lib/content/nav.ts` so later top-level mega nav groups can be added without rewriting the header structure. `mobile-nav.tsx` mirrors the same nav content with nested groups inside the hamburger sheet.
 
 ## Data And Content
 
@@ -104,12 +110,14 @@ Recommended pattern:
 - no CMS or external content source yet
 - revisit content source later based on team workflow and editing needs
 
+The root layout and homepage route export `revalidate = EVENTS_DATE_REVALIDATE_SECONDS` (3600) from `src/lib/events/upcoming.ts` so date-aware event UI—`HeaderUpcomingEvent` in the site header and `EventsSection` on the homepage—can re-run filtering after event dates pass without a manual rebuild. Event content is still hardcoded TypeScript, so hourly revalidation only refreshes which events are shown—not content from an external source. Events whose `date` is earlier than the current UTC `YYYY-MM-DD` are hidden from the Upcoming Events list; when no upcoming events remain, the Events section renders only its follow-up bridge copy.
+
 ## Invariants
 
 - The site is dark-first.
 - Cortex Orange is the primary action color.
 - Buttons use Cortex variants, not default shadcn visuals.
-- Service-card shaders use approved design-system color recipes.
+- Service Card visual surfaces use approved design-system color recipes. Runtime WebGL shader versions, when introduced, need static mobile/tablet and reduced-motion fallbacks.
 - Hero WebGL backgrounds use Cortex brand-pattern concepts such as nodes, edges, mesh, and approved palette fallbacks.
 - Layout is responsive and token-driven, not hardcoded to a 1440px canvas.
 - Accessibility and mobile behavior are implementation requirements, not cleanup tasks.

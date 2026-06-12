@@ -1,28 +1,32 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { memo, useCallback, useRef, useState, type ReactNode } from "react";
 import {
-  memo,
-  useCallback,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+  MissionIllustration,
+  MissionIllustrationFallback,
+} from "@/components/illustrations/mission-illustration";
+import { DESKTOP_MQL, useIsDesktop } from "@/hooks/use-is-desktop";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-setup";
 import { cn } from "@/lib/utils";
-import { MISSION_CARD_HEIGHT_STYLE } from "@/components/sections/mission/mission-layout";
-import type {
-  MissionCard,
-  MissionCardId,
-  MissionPattern,
-} from "@/lib/content/mission";
-import type { ComponentType } from "react";
-
-type IllustrationProps = {
-  active: boolean;
-  className?: string;
-};
-
-type IllustrationComponent = ComponentType<IllustrationProps>;
+import {
+  MISSION_CARD_COLLAPSED_WIDTH_STYLE,
+  MISSION_CARD_EXPANDED_WIDTH_STYLE,
+  MISSION_CARD_HEIGHT_STYLE,
+  MISSION_STACK_INTRO_WIDTH_STYLE,
+} from "@/components/sections/mission/mission-layout";
+import {
+  setMissionEntranceRestingState,
+  setupMissionEntrance,
+} from "@/components/sections/mission/mission-entrance";
+import {
+  createMissionStackScrollTrigger,
+  getMissionStackIndex,
+  getMissionStackScrollTop,
+  type MissionClickScroll,
+  type MissionStackScrollHandle,
+} from "@/components/sections/mission/mission-pin-stack";
+import type { MissionCard, MissionCardId } from "@/lib/content/mission";
 
 type MissionIllustrationPlacement = {
   topClass: string;
@@ -33,108 +37,35 @@ type MissionCardsProps = {
   cards: readonly MissionCard[];
 };
 
+type MissionDesktopStackProps = MissionCardsProps & {
+  intro: ReactNode;
+};
+
 const MISSION_COLLAPSED_EYEBROW_CLASS =
   "mission-eyebrow mission-collapsed-card-eyebrow";
 
-const PulseField = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/pulse-field").then((m) => ({
-      default: m.PulseField,
-    })),
-  { ssr: false },
-);
-const DotOrbits = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/dot-orbits").then((m) => ({
-      default: m.DotOrbits,
-    })),
-  { ssr: false },
-);
-const SteppedLattice = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/stepped-lattice").then((m) => ({
-      default: m.SteppedLattice,
-    })),
-  { ssr: false },
-);
-const RadiatingSegments = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/radiating-segments").then((m) => ({
-      default: m.RadiatingSegments,
-    })),
-  { ssr: false },
-);
-const NodeMesh = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/node-mesh").then((m) => ({
-      default: m.NodeMesh,
-    })),
-  { ssr: false },
-);
-
-const ILLUSTRATIONS = {
-  "pulse-field": PulseField,
-  "dot-orbits": DotOrbits,
-  "stepped-lattice": SteppedLattice,
-  "radiating-segments": RadiatingSegments,
-  "node-mesh": NodeMesh,
-} satisfies Record<MissionPattern, IllustrationComponent>;
-
 const MISSION_ILLUSTRATION_PLACEMENTS = {
   pulse: {
-    topClass: "top-[12.5rem] md:top-[14.5rem] xl:top-[20rem]",
-    sizeClass: "size-[13.5rem] md:size-[22rem] xl:size-[24rem]",
+    topClass: "top-[12.5rem] md:top-[14.5rem] xl:top-[60%] xl:-translate-y-1/2",
+    sizeClass: "size-[13.5rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
   },
   disciplines: {
-    topClass: "top-[12rem] md:top-[14rem] xl:top-[17.5rem]",
-    sizeClass: "size-[13rem] md:size-[22rem] xl:size-[24rem]",
+    topClass: "top-[12rem] md:top-[14rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
+    sizeClass: "size-[13rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
   },
   collections: {
-    topClass: "top-[13.5rem] md:top-[14.5rem] xl:top-[21.1rem]",
-    sizeClass: "size-[11.5rem] md:size-[20rem] xl:size-[21.25rem]",
+    topClass: "top-[13.5rem] md:top-[14.5rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
+    sizeClass: "size-[11.5rem] md:size-[20rem] xl:size-[clamp(16rem,36dvh,24rem)]",
   },
   ideas: {
-    topClass: "top-[12.8rem] md:top-[14.5rem] xl:top-[18rem]",
-    sizeClass: "size-[14rem] md:size-[22rem] xl:size-[24rem]",
+    topClass: "top-[12.8rem] md:top-[14.5rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
+    sizeClass: "size-[14rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
   },
   culture: {
-    topClass: "top-[14.5rem] md:top-[15.5rem] xl:top-[22.5rem]",
-    sizeClass: "size-[11.5rem] md:size-[18rem] xl:size-[20rem]",
+    topClass: "top-[14.5rem] md:top-[15.5rem] xl:top-[60%] xl:-translate-y-1/2",
+    sizeClass: "size-[11.5rem] md:size-[18rem] xl:size-[clamp(16rem,36dvh,24rem)]",
   },
 } satisfies Record<MissionCardId, MissionIllustrationPlacement>;
-
-const DESKTOP_MQL = "(min-width: 1280px)";
-
-let desktopMediaQuery: MediaQueryList | null = null;
-
-function getDesktopMediaQuery(): MediaQueryList {
-  if (desktopMediaQuery === null) {
-    desktopMediaQuery = window.matchMedia(DESKTOP_MQL);
-  }
-  return desktopMediaQuery;
-}
-
-function subscribeDesktop(onChange: () => void): () => void {
-  const mql = getDesktopMediaQuery();
-  mql.addEventListener("change", onChange);
-  return () => mql.removeEventListener("change", onChange);
-}
-
-function getDesktopSnapshot(): boolean {
-  return getDesktopMediaQuery().matches;
-}
-
-function getDesktopServerSnapshot(): boolean {
-  return false;
-}
-
-function useIsDesktop() {
-  return useSyncExternalStore(
-    subscribeDesktop,
-    getDesktopSnapshot,
-    getDesktopServerSnapshot,
-  );
-}
 
 const MissionExpandedCard = memo(function MissionExpandedCard({
   card,
@@ -146,17 +77,22 @@ const MissionExpandedCard = memo(function MissionExpandedCard({
   illustrationActive: boolean;
   className?: string;
 }) {
-  const Illustration = ILLUSTRATIONS[card.pattern];
   const { topClass, sizeClass } = MISSION_ILLUSTRATION_PLACEMENTS[card.id];
+  const illustrationClassName = cn("text-text-secondary", sizeClass);
 
   return (
     <div className={cn("mission-card-shell", className)}>
       <div className={cn("mission-card-illustration", topClass)}>
-        <Illustration
-          key={card.id}
-          active={illustrationActive}
-          className={cn("text-text-secondary", sizeClass)}
-        />
+        {illustrationActive ? (
+          <MissionIllustration
+            key={card.id}
+            pattern={card.pattern}
+            active
+            className={illustrationClassName}
+          />
+        ) : (
+          <MissionIllustrationFallback className={illustrationClassName} />
+        )}
       </div>
 
       <div className="mission-card-content">
@@ -193,46 +129,198 @@ function getClosestCarouselIndex(container: HTMLDivElement): number {
   return closestIndex;
 }
 
-export function MissionDesktopCards({ cards }: MissionCardsProps) {
+export function MissionDesktopStack({
+  cards,
+  intro,
+}: MissionDesktopStackProps) {
+  const pinRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
+  const stackScrollRef = useRef<MissionStackScrollHandle | null>(null);
+  const entranceCompleteRef = useRef(false);
+  const clickScrollRef = useRef<MissionClickScroll | null>(null);
+  const clickScrollGenerationRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const isDesktop = useIsDesktop();
+  const [entranceComplete, setEntranceComplete] = useState(false);
+  const reducedMotion = useReducedMotion();
+
+  const markEntranceComplete = useCallback(() => {
+    entranceCompleteRef.current = true;
+    setEntranceComplete(true);
+  }, []);
+
+  const setActiveIndexIfChanged = useCallback((index: number) => {
+    setActiveIndex((previous) => (previous === index ? previous : index));
+  }, []);
+
+  useGSAP(
+    () => {
+      const pin = pinRef.current;
+      const stack = stackRef.current;
+      if (!pin || !stack) return;
+
+      const matchMedia = gsap.matchMedia();
+
+      matchMedia.add(DESKTOP_MQL, () => {
+        entranceCompleteRef.current = reducedMotion;
+        setEntranceComplete(reducedMotion);
+
+        if (reducedMotion) {
+          setMissionEntranceRestingState(pin);
+          stackScrollRef.current = null;
+          return;
+        }
+
+        const cleanupEntrance = setupMissionEntrance({
+          trigger: pin,
+          onComplete: markEntranceComplete,
+        });
+
+        const stackScroll = createMissionStackScrollTrigger({
+          trigger: stack,
+          pin,
+          cardCount: cards.length,
+          onActiveIndexChange: setActiveIndexIfChanged,
+          isStackInteractionEnabled: () => entranceCompleteRef.current,
+          getClickScroll: () => clickScrollRef.current,
+        });
+
+        stackScrollRef.current = stackScroll;
+
+        return () => {
+          cleanupEntrance();
+          stackScroll.scrollTrigger.kill();
+          stackScrollRef.current = null;
+          entranceCompleteRef.current = false;
+          clickScrollRef.current = null;
+        };
+      });
+
+      return () => {
+        matchMedia.revert();
+      };
+    },
+    {
+      scope: pinRef,
+      dependencies: [
+        reducedMotion,
+        setActiveIndexIfChanged,
+        markEntranceComplete,
+        cards.length,
+      ],
+    },
+  );
+
+  const activateCard = useCallback(
+    (index: number) => {
+      if (reducedMotion) {
+        setActiveIndex(index);
+        return;
+      }
+
+      const stackScroll = stackScrollRef.current;
+      if (!stackScroll) return;
+
+      const { scrollTrigger, syncActiveIndex } = stackScroll;
+      const fromIndex = getMissionStackIndex(cards.length, scrollTrigger.progress);
+      if (fromIndex === index) return;
+
+      gsap.killTweensOf(window);
+
+      const cardDistance = Math.abs(index - fromIndex);
+      const lockIndex = cardDistance > 1;
+
+      if (lockIndex) {
+        syncActiveIndex(index);
+        setActiveIndex(index);
+      }
+
+      const generation = clickScrollGenerationRef.current + 1;
+      clickScrollGenerationRef.current = generation;
+      clickScrollRef.current = { fromIndex, targetIndex: index, lockIndex };
+      const targetScrollTop = getMissionStackScrollTop(
+        scrollTrigger,
+        cards.length,
+        index,
+      );
+
+      gsap.to(window, {
+        scrollTo: { y: targetScrollTop, autoKill: true },
+        duration: 0.28 + cardDistance * 0.16,
+        ease: "power2.inOut",
+        overwrite: true,
+        onComplete: () => {
+          if (clickScrollGenerationRef.current !== generation) return;
+          clickScrollRef.current = null;
+          syncActiveIndex(index);
+          setActiveIndex(index);
+          ScrollTrigger.update();
+        },
+      });
+    },
+    [cards.length, reducedMotion],
+  );
 
   return (
-    <div className="hidden gap-2.5 xl:flex">
-      {cards.map((card, i) => {
-        const isActive = activeIndex === i;
+    <div ref={pinRef} data-mission-pin className="hidden xl:block">
+      <div className="site-container flex flex-row items-start gap-11">
+        <div
+          className="flex shrink-0 flex-col"
+          style={{
+            ...MISSION_CARD_HEIGHT_STYLE,
+            ...MISSION_STACK_INTRO_WIDTH_STYLE,
+          }}
+        >
+          <div className="flex-1" aria-hidden />
+          <div data-mission-intro>{intro}</div>
+        </div>
 
-        return (
-          <article
-            key={card.id}
-            className={cn(
-              "mission-desktop-card-trigger",
-              isActive ? "w-[556px]" : "w-[46px]",
-            )}
-            style={MISSION_CARD_HEIGHT_STYLE}
-            aria-current={isActive ? "true" : undefined}
-          >
-            {isActive ? (
-              <MissionExpandedCard
-                card={card}
-                illustrationActive={isDesktop}
-                className="h-full border-0"
-              />
-            ) : (
-              <button
-                type="button"
-                onClick={() => setActiveIndex(i)}
-                className="mission-collapsed-card-button"
-                aria-label={card.eyebrow}
+        <div
+          ref={stackRef}
+          data-mission-stack
+          className="flex gap-2.5"
+          aria-label="Mission statement cards"
+        >
+          {cards.map((card, index) => {
+            const isActive = activeIndex === index;
+
+            return (
+              <article
+                key={card.id}
+                data-mission-card
+                data-mission-card-id={card.id}
+                data-mission-card-index={index}
+                className="mission-desktop-card-trigger"
+                style={{
+                  ...MISSION_CARD_HEIGHT_STYLE,
+                  ...(isActive
+                    ? MISSION_CARD_EXPANDED_WIDTH_STYLE
+                    : MISSION_CARD_COLLAPSED_WIDTH_STYLE),
+                }}
+                aria-current={isActive ? "true" : undefined}
               >
-                <span className={MISSION_COLLAPSED_EYEBROW_CLASS}>
-                  {card.eyebrow}
-                </span>
-              </button>
-            )}
-          </article>
-        );
-      })}
+                {isActive ? (
+                  <MissionExpandedCard
+                    card={card}
+                    illustrationActive={entranceComplete}
+                    className="h-full border-0"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => activateCard(index)}
+                    className="mission-collapsed-card-button"
+                    aria-label={card.eyebrow}
+                  >
+                    <span className={MISSION_COLLAPSED_EYEBROW_CLASS}>
+                      {card.eyebrow}
+                    </span>
+                  </button>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

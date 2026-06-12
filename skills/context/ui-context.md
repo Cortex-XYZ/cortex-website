@@ -106,9 +106,19 @@ Use it for:
 - coordinated multi-element sequences
 - optional ScrollSmoother page-level smooth scrolling when the implementation needs it
 
-Use CSS for simple hover and focus states.
+Treat motion as three implementation layers:
 
-Shader animation remains separate: shader uniforms are tuned in the shader component, while GSAP can control surrounding layout, reveal, and scroll timing.
+1. CSS UI motion: use CSS for simple hover, focus, color fades, opacity, transform, border, background, and basic open/close transitions.
+2. GSAP section motion: use GSAP, `@gsap/react`, and ScrollTrigger for section entrances, pinned sequences, coordinated reveals, and scroll-linked choreography.
+3. Visual runtime motion: keep shader/WebGL and self-animated SVG pattern loops isolated from normal content components, with static fallbacks for mobile/tablet and reduced-motion users.
+
+Shared entrance-motion values (eases, ScrollTrigger starts, durations, lifts, overlaps, staggers) live in `src/lib/motion/tokens.ts`. These tokens belong only to layer 2 and are only for repeated homepage GSAP/ScrollTrigger entrance constants.
+
+Section choreography remains section-owned. Section `*-scroll.ts` tunables files consume shared tokens, while the related `*-enter.ts`, `*-entrance.ts`, or equivalent trigger setup owns the actual effect order, such as title, copy, card, rule, or follow-up sequencing. Keep intentional section deviations as commented literals; do not re-hardcode a semantically shared entrance value inside a section file.
+
+Richer local interactions, such as dialog reveals or one-off component responses, may use local GSAP when they need coordinated sequencing or cleanup, but they should not use entrance-motion tokens unless they are part of a scroll entrance.
+
+Shader animation remains separate: shader uniforms and render loops are tuned in the shader component, while GSAP can control surrounding layout, reveal, and scroll timing. For now, homepage Service Card visuals should stay as static CSS gradient/blob surfaces using approved shader/gradient color recipes. Future dedicated service pages may add desktop-only WebGL shader moments after design approval, with static gradient or image fallbacks for mobile/tablet and reduced-motion users.
 
 Do not add a separate smooth-scroll library by default. Use ScrollSmoother only when the design needs global smooth scrolling and verify that native focus, anchors, scroll restoration, and reduced-motion behavior remain acceptable.
 
@@ -143,7 +153,7 @@ The Mission section uses a scroll-triggered card stack. Each card carries one se
 Implementation rules:
 
 - Mission Statement cards may use production adaptations of the self-animated SVG starters in `skills/examples/`.
-- Service Cards are a separate surface for the Services section and use shader-backed visuals per `skills/DESIGN.md`. Do not apply Mission Statement pattern rules to Service Cards.
+- Service Cards are a separate surface for the Services section and use service visual recipes from `skills/DESIGN.md`. Homepage Service Cards stay static CSS gradient/blob visuals for now; future dedicated service pages may add approved desktop-only WebGL shader surfaces with static fallbacks. Do not apply Mission Statement pattern rules to Service Cards.
 - Only the expanded Mission Statement card should animate. Collapsed cards stay on the resting SVG frame.
 - In production, the animated SVG lives inside the `MissionCard` component.
 - `mission-section.tsx` owns ScrollTrigger expand/collapse motion and passes an `active` prop or equivalent playback signal into each `MissionCard`.

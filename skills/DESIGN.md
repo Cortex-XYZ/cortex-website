@@ -548,7 +548,9 @@ lg: "h-[42px] rounded-full px-[30px]"
 
 ### Service Cards
 
-Service cards use shader surfaces. The shader identifies the service area while the content grid stays grounded on Cortex Carbon.
+Service Cards use service visual surfaces based on approved shader/gradient color recipes while the content grid stays grounded on Cortex Carbon.
+
+For the homepage, keep these visuals as static CSS gradient/blob surfaces unless a later implementation task explicitly adds runtime shaders. Future dedicated service pages may use desktop-only WebGL shader surfaces after visual approval, with static gradient or image fallbacks for mobile/tablet and reduced-motion users.
 
 Do not encode fixed service card width and height as global layout tokens. Use responsive grid behavior in code.
 

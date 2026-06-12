@@ -2,85 +2,90 @@
 
 ## Current Phase
 
-GitHub issue planning is complete. The production website build is ready to move into foundation implementation and parallel section work.
+All seven homepage sections are built, wired, and animated (scroll-driven entrances, hash navigation, hero WebGL globe). Homepage order: Hero, Mission, History, Team, Monad, Services, Events. Global footer and header ship in layout. Focus shifts to og/SEO.
 
 ## Completed
 
-- Created active brand guidance in `skills/BRAND.md`.
-- Created active design-system guidance in `skills/DESIGN.md`.
-- Defined primary, secondary, neutral, extended, gradient, typography, spacing, radius, button, and shader guidance in the active design system.
-- Created button variants for `Primary`, `Subtle Outline`, `Secondary`, and `Ghost`, with `Default` and `lg` sizes plus `Default`, `Hover`, and `Disabled` states.
-- Clarified that shader recipes lock colors only; motion uniforms are tuned in code.
-- Created this `skills/context/` folder for agent implementation context.
-- Added root `AGENTS.md` to point agents to the required read order.
-- Clarified documentation ownership so `BRAND.md` owns brand guidance, `DESIGN.md` owns design-system contracts, and `skills/context/` owns website implementation context.
-- Mapped Cortex design tokens into `src/app/globals.css` with CSS custom properties and Tailwind 4 `@theme inline`.
-- Converted reusable gradient CSS variables to stop-list tokens so horizontal and vertical usage can set direction locally.
-- Set the default section container contract to Tailwind default breakpoints through a named `.site-container` class.
-- Added a separate `CortexButton` wrapper in `src/components/` that extends the shadcn `Button` with Cortex token variants and placed primary/subtle-outline CTA examples on the homepage.
-- Preserved `CortexButton` typography through `tailwind-merge` by using token-backed arbitrary size and line-height utilities.
-- Set Service Cards as the canonical reusable card terminology across design, brand, and implementation context docs.
-- Services section uses **five Service Cards**, not three. Any older notes referring to three should be ignored. The cards each compose `<ServiceVisualSurface variant="service-...">` from the F6 WebGL visual runtime; placement is owned by `services-section.tsx`.
-- Set a GSAP-first scroll and motion runtime: `gsap`, `@gsap/react`, ScrollTrigger, and optional ScrollSmoother.
-- ScrollSmoother is not part of v1; use normal browser scrolling for launch and revisit global smooth scrolling after launch if the site needs it.
-- Cleaned self-animated SVG pattern rules into runnable starter-kit examples under `skills/examples/`.
-- Added five algorithmic Pattern Studio animated SVG starters and temporary homepage demos: Pulse Field, Dot Orbits, Radiating Segments, Stepped Lattice, and Node Mesh. The examples now generate geometry in code and include targeted performance refinements where needed.
-- Condensed `skills/context/ui-context.md` animation guidance so detailed per-pattern contracts live in `skills/examples/`.
-- Clarified that production Mission animated SVGs live inside `MissionCard` and only run while their card is active.
-- Created the v1 GitHub issue set for foundations, section features, polish, launch, post-launch, and remaining decisions.
-- Updated GitHub CI workflow to use Bun setup, frozen lockfile install, lint, typecheck, and build commands.
-- Reworked the hero as a full-bleed section with an isolated `HeroWebglBackground` layer and an inner `.site-container` for copy and CTAs, so the future WebGL canvas can fill the viewport without constraining content layout.
-- Added a `hero-mobile` typography token and made hero heading/body/button spacing responsive across mobile and desktop breakpoints.
-- Added typed content modules under `src/lib/content/` for hero, mission, history, team, Monad, services, events, and footer, with `nav.ts` consuming the central link registry.
-- Implemented responsive Mission section: desktop accordion card stack with bottom-aligned intro copy; mobile stacked intro, horizontal snap carousel with pagination dots, and section-owned per-card illustration placement.
-- Moved stable Mission section presentation classes into `src/app/globals.css` under `@layer components`, keeping interaction state and per-card geometry in `mission-section.tsx`.
-- Kept `src/lib/content/mission.ts` content-focused by moving Mission illustration placement classes into a typed card-ID map in `mission-section.tsx`.
-- Matched the Mission intro paragraph font-size progression to the Hero paragraph sizing: `text-body-sm` at base and `text-body` from `sm` upward, without an `xl` size jump.
-- Enabled Mission mobile/tablet carousel illustration animation if user does not have reduced motion enabled; otherwise only for the active centered card, with neighboring peek cards remaining static.
-- Built the global footer, then consolidated it (per the SiteFooter GitHub issue) into a single self-contained server component `src/components/layout/site-footer.tsx` exporting `SiteFooter`, alongside `site-header.tsx`. It contains the CTA quote block (accent-colored periods: orange / purple / amber), the newsletter (input UI only, no submit behavior — `type="button"`, no form), the contact mailto link, the About / Programs / Legal columns (single-column on mobile, 3-col row from `sm` up), inline Simple Icons social glyphs (X / Instagram / TikTok / LinkedIn / YouTube), and the copyright. Mounted globally in `src/app/layout.tsx`. The earlier split files (`sections/footer-section.tsx`, `sections/footer-newsletter.tsx`, `icons/social.tsx`) were removed in favor of this single file.
-- Moved footer-specific Tailwind utility bundles from `SiteFooter` JSX into `.site-footer-*` component classes in `src/app/globals.css`, keeping the React component focused on content mapping, quote accent logic, and social glyph selection.
-- Wired Sentry (`@sentry/nextjs` 10.x) using Next 16 instrumentation conventions: `src/instrumentation.ts` (Node + edge `register`, `onRequestError = Sentry.captureRequestError`), `src/instrumentation-client.ts` (browser init + `onRouterTransitionStart`), and `src/app/global-error.tsx` for client-rendered errors. `next.config.ts` is wrapped with `withSentryConfig` for source-map upload and per-deploy release tracking (defaults to `VERCEL_GIT_COMMIT_SHA`).
-- Wired Plausible analytics via a plain `next/script` tag in `src/app/layout.tsx`, gated on `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. Uses the `script.tagged-events.js` variant so CTA clicks can be tracked through `plausible-event-name=…` classes without any JS wiring. Tagged the four launch CTAs (header, mobile-nav, hero primary, hero secondary) with a single `CTA Click` event plus `location` + `label` props.
+### Foundations
+
+- Brand guidance (`skills/BRAND.md`), design system (`skills/DESIGN.md`), agent context (`skills/context/`).
+- Design tokens mapped to CSS custom properties + Tailwind 4 `@theme inline` in `globals.css`.
+- `CortexButton` wrapper with Cortex token variants (Primary, Subtle Outline, Secondary, Ghost).
+- GSAP + ScrollTrigger motion runtime; `gsap-setup.ts` shared module, reveal helpers in `scroll-trigger.ts`, post-mount setup via `gsap-defer-setup.ts`. ScrollSmoother deferred post-launch.
+- Shared hooks: `use-reduced-motion`, `use-is-desktop`, `use-on-mount`.
+- Five Pattern Studio animated SVG starters in `skills/examples/` (algorithmic generation, no static SVG deps).
+- CI workflow: Bun setup, frozen lockfile, lint, typecheck, build.
+- Typed content modules in `src/lib/content/` for all sections + `nav.ts`.
+
+### Sections
+
+- **Hero** -- full-bleed with isolated `HeroWebglBackground` layer, responsive typography, inner `.site-container`. Interactive WebGL globe (R3F/Three.js) in `src/components/webgl/globe/` (surface, hubs, arcs, atmosphere, starfield, shaders, layout, colors modules); baked static WebP/PNG fallback for mobile (`<1024px`), no-WebGL, and reduced motion via `hero-globe-static.ts` + `GlobeCanvasErrorBoundary`. Hero copy uses `.hero-*` component classes in `globals.css`; CTAs use `HashLink`.
+- **Mission** -- desktop accordion cards with scroll pin-stack, mobile snap carousel with pagination dots, per-card illustrations, reduced-motion support. Card height capped via `min(px, dvh)` for viewport fit. Illustration placements use dvh-based responsive sizing.
+- **History** -- timeline section.
+- **Team** -- team member cards. Member names link to X profile (tappable on mobile/tablet).
+- **Monad** -- GSAP hover/dialog animations, `MonadCardsClient` with Radix dialog (desktop) + Sheet (mobile), `TooltipProvider` in layout.
+- **Services** -- blob-based static gradient cards with conic-gradient hover animation on CTA tile, responsive layout. Shared `section-title` / `section-intro` classes. Old `--gradient-service-*` CSS vars removed.
+- **Events** -- static `CortexEvent` content (CONNEX Tech Fest), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), hourly ISR date filtering.
+
+### Motion
+
+- Scroll entrances for History, Events, Services, Team, Monad: per-section `*-enter.ts` + `*-scroll-motion.tsx` client islands, tunables in `*-scroll.ts`; SSR-safe pending states (`[data-*-enter-pending]`) in `globals.css`.
+- Mission desktop: entrance sequence + ScrollTrigger pin-stack with discrete scroll steps; click-to-expand and reduced-motion behavior preserved.
+- Hash scroll spy keeps `/#section` in sync while scrolling (`history.replaceState`); smooth scroll for short hops, instant beyond ~1.25 viewports; resilient to interrupted tweens and deep links into client-only islands (MutationObserver retry).
+- Global scroll-to-top FAB; hero scroll cue routes through `HashLink`; `html` uses `scroll-auto` (CSS smooth scroll conflicts with ScrollTrigger).
+- Hero title client island using GSAP SplitText (`type: "words"`, `mask: "words"`, `onSplit`) so the homepage H1 animates as masked word reveals on desktop (`xl` / 1280px+) while mobile and tablet show the title at rest; reduced-motion behavior and server-rendered hero markup are preserved. `HeroTitleMotion` is a thin client shell that conditionally mounts a loader (desktop + motion allowed) which dynamically imports `hero-title-enter.ts`; SplitText is registered inside that module (not `gsap-setup`) so it ships only in the desktop-only async chunk.
+- ScrollTrigger-triggered automatic line drawing for History and Team: History draws the desktop timeline line and mobile stems after their triggers enter; Team draws the desktop SVG rules and mobile divider separately from the content reveal. Both respect reduced-motion by setting lines directly to their resting drawn state.
+- Slightly slowed the Hero SplitText word reveal and Team line-draw timing after visual tuning feedback.
+- Aligned the History timeline line with milestone reveal timing: desktop line advances one segment per milestone trigger; mobile stems use the same trigger start/duration as milestone reveals.
+
+### Layout
+
+- `SiteHeader` refactored from monolithic client component into server component + client islands (`SiteHeaderShell`, `HeaderMegaNav`, `SiteHeaderMobileMenu`). Reduces client JS bundle.
+- Header upcoming-event promo: `HeaderUpcomingEvent` / `HeaderUpcomingEventLink` render the next event (from `src/lib/events/upcoming.ts`, shared with the Events section; hourly ISR via `EVENTS_DATE_REVALIDATE_SECONDS`) in the desktop header and mobile hero. Header scroll state lives in `src/lib/layout/site-header-scroll.ts`.
+- Same-page hash navigation: `HashLink` + `HashScrollSync` (`src/lib/hash-navigation.ts`) fix `/#section` links when already on `/`; wired through hero CTAs, header, mobile nav, footer, and services CTA. Root layout wraps `{children}` in `Suspense` with `RouteLoadingShell`.
+- `SiteFooter` server component: CTA quote block, newsletter input (UI only), contact mailto, About/Programs/Legal columns, social glyphs (X/Instagram/TikTok/LinkedIn/YouTube), copyright. Module-scope hoisted constants (`QUOTE_LINES`, `TAGLINE_LINES`, `SOCIAL_LINKS`).
+- `(site)` route group: `page.tsx` and site-specific layout (with `SiteFooter` + `flex-1` wrapper) live under `src/app/(site)/`. Root `layout.tsx` has header only — `not-found.tsx` stays at root so the 404 page renders without footer.
+- `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
+- Footer and mission presentation classes extracted to `@layer components` in `globals.css`.
+
+### Observability
+
+- Sentry (`@sentry/nextjs` 10.x): `src/instrumentation.ts` (Node + edge register, `onRequestError`), `src/instrumentation-client.ts` (browser init + `onRouterTransitionStart`), `src/app/global-error.tsx`. `next.config.ts` wrapped with `withSentryConfig` for source-map upload and per-deploy release tracking via `VERCEL_GIT_COMMIT_SHA`.
+- Plausible analytics via `next/script` in root layout, gated on `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. Uses `script.tagged-events.js`; CTAs tagged with `plausible-event-name=CTA+Click`, `plausible-event-location`, and `plausible-event-label` data attributes.
 
 ## Decisions
 
-- `skills/DESIGN.md` defines the design system.
-- `skills/BRAND.md` defines brand voice, naming, logo rules, and non-UI asset behavior.
-- `skills/context/` defines implementation context: product, architecture, UI mapping, code standards, workflow, and progress.
-- Tailwind 4 and shadcn/ui should be used for the production website.
-- Bun is the default package manager and script runner for the production website.
-- GSAP, `@gsap/react`, ScrollTrigger, and optional ScrollSmoother should be used for coordinated website UI animation and scroll-linked motion.
-- Do not add a separate smooth-scroll dependency by default; use ScrollSmoother only if the website needs a global polished scroll layer.
-- All five Pattern Studio starters (Pulse Field, Dot Orbits, Radiating Segments, Stepped Lattice, Node Mesh) use algorithmic SVG generation with no static SVG file dependencies. This is the standard approach: generate geometry in code and animate with GSAP.
-- `skills/examples/` can be imported by temporary demo pages as a starter kit; production sections should adapt examples into `src/components/`.
-- React Three Fiber, @react-three/drei, and Three.js should be used for shader or 3D moments when real runtime rendering is needed.
-- Files and folders should use kebab-case; React component exports can stay PascalCase.
-- Design tokens should map through `src/app/globals.css` and Tailwind 4 `@theme inline`, then components should use semantic Tailwind utilities directly or compose reusable named classes in `@layer components` with `@apply`, like `.site-container`, rather than raw hex values or a default `lib/design-tokens.ts` file.
-- shadcn is used as a component API/accessibility base, not as a visual source to copy blindly.
-- Layout should be responsive and token-driven, not hardcoded from a 1440px mockup.
-- Reusable gradient CSS variables should store color stops, while `linear-gradient()` direction should be composed at the usage site unless direction is itself a design-system contract.
-- Standard page sections should use `.site-container` before introducing custom layout tokens or breakpoints.
-- `.site-container` uses Tailwind `@apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12`.
-- The app root loads Mona Sans and Open Sans once with `next/font/google`; Tailwind font utilities expose `font-mona` and `font-open`.
-- `src/components/ui/` is reserved for generated shadcn/ui components; custom Cortex components and wrappers live in `src/components/` outside `ui/`.
-- Service Cards are the canonical name for shader-backed service surfaces; future section code should use `services-section.tsx`.
-- D3 (analytics provider) → Plausible. Brochure-site scope needs pageviews, sources, top pages, and CTA events — Plausible covers that at ~1 KB with no cookies and is EU-friendly by default. PostHog rejected (SaaS-funnel-shaped, ~50 KB, needs a banner). GA4 rejected (mandatory EU banner, ~80 KB, degraded data without paid Ads attribution).
-- D4 (cookie-banner jurisdictions) → no banner. Plausible is cookieless and PII-free; no consent gate required for EU/UK/CA. Closed.
-- Plausible is wired via `next/script` directly (not `next-plausible`); v4 of that wrapper dropped the `domain`/`taggedEvents` props and requires a dashboard-generated script URL, which is more friction than the 6-line script tag.
-- Tagged-event convention for CTAs: a single `CTA Click` event with `plausible-event-location=<header|mobile-nav|hero|…>` and `plausible-event-label=<short identifier>` props. Reuse this shape for future CTAs instead of inventing new event names per surface.
+- Tailwind 4 + shadcn/ui (accessibility base, not visual source). Bun for package management.
+- GSAP-first animation. R3F/Three.js for shader/3D moments.
+- Tokens flow through `globals.css` + `@theme inline`; components use semantic Tailwind utilities or `@layer components` classes.
+- `.site-container`: `mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12`.
+- Fonts: Mona Sans + Open Sans via `next/font/google` (`font-mona`, `font-open`).
+- `src/components/ui/` reserved for shadcn; custom components live in `src/components/`.
+- Gradient CSS vars store stop-lists; direction composed at usage site.
+- kebab-case files/folders; PascalCase React exports.
+- Events static in `events.ts` for v1; desktop interactivity gates at `xl`.
+- Service Cards are the canonical name for Services visual surfaces; homepage cards use static CSS gradient/blob visuals in `services-section.tsx`, while future runtime shader surfaces must follow approved design-system recipes and fallback rules.
+- Shared entrance-motion values live in `src/lib/motion/tokens.ts`; section `*-scroll.ts` tunables files consume tokens and keep intentional deviations as commented literals (see `README.md` and `skills/context/ui-context.md`).
+- Current motion scope intentionally excludes a full Hero entrance timeline for tagline/CTAs, custom Mission keyboard switching beyond native controls, true scrubbed History line drawing, and a Footer/global reveal wrapper. The accepted direction is Hero title motion only, Mission click/scroll/mobile interaction, History line draw that automatically advances with milestone reveals, and section-owned reveal helpers where already useful.
+- `(site)` route group separates site pages from error pages — `SiteFooter` renders only for site routes, not `not-found.tsx`.
+- Header split into server component + client islands to minimize client JS (only scroll detection, mega nav, and mobile menu are client components).
+- Analytics → Plausible (cookieless, no consent banner required for EU/UK/CA, ~1 KB). PostHog and GA4 rejected. Plausible wired via `next/script` directly (not `next-plausible`). Tagged-event convention: `CTA Click` event + `plausible-event-location` + `plausible-event-label` props.
+- Error tracking → Sentry. Source maps and per-deploy releases gated on `SENTRY_AUTH_TOKEN` so local/preview builds are silent by default.
 
 ## Open Questions
 
+- Final CONNEX copy and Luma event URL before launch.
+
 ## Next Steps
 
-1. Build section components wired to content modules: `history-section`, `team-section`, `monad-section`, `services-section`, `events-section`.
-2. Add the hero visual treatment using the approved brand-pattern or shader direction.
+1. Preformance review and optimization.
+2. Terms of use and privacy policy pages, content review and update.
+3. og image and description.
+4. SEO, tracking, analytics.
+5. Staking page.
 
 ## Latest Handoff
 
-- Changed: completed L1 observability — Sentry instrumentation (Node, edge, browser, global-error) with source-map upload + per-deploy release tracking, and Plausible analytics with tagged-event CTA tracking. D3 closed (Plausible chosen); D4 closed (no banner needed because Plausible is cookieless).
-- Files touched: `package.json`, `bun.lock`, `next.config.ts`, `src/instrumentation.ts` (new), `src/instrumentation-client.ts` (new), `src/app/global-error.tsx` (new), `src/app/layout.tsx`, `src/components/layout/site-header.tsx`, `src/components/layout/mobile-nav.tsx`, `src/components/sections/hero-section.tsx`, `.env.example` (new), `.gitignore`, `skills/context/progress-tracker.md`.
-- Verification run: `bun run typecheck`, `bun run lint`, `bun run build` all clean.
-- Open questions: privacy policy still needs a one-line note disclosing cookieless Plausible analytics — `siteLinks.privacy` is in the nav/footer but the `/privacy` route has not been built yet (the link carries a `TODO` in `src/lib/content/links.ts:24`). Add the note as part of that page when it lands.
-- Provisioning: set Sentry env vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) in Vercel — the Sentry marketplace integration auto-sets `SENTRY_AUTH_TOKEN`. Set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` to the bare domain the site is served on; leaving it empty disables the tracker, so local/preview is silent by default.
-- Next step: continue building the remaining section components (`history-section`, `team-section`, `monad-section`, `services-section`, `events-section`, `site-footer`). The privacy-policy note is a follow-up when the `/privacy` route is built.
+Merged `chore/observability` into `dev`: Sentry instrumentation (Node, edge, browser, global-error) with source-map upload + per-deploy release tracking, and Plausible analytics with tagged-event CTA tracking (header, mobile-nav, hero primary/secondary). `next.config.ts` now carries both turbopack `projectRoot` config and the `withSentryConfig` wrapper. Root layout retains dev's `TooltipProvider` / `HashScrollSync` / `ScrollToTopButton` / `Suspense` structure with the Plausible `<Script>` tag added above it. Analytics decisions: D3 closed (Plausible chosen); D4 closed (no banner — Plausible is cookieless). Provisioning: set `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` in Vercel; set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` to the bare domain (empty = silent in local/preview).
+
+Prior dev handoff: Added hero, history, and team motion polish: hero title GSAP SplitText masked word reveal (`hero-title-enter.ts` + `hero-title-motion.tsx`), ScrollTrigger-driven automatic line drawing for History and Team, shared entrance-motion tokens in `src/lib/motion/tokens.ts`, and scroll-driven section animations for all five sections with code-split client islands. Verified `bun run typecheck`, `bun run lint`, `bun run build`.

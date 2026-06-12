@@ -75,6 +75,14 @@ export const navItems: NavItem[] = [
   { label: siteLinks.contact.label, href: siteLinks.contact.href },
 ]
 
+export type DirectNavLink = { label: string; href: string }
+
+export const aboutNavItem = navItems.find((item) => item.megaNav)
+
+export const directNavLinks = navItems.filter(
+  (item): item is DirectNavLink => !item.megaNav,
+)
+
 export const ctaButton = {
   label: siteLinks.stake.label,
   href: siteLinks.stake.href,

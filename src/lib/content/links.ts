@@ -16,7 +16,7 @@ export const siteLinks = {
   start: { label: "New here?", href: "/#mission" },
   services: { label: "Services", href: "/#services" },
   education: { label: "Education", href: "/#services" }, // TODO: Need to update for v-2 version where we will have a separate education page
-  events: { label: "Events", href: "/#services" }, // TODO: Need to update for v-2 version where we will have a separate events page
+  events: { label: "Events", href: "/#events" }, // TODO: Need to update for v-2 version where we will have a separate events page
   research: { label: "Research", href: "/#services" }, // TODO: Need to update for v-2 version where we will have a separate research page
   staking: { label: "Staking", href: "/#services" }, // TODO: Need to update for v-2 version where we will have a separate staking page
   contact: { label: "Contact", href: "/#footer" }, // TODO: Currently this is the footer contact link, but we need to update it to be the contact page link or other appropriate link
@@ -170,11 +170,11 @@ export const cortexSocialLinkKeys = [
 ] as const satisfies readonly ExternalLinkKey[];
 
 export const monadLinkKeys = [
+  "monadX",
+  "monadYouTube",
   "monadFoundation",
   "monadDocs",
   "mipland",
-  "monadYouTube",
-  "monadX",
   "categoryLabs",
 ] as const satisfies readonly ExternalLinkKey[];
 

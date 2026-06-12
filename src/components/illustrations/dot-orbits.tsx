@@ -1,11 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, useGSAP } from "@/lib/gsap-setup";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(useGSAP);
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const CENTER = 300;
@@ -62,9 +60,11 @@ function buildDotState(maxDots: number): DotState {
 
 function createOrbitDots(layer: SVGGElement, peakState: DotState): OrbitDot[] {
   return peakState.flatMap((ring, ringIndex) =>
-    ring.map((_, dotIndex) => {
+    ring.map((position, dotIndex) => {
       const circle = document.createElementNS(SVG_NS, "circle");
       circle.setAttribute("fill", "currentColor");
+      circle.setAttribute("cx", String(position.cx));
+      circle.setAttribute("cy", String(position.cy));
       circle.setAttribute("r", "0");
       layer.appendChild(circle);
       return { circle, dotIndex, ringIndex };
@@ -80,6 +80,7 @@ type Props = {
 // Static frame is the peak Max dots layout (all dots visible) per the
 // reduced-motion contract: never render an empty frame.
 export function DotOrbits({ active, className }: Props) {
+  const reduceMotion = useReducedMotion();
   const dotLayerRef = useRef<SVGGElement>(null);
 
   useGSAP(
@@ -101,15 +102,10 @@ export function DotOrbits({ active, className }: Props) {
         const target = peakState[ringIndex]?.[dotIndex];
         if (!target) return;
         gsap.set(circle, {
-          attr: { cx: target.cx, cy: target.cy, r: DOT_RADIUS },
+          attr: { r: DOT_RADIUS },
           autoAlpha: 1,
         });
       });
-
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       if (!active || reduceMotion) {
         return () => {
           dots.forEach(({ circle }) => circle.remove());
@@ -170,7 +166,7 @@ export function DotOrbits({ active, className }: Props) {
         dots.forEach(({ circle }) => circle.remove());
       };
     },
-    { dependencies: [active], revertOnUpdate: true, scope: dotLayerRef },
+    { dependencies: [active, reduceMotion], revertOnUpdate: true, scope: dotLayerRef },
   );
 
   return (
