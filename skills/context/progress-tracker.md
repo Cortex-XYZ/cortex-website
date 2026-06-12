@@ -19,7 +19,7 @@ All seven homepage sections are built and wired. Homepage order: Hero, Mission, 
 
 ### Sections
 
-- **Hero** -- full-bleed with isolated `HeroWebglBackground` layer, responsive typography, inner `.site-container`.
+- **Hero** -- full-bleed with isolated `HeroWebglBackground` layer, responsive typography, inner `.site-container`. Interactive WebGL globe (R3F/Three.js) in `src/components/webgl/globe/` (surface, hubs, arcs, atmosphere, starfield, shaders, layout, colors modules); baked static WebP/PNG fallback for mobile (`<1024px`), no-WebGL, and reduced motion via `hero-globe-static.ts` + `GlobeCanvasErrorBoundary`. Hero copy uses `.hero-*` component classes in `globals.css`; CTAs use `HashLink`.
 - **Mission** -- desktop accordion cards, mobile snap carousel with pagination dots, per-card illustrations, reduced-motion support. Card height capped via `min(px, dvh)` for viewport fit. Illustration placements use dvh-based responsive sizing.
 - **History** -- timeline section.
 - **Team** -- team member cards. Member names link to X profile (tappable on mobile/tablet).
@@ -30,6 +30,8 @@ All seven homepage sections are built and wired. Homepage order: Hero, Mission, 
 ### Layout
 
 - `SiteHeader` refactored from monolithic client component into server component + client islands (`SiteHeaderShell`, `HeaderMegaNav`, `SiteHeaderMobileMenu`). Reduces client JS bundle.
+- Header upcoming-event promo: `HeaderUpcomingEvent` / `HeaderUpcomingEventLink` render the next event (from `src/lib/events/upcoming.ts`, shared with the Events section; hourly ISR via `EVENTS_DATE_REVALIDATE_SECONDS`) in the desktop header and mobile hero. Header scroll state lives in `src/lib/layout/site-header-scroll.ts`.
+- Same-page hash navigation: `HashLink` + `HashScrollSync` (`src/lib/hash-navigation.ts`) fix `/#section` links when already on `/`; wired through hero CTAs, header, mobile nav, footer, and services CTA. Root layout wraps `{children}` in `Suspense` with `RouteLoadingShell`.
 - `SiteFooter` server component: CTA quote block, newsletter input (UI only), contact mailto, About/Programs/Legal columns, social glyphs (X/Instagram/TikTok/LinkedIn/YouTube), copyright. Module-scope hoisted constants (`QUOTE_LINES`, `TAGLINE_LINES`, `SOCIAL_LINKS`).
 - `(site)` route group: `page.tsx` and site-specific layout (with `SiteFooter` + `flex-1` wrapper) live under `src/app/(site)/`. Root `layout.tsx` has header only — `not-found.tsx` stays at root so the 404 page renders without footer.
 - `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
@@ -54,10 +56,12 @@ All seven homepage sections are built and wired. Homepage order: Hero, Mission, 
 
 - Final CONNEX copy and Luma event URL before launch.
 - Events scroll-enter animation wired but not triggered yet.
-- Shader/WebGL fills (W1) and tag chips (issue #17) tracked in GitHub issues.
 
 ## Next Steps
 
-1. Hero visual treatment (W1).
-2. Scroll-triggered section entrance animations.
-3. Visual polish pass across all sections.
+1. Scroll-triggered section entrance animations.
+2. Visual polish pass across all sections.
+
+## Latest Handoff
+
+Shipped the hero visual treatment: interactive hero WebGL globe with static fallbacks, same-page hash navigation, header upcoming-event promo with hourly ISR, hero CSS component classes, deferred GSAP/Mission bundles, and dedup of typography/radius tokens in `globals.css` (literals in `:root`, `@theme inline` maps via `var()`). Added deps: `three`, `@react-three/fiber`, `@react-three/drei`, `@types/three`. Verified `bun run typecheck` and `bun run lint`; sandbox `bun run build` failed only on the restricted Google Fonts fetch — confirm with a local build.

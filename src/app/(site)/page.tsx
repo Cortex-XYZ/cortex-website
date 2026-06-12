@@ -5,10 +5,10 @@ import { MissionSection } from "@/components/sections/mission/mission-section";
 import { MonadSection } from "@/components/sections/monad-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { TeamSection } from "@/components/sections/team-section";
-
 // Hourly ISR lets EventsSection re-run getUpcomingEvents after dates pass without a
 // rebuild. Event data is still static TypeScript, so this only refreshes visibility
 // filtering—not content from an external source. Keep until events are dynamic.
+// Must be a literal — see EVENTS_DATE_REVALIDATE_SECONDS in @/lib/events/upcoming.
 export const revalidate = 3600;
 
 export default function Home() {

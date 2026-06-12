@@ -1,4 +1,5 @@
-import Link from "next/link";
+import type { CSSProperties } from "react";
+import { HashLink } from "@/components/hash-link";
 import { CtaArrow } from "@/components/icons/cta-arrow";
 import { SectionDivider } from "@/components/section-divider";
 import {
@@ -53,7 +54,7 @@ function ServiceCardItem({ card }: { card: ServiceCard }) {
                 backgroundColor: blob.color,
                 "--blob-left": `${blob.x}%`,
                 "--blob-top": `${blob.y}%`,
-              } as React.CSSProperties
+              } as CSSProperties
             }
           />
         ))}
@@ -93,7 +94,7 @@ export function ServicesSection() {
           {servicesSection.cards.map((card) => (
             <ServiceCardItem key={card.id} card={card} />
           ))}
-          <Link
+          <HashLink
             href={servicesSection.cta.href}
             className="service-cta-card"
             data-services-cta
@@ -102,7 +103,7 @@ export function ServicesSection() {
               {servicesSection.cta.label}
             </span>
             <CtaArrow className="service-cta-arrow" aria-hidden="true" />
-          </Link>
+          </HashLink>
         </div>
         <SectionDivider variant="orange-reverse" />
       </div>

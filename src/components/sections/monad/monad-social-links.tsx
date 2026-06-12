@@ -1,25 +1,20 @@
-"use client";
-
 import {
   CategoryLabsGlyph,
   MiplandGlyph,
   MonadFoundationGlyph,
 } from "@/components/icons/monad-social-glyphs";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { MonadSocialLinkItem } from "@/components/sections/monad/monad-social-link-item";
 import { FileText } from "lucide-react";
 import { monadSection } from "@/lib/content/monad";
 import type { ExternalLinkChannel } from "@/lib/content/links";
+import type { ComponentType } from "react";
 
 type MonadSectionLink = (typeof monadSection.links)[number];
 
 const WEBSITE_GLYPHS: Record<
   string,
-  React.ComponentType<{ className?: string }> | undefined
+  ComponentType<{ className?: string }> | undefined
 > = {
   monadFoundation: MonadFoundationGlyph,
   monadDocs: FileText,
@@ -47,27 +42,14 @@ export function MonadSocialLinks() {
 
         return (
           <li key={link.key}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="monad-social-link"
-                  data-monad-link-key={link.key}
-                >
-                  <MonadSocialGlyph link={link} />
-                </a>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                sideOffset={8}
-                className="hidden xl:inline-flex rounded-full [--foreground:var(--brand-cortex-carbon)] text-neutral-silver-gray"
-              >
-                {link.label}
-              </TooltipContent>
-            </Tooltip>
+            <MonadSocialLinkItem
+              href={link.href}
+              ariaLabel={label}
+              linkKey={link.key}
+              tooltipLabel={link.label}
+            >
+              <MonadSocialGlyph link={link} />
+            </MonadSocialLinkItem>
           </li>
         );
       })}

@@ -1,23 +1,14 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { memo, useCallback, useRef, useState } from "react";
+import {
+  MissionIllustration,
+  MissionIllustrationFallback,
+} from "@/components/illustrations/mission-illustration";
 import { useIsDesktop } from "@/hooks/use-is-desktop";
 import { cn } from "@/lib/utils";
 import { MISSION_CARD_HEIGHT_STYLE } from "@/components/sections/mission/mission-layout";
-import type {
-  MissionCard,
-  MissionCardId,
-  MissionPattern,
-} from "@/lib/content/mission";
-import type { ComponentType } from "react";
-
-type IllustrationProps = {
-  active: boolean;
-  className?: string;
-};
-
-type IllustrationComponent = ComponentType<IllustrationProps>;
+import type { MissionCard, MissionCardId } from "@/lib/content/mission";
 
 type MissionIllustrationPlacement = {
   topClass: string;
@@ -30,50 +21,6 @@ type MissionCardsProps = {
 
 const MISSION_COLLAPSED_EYEBROW_CLASS =
   "mission-eyebrow mission-collapsed-card-eyebrow";
-
-const PulseField = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/pulse-field").then((m) => ({
-      default: m.PulseField,
-    })),
-  { ssr: false },
-);
-const DotOrbits = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/dot-orbits").then((m) => ({
-      default: m.DotOrbits,
-    })),
-  { ssr: false },
-);
-const SteppedLattice = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/stepped-lattice").then((m) => ({
-      default: m.SteppedLattice,
-    })),
-  { ssr: false },
-);
-const RadiatingSegments = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/radiating-segments").then((m) => ({
-      default: m.RadiatingSegments,
-    })),
-  { ssr: false },
-);
-const NodeMesh = dynamic<IllustrationProps>(
-  () =>
-    import("@/components/illustrations/node-mesh").then((m) => ({
-      default: m.NodeMesh,
-    })),
-  { ssr: false },
-);
-
-const ILLUSTRATIONS = {
-  "pulse-field": PulseField,
-  "dot-orbits": DotOrbits,
-  "stepped-lattice": SteppedLattice,
-  "radiating-segments": RadiatingSegments,
-  "node-mesh": NodeMesh,
-} satisfies Record<MissionPattern, IllustrationComponent>;
 
 const MISSION_ILLUSTRATION_PLACEMENTS = {
   pulse: {
@@ -108,17 +55,22 @@ const MissionExpandedCard = memo(function MissionExpandedCard({
   illustrationActive: boolean;
   className?: string;
 }) {
-  const Illustration = ILLUSTRATIONS[card.pattern];
   const { topClass, sizeClass } = MISSION_ILLUSTRATION_PLACEMENTS[card.id];
+  const illustrationClassName = cn("text-text-secondary", sizeClass);
 
   return (
     <div className={cn("mission-card-shell", className)}>
       <div className={cn("mission-card-illustration", topClass)}>
-        <Illustration
-          key={card.id}
-          active={illustrationActive}
-          className={cn("text-text-secondary", sizeClass)}
-        />
+        {illustrationActive ? (
+          <MissionIllustration
+            key={card.id}
+            pattern={card.pattern}
+            active
+            className={illustrationClassName}
+          />
+        ) : (
+          <MissionIllustrationFallback className={illustrationClassName} />
+        )}
       </div>
 
       <div className="mission-card-content">

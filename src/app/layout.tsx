@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
 import { Mona_Sans, Open_Sans } from "next/font/google";
+import { Suspense } from "react";
+import { HashScrollSync } from "@/components/hash-scroll-sync";
+import { RouteLoadingShell } from "@/components/layout/route-loading-shell";
 import { SiteHeader } from "@/components/layout/site-header";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  SITE_HEADER_SCROLL_BOOTSTRAP_SCRIPT,
+  SITE_HEADER_SCROLL_CRITICAL_CSS,
+} from "@/lib/layout/site-header-scroll";
 import "./globals.css";
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -19,6 +28,10 @@ export const metadata: Metadata = {
   description:
     "A global network of local hubs, education, events, services, and real projects around emerging technology.",
 };
+
+// HeaderUpcomingEvent filters by UTC date at render; hourly ISR keeps the promo fresh.
+// Must be a literal — see EVENTS_DATE_REVALIDATE_SECONDS in @/lib/events/upcoming.
+export const revalidate = 3600;
 
 export default function RootLayout({
   children,
@@ -28,12 +41,27 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-header-scrolled="false"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={`${monaSans.variable} ${openSans.variable} dark h-full antialiased`}
     >
+      <head>
+        <style
+          id="site-header-scroll-critical"
+          dangerouslySetInnerHTML={{ __html: SITE_HEADER_SCROLL_CRITICAL_CSS }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: SITE_HEADER_SCROLL_BOOTSTRAP_SCRIPT,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <TooltipProvider>
+          <HashScrollSync />
           <SiteHeader />
-          {children}
+          <Suspense fallback={<RouteLoadingShell />}>{children}</Suspense>
         </TooltipProvider>
       </body>
     </html>
