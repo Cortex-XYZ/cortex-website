@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 
+import { MOTION_DURATION, MOTION_EASE, MOTION_START } from "@/lib/motion/tokens";
+
 export const MISSION_CARD_HEIGHT_DESKTOP = 829;
 
 export const MISSION_CARD_EXPANDED_WIDTH = 556;
@@ -16,14 +18,19 @@ export const MISSION_PIN_SCROLL_PER_CARD = 0.65;
 export const MISSION_STACK_PIN_START_OFFSET_REM = 22;
 
 /** ScrollTrigger start for the desktop entrance sequence (before pin stack). */
-export const MISSION_ENTRANCE_START = "top 82%";
+export const MISSION_ENTRANCE_START = MOTION_START.section;
 
+/** Section-specific: deeper lift than the shared `MOTION_LIFT.cardRem` (1). */
 export const MISSION_ENTRANCE_STACK_Y_REM = 1.5;
 
-export const MISSION_ENTRANCE_STACK_DURATION = 0.65;
+export const MISSION_ENTRANCE_STACK_DURATION = MOTION_DURATION.entrance;
+
+/** Stack and intro fade ease. */
+export const MISSION_ENTRANCE_EASE = MOTION_EASE.reveal;
 
 export const MISSION_ENTRANCE_STACK_STAGGER = 0.07;
 
+/** Section-specific intro fade; same value as `ruleGrow` but a different role. */
 export const MISSION_ENTRANCE_INTRO_DURATION = 0.55;
 
 /** Overlap intro fade onto the tail of the stack reveal (seconds). */

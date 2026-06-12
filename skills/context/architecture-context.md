@@ -117,7 +117,7 @@ The root layout and homepage route export `revalidate = EVENTS_DATE_REVALIDATE_S
 - The site is dark-first.
 - Cortex Orange is the primary action color.
 - Buttons use Cortex variants, not default shadcn visuals.
-- Service-card shaders use approved design-system color recipes.
+- Service Card visual surfaces use approved design-system color recipes. Runtime WebGL shader versions, when introduced, need static mobile/tablet and reduced-motion fallbacks.
 - Hero WebGL backgrounds use Cortex brand-pattern concepts such as nodes, edges, mesh, and approved palette fallbacks.
 - Layout is responsive and token-driven, not hardcoded to a 1440px canvas.
 - Accessibility and mobile behavior are implementation requirements, not cleanup tasks.

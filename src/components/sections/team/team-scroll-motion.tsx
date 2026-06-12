@@ -7,7 +7,11 @@ import {
   setupTeamDesktopEnter,
   setupTeamMobileEnter,
 } from "@/components/sections/team/team-enter";
-import { DESKTOP_MQL } from "@/hooks/use-is-desktop";
+import {
+  setupTeamDesktopLineDraw,
+  setupTeamMobileLineDraw,
+} from "@/components/sections/team/team-line-draw";
+import { BELOW_DESKTOP_MQL, DESKTOP_MQL } from "@/hooks/use-is-desktop";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { deferGsapSetup } from "@/lib/gsap-defer-setup";
 import { gsap, useGSAP } from "@/lib/gsap-setup";
@@ -38,8 +42,25 @@ export function TeamScrollMotion({ children }: TeamScrollMotionProps) {
       return deferGsapSetup(() => {
         const matchMedia = gsap.matchMedia();
 
-        matchMedia.add(DESKTOP_MQL, () => setupTeamDesktopEnter(section));
-        matchMedia.add("(max-width: 1279px)", () => setupTeamMobileEnter(section));
+        matchMedia.add(DESKTOP_MQL, () => {
+          const cleanupLineDraw = setupTeamDesktopLineDraw(section);
+          const cleanupEnter = setupTeamDesktopEnter(section);
+
+          return () => {
+            cleanupEnter();
+            cleanupLineDraw();
+          };
+        });
+
+        matchMedia.add(BELOW_DESKTOP_MQL, () => {
+          const cleanupLineDraw = setupTeamMobileLineDraw(section);
+          const cleanupEnter = setupTeamMobileEnter(section);
+
+          return () => {
+            cleanupEnter();
+            cleanupLineDraw();
+          };
+        });
 
         return () => {
           matchMedia.revert();

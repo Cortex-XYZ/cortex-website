@@ -5,6 +5,9 @@ import { useSyncExternalStore } from "react";
 /** Tailwind `xl` — Mission/Monad desktop layout, event cursor preview, etc. */
 export const DESKTOP_MQL = "(min-width: 1280px)";
 
+/** Complement of `DESKTOP_MQL` — mobile/tablet branch in `gsap.matchMedia()` setups. */
+export const BELOW_DESKTOP_MQL = "(max-width: 1279px)";
+
 /** Tailwind `lg` — hero live WebGL gate; static globe below this width. */
 export const LARGE_SCREEN_MQL = "(min-width: 1024px)";
 

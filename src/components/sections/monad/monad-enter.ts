@@ -2,6 +2,7 @@ import {
   MONAD_BAND_OVERLAP,
   MONAD_DESC_OVERLAP,
   MONAD_DIVIDER_DURATION,
+  MONAD_DIVIDER_EASE,
   MONAD_ENTER_START,
   MONAD_HEADER_DURATION,
   MONAD_ITEM_DURATION,
@@ -78,7 +79,7 @@ export function setupMonadEnter(scope: HTMLElement): () => void {
     timeline.to(divider, {
       scaleX: 1,
       duration: MONAD_DIVIDER_DURATION,
-      ease: "power2.inOut",
+      ease: MONAD_DIVIDER_EASE,
     });
   }
 

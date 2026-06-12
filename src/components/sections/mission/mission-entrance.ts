@@ -4,6 +4,7 @@ import {
   SCROLL_TRIGGER_MARKERS,
 } from "@/lib/scroll-trigger";
 import {
+  MISSION_ENTRANCE_EASE,
   MISSION_ENTRANCE_INTRO_DELAY,
   MISSION_ENTRANCE_INTRO_DURATION,
   MISSION_ENTRANCE_STACK_DURATION,
@@ -63,7 +64,7 @@ export function setupMissionEntrance({
     y: 0,
     duration: MISSION_ENTRANCE_STACK_DURATION,
     stagger: MISSION_ENTRANCE_STACK_STAGGER,
-    ease: "power2.out",
+    ease: MISSION_ENTRANCE_EASE,
   });
 
   if (intro) {
@@ -72,7 +73,7 @@ export function setupMissionEntrance({
       {
         autoAlpha: 1,
         duration: MISSION_ENTRANCE_INTRO_DURATION,
-        ease: "power2.out",
+        ease: MISSION_ENTRANCE_EASE,
       },
       `>-${MISSION_ENTRANCE_INTRO_DELAY}`,
     );

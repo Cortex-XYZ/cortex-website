@@ -57,7 +57,7 @@ export function HistorySection() {
               className="history-timeline-list"
               aria-label="Cortex history timeline"
             >
-              {historySection.milestones.map((milestone) => (
+              {historySection.milestones.map((milestone, index) => (
                 <li
                   key={milestone.id}
                   className="history-milestone"
@@ -69,7 +69,14 @@ export function HistorySection() {
                   </span>
                   <span className="history-milestone-axis" aria-hidden="true">
                     <span className="history-milestone-dot" data-history-dot />
-                    <span className="history-milestone-stem" />
+                    <span
+                      className="history-milestone-stem"
+                      data-history-stem={
+                        index < historySection.milestones.length - 1
+                          ? ""
+                          : undefined
+                      }
+                    />
                   </span>
                   <div className="history-milestone-copy">
                     <h3 className="history-milestone-title">{milestone.title}</h3>

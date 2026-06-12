@@ -377,6 +377,20 @@
     @apply font-mona text-[2.25rem] leading-[1.05] font-semibold text-text-primary sm:text-hero-mobile md:text-hero lg:text-[3.25rem] lg:leading-none;
   }
 
+  .hero-title-line {
+    @apply block;
+    line-height: inherit;
+  }
+
+  .hero-title-word,
+  .hero-title-word-mask {
+    line-height: inherit;
+  }
+
+  .hero-title-word {
+    will-change: transform, opacity;
+  }
+
   .hero-subtitle {
     @apply mx-auto flex max-w-88 flex-1 flex-col gap-2.5 font-open text-[0.875rem] leading-normal text-text-secondary sm:mx-0 sm:max-w-lg sm:flex-initial sm:text-[0.9375rem] sm:leading-[1.4] md:max-w-xl md:gap-4 md:text-body lg:max-w-3xl text-pretty;
   }
