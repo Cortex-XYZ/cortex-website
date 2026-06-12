@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger } from "@/lib/gsap-setup";
+import { MOTION_DURATION, MOTION_EASE, MOTION_START } from "@/lib/motion/tokens";
 
 let scheduledRefreshRafId: number | null = null;
 
@@ -27,8 +28,8 @@ export const SCROLL_REVEAL_FROM: gsap.TweenVars = {
 export const SCROLL_REVEAL_TO: gsap.TweenVars = {
   autoAlpha: 1,
   y: 0,
-  duration: 0.65,
-  ease: "power2.out",
+  duration: MOTION_DURATION.entrance,
+  ease: MOTION_EASE.reveal,
 };
 
 export type BatchRevealOptions = {
@@ -47,7 +48,7 @@ export type BatchRevealOptions = {
  */
 export function createBatchReveal({
   selector,
-  start = "top 88%",
+  start = MOTION_START.batch,
   once = true,
   stagger = 0.1,
   from = SCROLL_REVEAL_FROM,
@@ -78,7 +79,7 @@ export type ScrollRevealOptions = {
 /** Single-element scroll reveal. Call inside `useGSAP()` with a scoped container ref. */
 export function createScrollReveal({
   trigger,
-  start = "top 88%",
+  start = MOTION_START.batch,
   once = true,
   from = SCROLL_REVEAL_FROM,
   to = SCROLL_REVEAL_TO,

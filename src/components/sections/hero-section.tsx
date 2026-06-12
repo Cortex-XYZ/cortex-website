@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { HashLink } from "@/components/hash-link";
 import { CortexButton } from "@/components/cortex-button";
 import { HeaderUpcomingEvent } from "@/components/layout/header/header-upcoming-event";
+import { HeroTitleMotion } from "@/components/sections/hero/hero-title-motion";
 import { HeroWebglBackground } from "@/components/webgl/hero-webgl-background";
 import { heroSection } from "@/lib/content/hero";
 import { siteLinks } from "@/lib/content/links";
@@ -19,14 +20,16 @@ export function HeroSection() {
           <div className="flex flex-1 flex-col gap-4 sm:flex-initial sm:gap-4 md:gap-10 lg:gap-6">
             <HeaderUpcomingEvent className="-mt-4 mb-8 inline-flex self-center sm:hidden" />
 
-            <h1 className="font-mona text-[2.25rem] leading-[1.05] font-semibold text-text-primary sm:text-hero-mobile md:text-hero lg:text-[3.25rem] lg:leading-none">
-              {titleLines.map((line, i) => (
-                <span key={i}>
-                  {i > 0 && <br />}
-                  {line}
-                </span>
-              ))}
-            </h1>
+            <HeroTitleMotion>
+              <h1 className="hero-title" data-hero-title>
+                {titleLines.map((line, i) => (
+                  <span key={i} className="hero-title-line">
+                    {line}
+                    {i < titleLines.length - 1 ? " " : null}
+                  </span>
+                ))}
+              </h1>
+            </HeroTitleMotion>
             <div className="hero-subtitle">
               {/* First paragraph (description) — always visible */}
               <p className="hero-subtitle-lead">

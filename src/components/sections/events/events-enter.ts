@@ -13,7 +13,7 @@ import {
   EVENTS_TOP_RULE_EASE,
   EVENTS_TOP_RULE_ENTER_START,
 } from "@/components/sections/events/events-scroll";
-import { DESKTOP_MQL } from "@/hooks/use-is-desktop";
+import { BELOW_DESKTOP_MQL, DESKTOP_MQL } from "@/hooks/use-is-desktop";
 import { gsap, ScrollTrigger } from "@/lib/gsap-setup";
 import {
   createScrollTriggerConfig,
@@ -211,7 +211,7 @@ export function setupEventsEnter(scope: HTMLElement): () => void {
     if (topRule) cleanups.push(setupTopRuleEnter(topRule));
   });
 
-  matchMedia.add("(max-width: 1279px)", () => {
+  matchMedia.add(BELOW_DESKTOP_MQL, () => {
     if (topRule) setTopRuleResting(topRule);
   });
 

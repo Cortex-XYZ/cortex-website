@@ -1,18 +1,13 @@
 import {
-  TEAM_DIVIDER_DRAW_OVERLAP,
   TEAM_ENTER_START,
-  TEAM_HEADER_OVERLAP_DELAY,
   TEAM_HEADER_REVEAL_DURATION,
   TEAM_HEADER_REVEAL_Y,
-  TEAM_LINE_DRAW_DURATION,
   TEAM_MEMBER_CHAIN_OVERLAP,
   TEAM_MEMBER_FIRST_OVERLAP,
-  TEAM_MEMBER_LINE_DRAW_DURATION,
   TEAM_MEMBER_REVEAL_DURATION,
   TEAM_MOBILE_MEMBER_STAGGER_EACH,
   TEAM_REVEAL_EASE,
   TEAM_REVEAL_Y_REM,
-  TEAM_VERTICAL_LINE_OVERLAP,
 } from "@/components/sections/team/team-scroll";
 import { gsap, ScrollTrigger } from "@/lib/gsap-setup";
 import {
@@ -24,10 +19,8 @@ import {
 export const TEAM_ENTER_ID = "team-enter";
 export const TEAM_MOBILE_ENTER_ID = "team-mobile-enter";
 
-const TEAM_LABEL_GRID = "grid";
 const TEAM_LABEL_TITLE = "title";
 const TEAM_LABEL_MEMBERS = "members";
-const TEAM_LABEL_CLOSE = "close";
 
 const TEAM_HEADER_SELECTOR = "[data-team-header]";
 const TEAM_MEMBER_SELECTOR = "[data-team-member]";
@@ -70,47 +63,20 @@ export function setupTeamDesktopEnter(scope: HTMLElement): () => void {
   const members = Array.from(
     scope.querySelectorAll<HTMLElement>(TEAM_MEMBER_SELECTOR),
   );
-  const lines = collectDesktopStrokeLines(scope);
 
   const timeline = gsap.timeline({
     defaults: { ease: TEAM_REVEAL_EASE },
     scrollTrigger: createScrollTriggerConfig(scope, TEAM_ENTER_START, TEAM_ENTER_ID),
   });
 
-  timeline.addLabel(TEAM_LABEL_GRID);
-
-  if (lines.top) {
-    timeline.from(lines.top, {
-      drawSVG: "0%",
-      duration: TEAM_LINE_DRAW_DURATION,
-      ease: "none",
-    });
-  }
-
-  if (lines.vertical) {
-    timeline.from(
-      lines.vertical,
-      {
-        drawSVG: "0%",
-        duration: TEAM_LINE_DRAW_DURATION,
-        ease: "none",
-      },
-      lines.top ? `-=${TEAM_VERTICAL_LINE_OVERLAP}` : undefined,
-    );
-  }
-
   timeline.addLabel(TEAM_LABEL_TITLE);
 
   if (header) {
-    timeline.from(
-      header,
-      {
-        autoAlpha: 0,
-        y: TEAM_HEADER_REVEAL_Y,
-        duration: TEAM_HEADER_REVEAL_DURATION,
-      },
-      `>-${TEAM_HEADER_OVERLAP_DELAY}`,
-    );
+    timeline.from(header, {
+      autoAlpha: 0,
+      y: TEAM_HEADER_REVEAL_Y,
+      duration: TEAM_HEADER_REVEAL_DURATION,
+    });
   }
 
   timeline.addLabel(TEAM_LABEL_MEMBERS);
@@ -127,29 +93,6 @@ export function setupTeamDesktopEnter(scope: HTMLElement): () => void {
         ? `>-${TEAM_MEMBER_FIRST_OVERLAP}`
         : `-=${TEAM_MEMBER_CHAIN_OVERLAP}`,
     );
-
-    const divider = lines.memberDividers[index];
-    if (divider) {
-      timeline.from(
-        divider,
-        {
-          drawSVG: "0%",
-          duration: TEAM_MEMBER_LINE_DRAW_DURATION,
-          ease: "none",
-        },
-        `-=${TEAM_DIVIDER_DRAW_OVERLAP}`,
-      );
-    }
-  }
-
-  timeline.addLabel(TEAM_LABEL_CLOSE);
-
-  if (lines.bottom) {
-    timeline.from(lines.bottom, {
-      drawSVG: "0%",
-      duration: TEAM_LINE_DRAW_DURATION,
-      ease: "none",
-    });
   }
 
   playIfAlreadyInView(timeline);
@@ -167,9 +110,6 @@ export function setupTeamMobileEnter(scope: HTMLElement): () => void {
   const members = Array.from(
     scope.querySelectorAll<HTMLElement>(TEAM_MEMBER_SELECTOR),
   );
-  const mobileStroke = scope.querySelector<SVGPathElement>(
-    TEAM_MOBILE_STROKE_SELECTOR,
-  );
 
   const timeline = gsap.timeline({
     defaults: { ease: TEAM_REVEAL_EASE },
@@ -180,24 +120,12 @@ export function setupTeamMobileEnter(scope: HTMLElement): () => void {
     ),
   });
 
-  if (mobileStroke) {
-    timeline.from(mobileStroke, {
-      drawSVG: "0%",
-      duration: TEAM_LINE_DRAW_DURATION,
-      ease: "none",
-    });
-  }
-
   if (header) {
-    timeline.from(
-      header,
-      {
-        autoAlpha: 0,
-        y: TEAM_HEADER_REVEAL_Y,
-        duration: TEAM_HEADER_REVEAL_DURATION,
-      },
-      mobileStroke ? `>-${TEAM_HEADER_OVERLAP_DELAY}` : undefined,
-    );
+    timeline.from(header, {
+      autoAlpha: 0,
+      y: TEAM_HEADER_REVEAL_Y,
+      duration: TEAM_HEADER_REVEAL_DURATION,
+    });
   }
 
   if (members.length > 0) {

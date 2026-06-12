@@ -5,7 +5,7 @@ import {
   MONAD_TOPIC_CHAIN_OVERLAP,
   MONAD_TOPIC_ROW_ENTER_START,
 } from "@/components/sections/monad/monad-scroll";
-import { DESKTOP_MQL } from "@/hooks/use-is-desktop";
+import { BELOW_DESKTOP_MQL, DESKTOP_MQL } from "@/hooks/use-is-desktop";
 import { gsap, ScrollTrigger } from "@/lib/gsap-setup";
 import {
   createScrollTriggerConfig,
@@ -17,7 +17,6 @@ export const MONAD_TOPICS_ROW1_ENTER_ID = "monad-topics-row-1";
 export const MONAD_TOPICS_ROW2_ENTER_ID = "monad-topics-row-2";
 
 const MONAD_TOPIC_SELECTOR = "[data-monad-topic]";
-const MONAD_TOPIC_MOBILE_MQL = "(max-width: 1279px)";
 
 type MonadTopicRowEnter = {
   trigger: HTMLElement;
@@ -87,7 +86,7 @@ function setupTopicRowEnters(topics: HTMLElement[]): () => void {
     }
   });
 
-  matchMedia.add(MONAD_TOPIC_MOBILE_MQL, () => {
+  matchMedia.add(BELOW_DESKTOP_MQL, () => {
     for (const row of buildStackedRows(topics)) {
       timelines.push(createRowEnterTimeline(row));
     }
