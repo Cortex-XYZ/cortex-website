@@ -8,6 +8,10 @@ import { ScrollToTopButton } from "@/components/layout/scroll-to-top-button";
 import { SiteHeader } from "@/components/layout/site-header";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
+  PLAUSIBLE_PROXY_EVENT_PATH,
+  PLAUSIBLE_PROXY_SCRIPT_PATH,
+} from "@/lib/observability/plausible";
+import {
   SITE_HEADER_SCROLL_BOOTSTRAP_SCRIPT,
   SITE_HEADER_SCROLL_CRITICAL_CSS,
 } from "@/lib/layout/site-header-scroll";
@@ -65,8 +69,9 @@ export default function RootLayout({
         {plausibleDomain && (
           <Script
             defer
+            data-api={PLAUSIBLE_PROXY_EVENT_PATH}
             data-domain={plausibleDomain}
-            src="https://plausible.io/js/script.tagged-events.js"
+            src={PLAUSIBLE_PROXY_SCRIPT_PATH}
             strategy="afterInteractive"
           />
         )}

@@ -44,7 +44,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Header upcoming-event promo: `HeaderUpcomingEvent` / `HeaderUpcomingEventLink` render the next event (from `src/lib/events/upcoming.ts`, shared with the Events section; hourly ISR via `EVENTS_DATE_REVALIDATE_SECONDS`) in the desktop header and mobile hero. Header scroll state lives in `src/lib/layout/site-header-scroll.ts`.
 - Same-page hash navigation: `HashLink` + `HashScrollSync` (`src/lib/hash-navigation.ts`) fix `/#section` links when already on `/`; wired through hero CTAs, header, mobile nav, footer, and services CTA. Root layout wraps `{children}` in `Suspense` with `RouteLoadingShell`.
 - `SiteFooter` server component: CTA quote block, newsletter input (UI only), contact mailto, About/Programs/Legal columns, social glyphs (X/Instagram/TikTok/LinkedIn/YouTube), copyright. Module-scope hoisted constants (`QUOTE_LINES`, `TAGLINE_LINES`, `SOCIAL_LINKS`).
-- `(site)` route group: `page.tsx` and site-specific layout (with `SiteFooter` + `flex-1` wrapper) live under `src/app/(site)/`. Root `layout.tsx` has header only — `not-found.tsx` stays at root so the 404 page renders without footer.
+- `(site)` route group: `page.tsx` and site-specific layout (with `SiteFooter` + `flex-1` wrapper) live under `src/app/(site)/`. Root `layout.tsx` has header only -- `not-found.tsx` stays at root so the 404 page renders without footer.
 - `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
 - Footer and mission presentation classes extracted to `@layer components` in `globals.css`.
 
@@ -52,6 +52,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 - Sentry (`@sentry/nextjs` 10.x): `src/instrumentation.ts` (Node + edge register, `onRequestError`), `src/instrumentation-client.ts` (browser init + `onRouterTransitionStart`), `src/app/global-error.tsx`. `next.config.ts` wrapped with `withSentryConfig` for source-map upload and per-deploy release tracking via `VERCEL_GIT_COMMIT_SHA`.
 - Plausible analytics via `next/script` in root layout, gated on `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. Uses `script.tagged-events.js`; CTAs tagged with `plausible-event-name=CTA+Click`, `plausible-event-location`, and `plausible-event-label` data attributes.
+- Plausible analytics now loads through same-origin Next rewrites (`/cx/pulse` and `/cx/pulse/submit`) so the browser no longer requests `plausible.io/js/...` directly, reducing adblocker loss while preserving the existing tagged-event CTA convention.
 
 ## Decisions
 
@@ -67,10 +68,11 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Service Cards are the canonical name for Services visual surfaces; homepage cards use static CSS gradient/blob visuals in `services-section.tsx`, while future runtime shader surfaces must follow approved design-system recipes and fallback rules.
 - Shared entrance-motion values live in `src/lib/motion/tokens.ts`; section `*-scroll.ts` tunables files consume tokens and keep intentional deviations as commented literals (see `README.md` and `skills/context/ui-context.md`).
 - Current motion scope intentionally excludes a full Hero entrance timeline for tagline/CTAs, custom Mission keyboard switching beyond native controls, true scrubbed History line drawing, and a Footer/global reveal wrapper. The accepted direction is Hero title motion only, Mission click/scroll/mobile interaction, History line draw that automatically advances with milestone reveals, and section-owned reveal helpers where already useful.
-- `(site)` route group separates site pages from error pages — `SiteFooter` renders only for site routes, not `not-found.tsx`.
+- `(site)` route group separates site pages from error pages -- `SiteFooter` renders only for site routes, not `not-found.tsx`.
 - Header split into server component + client islands to minimize client JS (only scroll detection, mega nav, and mobile menu are client components).
-- Analytics → Plausible (cookieless, no consent banner required for EU/UK/CA, ~1 KB). PostHog and GA4 rejected. Plausible wired via `next/script` directly (not `next-plausible`). Tagged-event convention: `CTA Click` event + `plausible-event-location` + `plausible-event-label` props.
-- Error tracking → Sentry. Source maps and per-deploy releases gated on `SENTRY_AUTH_TOKEN` so local/preview builds are silent by default.
+- Analytics -> Plausible (cookieless, no consent banner required for EU/UK/CA, ~1 KB). PostHog and GA4 rejected. Plausible wired via `next/script` directly (not `next-plausible`). Tagged-event convention: `CTA Click` event + `plausible-event-location` + `plausible-event-label` props.
+- Plausible should stay behind first-party rewrite paths for production signal quality. Browser-visible proxy paths must avoid obvious analytics terms such as `analytics`, `stats`, or `plausible`; keep the shared path constants in `src/lib/observability/plausible.ts`.
+- Error tracking -> Sentry. Source maps and per-deploy releases gated on `SENTRY_AUTH_TOKEN` so local/preview builds are silent by default.
 
 ## Open Questions
 
@@ -86,6 +88,9 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
-Merged `chore/observability` into `dev`: Sentry instrumentation (Node, edge, browser, global-error) with source-map upload + per-deploy release tracking, and Plausible analytics with tagged-event CTA tracking (header, mobile-nav, hero primary/secondary). `next.config.ts` now carries both turbopack `projectRoot` config and the `withSentryConfig` wrapper. Root layout retains dev's `TooltipProvider` / `HashScrollSync` / `ScrollToTopButton` / `Suspense` structure with the Plausible `<Script>` tag added above it. Analytics decisions: D3 closed (Plausible chosen); D4 closed (no banner — Plausible is cookieless). Provisioning: set `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` in Vercel; set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` to the bare domain (empty = silent in local/preview).
-
-Prior dev handoff: Added hero, history, and team motion polish: hero title GSAP SplitText masked word reveal (`hero-title-enter.ts` + `hero-title-motion.tsx`), ScrollTrigger-driven automatic line drawing for History and Team, shared entrance-motion tokens in `src/lib/motion/tokens.ts`, and scroll-driven section animations for all five sections with code-split client islands. Verified `bun run typecheck`, `bun run lint`, `bun run build`.
+- Changed: cherry-picked the first-party Plausible proxy fix on top of the current remote `chore/observability` branch without replacing Priyansh's merge commit. The root layout still gates tracking on `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, but the browser-visible script and event paths are now `/cx/pulse` and `/cx/pulse/submit`.
+- Files touched: `next.config.ts`, `src/app/layout.tsx`, `src/lib/observability/plausible.ts`, `.env.example`, `skills/context/architecture-context.md`, `skills/context/progress-tracker.md`.
+- Verification run: `bun run typecheck` clean, `bun run lint` clean with two warnings inherited from the current PR branch (`site-footer.tsx` unused `Link`, `monad-topic-enter.ts` unused `_section`), and `bun run build` clean.
+- Open questions: PR body/comment currently mention `NEXT_PUBLIC_E_DOMAIN`, which appears to be a typo; use `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. Privacy policy still needs a one-line note disclosing cookieless Plausible analytics when `/privacy` lands.
+- Provisioning: no new Plausible env var is required for the proxy. For PR #40 preview verification, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=cortex-website-git-chore-observability-cortexglobal.vercel.app`; update to the production Plausible site domain when validating production. After deploy, confirm pageviews and `CTA Click` events still arrive while the browser network panel shows `/cx/pulse` and `/cx/pulse/submit`, not `plausible.io/js/...`.
+- Next step: continue the cherry-pick commit and push `chore/observability`.

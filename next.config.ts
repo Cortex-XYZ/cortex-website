@@ -2,12 +2,30 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  PLAUSIBLE_ORIGIN_EVENT_URL,
+  PLAUSIBLE_ORIGIN_SCRIPT_URL,
+  PLAUSIBLE_PROXY_EVENT_PATH,
+  PLAUSIBLE_PROXY_SCRIPT_PATH,
+} from "./src/lib/observability/plausible";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
+  },
+  async rewrites() {
+    return [
+      {
+        source: PLAUSIBLE_PROXY_SCRIPT_PATH,
+        destination: PLAUSIBLE_ORIGIN_SCRIPT_URL,
+      },
+      {
+        source: PLAUSIBLE_PROXY_EVENT_PATH,
+        destination: PLAUSIBLE_ORIGIN_EVENT_URL,
+      },
+    ];
   },
 };
 
