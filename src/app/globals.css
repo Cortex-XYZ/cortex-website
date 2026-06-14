@@ -1801,10 +1801,91 @@
     line-height: var(--text-body-sm-line-height);
   }
 
+  /* TEMP(staking-page): Coming Soon CTA styles — remove when /stake ships.
+     Delete `.mobile-nav-cta-row` through `.mobile-nav-cta-coming-soon`,
+     `.header-stake-cta*`, `@keyframes coming-soon-*`, and
+     `@utility animate-coming-soon-pulse` below. */
   .mobile-nav-cta-label {
     @apply font-mona font-semibold text-brand-cortex-orange;
     font-size: var(--text-body-sm);
     line-height: var(--text-body-sm-line-height);
+  }
+
+  .mobile-nav-cta-row {
+    @apply flex cursor-default items-center justify-between px-6 py-5 text-text-secondary;
+  }
+
+  .mobile-nav-cta-status {
+    @apply inline-flex items-center gap-2.5;
+  }
+
+  .mobile-nav-cta-clock {
+    @apply size-4 shrink-0 text-text-muted motion-safe:animate-coming-soon-pulse;
+  }
+
+  .mobile-nav-cta-coming-soon {
+    isolation: isolate;
+    @apply relative inline-flex items-center overflow-hidden rounded-full border border-border-default px-3.5 py-1.5 font-mona text-caption leading-none text-text-muted;
+  }
+
+  .mobile-nav-cta-coming-soon::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      color-mix(in srgb, var(--neutral-silver-gray) 18%, transparent) 45%,
+      color-mix(in srgb, var(--neutral-silver-gray) 32%, transparent) 50%,
+      color-mix(in srgb, var(--neutral-silver-gray) 18%, transparent) 55%,
+      transparent 100%
+    );
+    background-size: 220% 100%;
+    animation: coming-soon-shimmer 2.8s ease-in-out infinite;
+  }
+
+  /* TEMP(staking-page): disabled header CTA + tooltip pill — remove when /stake ships. */
+  .header-stake-cta {
+    @apply cursor-default! border! border-border-default! bg-transparent! text-text-secondary! shadow-none;
+  }
+
+  .header-stake-cta:hover,
+  .header-stake-cta:focus-visible,
+  .header-stake-cta[aria-expanded="true"] {
+    @apply border-border-default! bg-transparent! text-text-secondary!;
+  }
+
+  .header-stake-cta-tooltip {
+    isolation: isolate;
+    @apply relative flex items-center gap-1.5 overflow-hidden rounded-full px-3 py-1.5 font-mona text-[0.8125rem] font-medium leading-none;
+  }
+
+  /* Hide the tooltip arrow since we're using a pill style */
+  .header-stake-cta-tooltip > svg:not(.header-stake-cta-clock),
+  .header-stake-cta-tooltip > span[style*="position: absolute"] {
+    display: none !important;
+  }
+
+  .header-stake-cta-tooltip::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      color-mix(in srgb, var(--neutral-silver-gray) 18%, transparent) 45%,
+      color-mix(in srgb, var(--neutral-silver-gray) 32%, transparent) 50%,
+      color-mix(in srgb, var(--neutral-silver-gray) 18%, transparent) 55%,
+      transparent 100%
+    );
+    background-size: 220% 100%;
+    animation: coming-soon-shimmer 2.8s ease-in-out infinite;
+  }
+
+  .header-stake-cta-clock {
+    @apply size-3.5 shrink-0 text-text-muted motion-safe:animate-coming-soon-pulse;
   }
 
   .site-footer {
@@ -2446,6 +2527,35 @@
   }
 }
 
+/* TEMP(staking-page): remove with Coming Soon CTA styles above. */
+@keyframes coming-soon-shimmer {
+  0%,
+  100% {
+    background-position: 120% center;
+    opacity: 0.35;
+  }
+
+  50% {
+    background-position: -20% center;
+    opacity: 0.85;
+  }
+}
+
+@keyframes coming-soon-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@utility animate-coming-soon-pulse {
+  animation: coming-soon-pulse 2.4s ease-in-out infinite;
+}
+
 @keyframes text-shimmer {
   from {
     background-position: 0% center;
@@ -2563,6 +2673,13 @@
   .header-upcoming-event::before {
     animation: none;
     display: none;
+  }
+
+  .mobile-nav-cta-clock,
+  .mobile-nav-cta-coming-soon::after,
+  .header-stake-cta-clock,
+  .header-stake-cta-tooltip::after {
+    animation: none;
   }
 
   .header-upcoming-event {

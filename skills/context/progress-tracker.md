@@ -48,6 +48,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - `/privacy` and `/terms` ship as Server Component routes in the `(site)` group with copy in `src/lib/content/legal.ts`; footer legal links point to the live routes.
 - `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
 - Footer and mission presentation classes extracted to `@layer components` in `globals.css`.
+- Stake CTA interim: header and mobile nav show Coming Soon (no `/stake` link) until the staking page ships; marked `TEMP(staking-page)` in CSS/components for removal.
 
 ## Decisions
 
@@ -76,13 +77,17 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 1. Preformance review and optimization.
 2. og image and description.
 3. SEO, tracking, analytics.
-4. Staking page.
+4. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
+
+Fixed stake CTA breakpoint: desktop header disabled Stake pill shows from `lg` upward only (hidden on tablet where the mobile menu is active); upcoming-event promo still appears from `sm`. Desktop Coming Soon tooltip shimmer is disabled under `prefers-reduced-motion: reduce` alongside the mobile nav shimmer.
 
 Shipped `/privacy` and `/terms` with typed copy in `src/lib/content/legal.ts`, live footer legal links, plain page titles (no duplicated site name in the root layout template), mobile hero subtitle copy in `hero.ts` / `hero-section.tsx`, and the CONNEX Tech Fest description update in `events.ts`. Verification pending. Open: CONNEX event URL still temporary. Next: navigation fixes and launch polish.
 
 Added hero, history, and team motion polish: hero title GSAP SplitText masked word reveal (`hero-title-enter.ts` + `hero-title-motion.tsx`), and ScrollTrigger-driven automatic line drawing for History (desktop timeline advancing one segment per milestone reveal, mobile stems sharing milestone trigger timing) and Team (`team-line-draw.ts`: desktop SVG rules and mobile dividers drawn separately from the content reveal), all with reduced-motion resting states. Also recorded the motion scope clarification: full Hero tagline/CTA timeline, custom Mission keyboard switching, true scrubbed History line drawing, and a Footer/global reveal wrapper are not required for the current pass. Verified `bun run typecheck`, `bun run lint`, `bun run build`, and Browser checks at 1280x720 and 390x844: no horizontal overflow, hero title split into 4 word masks, History/Team animation targets present, console clean.
+
+Disabled `/stake` navigation until the staking page ships: desktop header CTA is a muted pill with "Coming Soon" tooltip (`header-stake-cta.tsx`); mobile nav bottom row uses silver text, Clock icon, and a shimmer pill with `aria-disabled="true"`. Removed `siteLinks.stake` href. Branch: `fix/stake-coming-soon` off `dev`.
 
 Extracted shared entrance-motion values into `src/lib/motion/tokens.ts` (`MOTION_EASE`, `MOTION_START`, `MOTION_DURATION`, `MOTION_LIFT`, `MOTION_OVERLAP`, `MOTION_STAGGER`). Section tunables files (`events-scroll.ts`, `services-scroll.ts`, `monad-scroll.ts`, `team-scroll.ts`, `history-scroll.ts`, `mission-layout.ts`) and `scroll-trigger.ts` baselines now reference tokens; intentional per-section deviations stay as commented literals (services 0.22 card chain, monad 0.16 band overlap, team 0.2 member line draw and 0.16 first-member overlap, mission 1.5rem stack lift and 0.55 intro fade). Also moved previously inline eases into the tunables pattern: `MONAD_DIVIDER_EASE` (monad-enter.ts) and `MISSION_ENTRANCE_EASE` (mission-entrance.ts). No runtime values changed (verified by resolving all constants against the prior literals). Interaction motion (dialog open, hover, scrollTo, hash navigation) intentionally left out of entrance tokens. Documented usage in `skills/context/ui-context.md`; README remains out of scope for this pass. Verified `bun run typecheck` and `bun run lint`.
 
