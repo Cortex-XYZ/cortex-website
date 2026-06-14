@@ -30,8 +30,30 @@ export function HeroSection() {
                 ))}
               </h1>
             </HeroTitleMotion>
-            <div className="hero-subtitle">
-              {/* First paragraph (description) — always visible */}
+            {/* Mobile subtitle */}
+            <div className="hero-subtitle sm:hidden">
+              <p className="hero-subtitle-lead">
+                {heroSection.mobileParagraphs[0].emphasis && (
+                  <>
+                    <strong className="hero-subtitle-emphasis">
+                      {heroSection.mobileParagraphs[0].emphasis}
+                    </strong>{" "}
+                  </>
+                )}
+                {heroSection.mobileParagraphs[0].text}
+              </p>
+              {heroSection.paragraphs.slice(1).map((p, i) => (
+                <p
+                  key={i}
+                  className={i === 0 ? "hero-paragraph-lead" : "hero-paragraph-rest"}
+                >
+                  {p.text}
+                </p>
+              ))}
+            </div>
+
+            {/* sm+ subtitle */}
+            <div className="hero-subtitle hidden sm:block">
               <p className="hero-subtitle-lead">
                 {heroSection.paragraphs[0].emphasis && (
                   <>

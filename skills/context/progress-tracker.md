@@ -45,6 +45,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Same-page hash navigation: `HashLink` + `HashScrollSync` (`src/lib/hash-navigation.ts`) fix `/#section` links when already on `/`; wired through hero CTAs, header, mobile nav, footer, and services CTA. Root layout wraps `{children}` in `Suspense` with `RouteLoadingShell`.
 - `SiteFooter` server component: CTA quote block, newsletter input (UI only), contact mailto, About/Programs/Legal columns, social glyphs (X/Instagram/TikTok/LinkedIn/YouTube), copyright. Module-scope hoisted constants (`QUOTE_LINES`, `TAGLINE_LINES`, `SOCIAL_LINKS`).
 - `(site)` route group: `page.tsx` and site-specific layout (with `SiteFooter` + `flex-1` wrapper) live under `src/app/(site)/`. Root `layout.tsx` has header only — `not-found.tsx` stays at root so the 404 page renders without footer.
+- `/privacy` and `/terms` ship as Server Component routes in the `(site)` group with copy in `src/lib/content/legal.ts`; footer legal links point to the live routes.
 - `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
 - Footer and mission presentation classes extracted to `@layer components` in `globals.css`.
 
@@ -64,6 +65,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Current motion scope intentionally excludes a full Hero entrance timeline for tagline/CTAs, custom Mission keyboard switching beyond native controls, true scrubbed History line drawing, and a Footer/global reveal wrapper. The accepted direction is Hero title motion only, Mission click/scroll/mobile interaction, History line draw that automatically advances with milestone reveals, and section-owned reveal helpers where already useful.
 - `(site)` route group separates site pages from error pages — `SiteFooter` renders only for site routes, not `not-found.tsx`.
 - Header split into server component + client islands to minimize client JS (only scroll detection, mega nav, and mobile menu are client components).
+- Legal copy lives in `src/lib/content/legal.ts`; no shared legal-page component until a third legal route is needed.
 
 ## Open Questions
 
@@ -72,12 +74,13 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 ## Next Steps
 
 1. Preformance review and optimization.
-2. Terms of use and privacy policy pages, content review and update.
-3. og image and description.
-4. SEO, tracking, analytics.
-5. Staking page.
+2. og image and description.
+3. SEO, tracking, analytics.
+4. Staking page.
 
 ## Latest Handoff
+
+Shipped `/privacy` and `/terms` with typed copy in `src/lib/content/legal.ts`, live footer legal links, plain page titles (no duplicated site name in the root layout template), mobile hero subtitle copy in `hero.ts` / `hero-section.tsx`, and the CONNEX Tech Fest description update in `events.ts`. Verification pending. Open: CONNEX event URL still temporary. Next: navigation fixes and launch polish.
 
 Added hero, history, and team motion polish: hero title GSAP SplitText masked word reveal (`hero-title-enter.ts` + `hero-title-motion.tsx`), and ScrollTrigger-driven automatic line drawing for History (desktop timeline advancing one segment per milestone reveal, mobile stems sharing milestone trigger timing) and Team (`team-line-draw.ts`: desktop SVG rules and mobile dividers drawn separately from the content reveal), all with reduced-motion resting states. Also recorded the motion scope clarification: full Hero tagline/CTA timeline, custom Mission keyboard switching, true scrubbed History line drawing, and a Footer/global reveal wrapper are not required for the current pass. Verified `bun run typecheck`, `bun run lint`, `bun run build`, and Browser checks at 1280x720 and 390x844: no horizontal overflow, hero title split into 4 word masks, History/Team animation targets present, console clean.
 

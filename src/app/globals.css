@@ -435,6 +435,70 @@
     @apply grid gap-5 py-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-center md:gap-x-12 md:py-16 xl:grid-cols-[minmax(0,23rem)_minmax(0,46.5rem)] xl:gap-x-28 xl:py-24;
   }
 
+  .legal-page {
+    @apply bg-bg-canvas text-text-primary pt-24 pb-12 md:pt-32 md:pb-24;
+  }
+
+  .legal-page-inner {
+    @apply mx-auto max-w-3xl;
+  }
+
+  .legal-page-header {
+    @apply mb-12 md:mb-16;
+  }
+
+  .legal-page-back-link {
+    @apply mb-8 inline-flex items-center gap-2 font-mona text-body-sm font-semibold text-text-secondary transition-colors hover:text-action-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-action-primary;
+  }
+
+  .legal-page-title {
+    @apply mb-8 font-mona text-[2.5rem] leading-tight font-extrabold text-text-secondary md:text-[3rem];
+  }
+
+  .legal-page-meta {
+    @apply grid grid-cols-2 gap-6 border-y border-border-default py-5 sm:flex sm:flex-row sm:items-center sm:gap-12;
+  }
+
+  .legal-page-meta-item {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .legal-page-meta-label {
+    @apply font-mona text-[0.6875rem] font-bold tracking-[0.2em] text-brand-cortex-orange uppercase;
+  }
+
+  .legal-page-meta-value {
+    @apply font-mona text-body-sm font-medium text-text-primary;
+  }
+
+  .legal-page-body {
+    @apply space-y-8 font-open text-body-xs text-text-secondary md:text-body-sm;
+  }
+
+  .legal-page-section {
+    @apply space-y-4 md:space-y-5;
+  }
+
+  .legal-page-section-title {
+    @apply font-mona text-body font-bold text-text-primary md:text-body-lg;
+  }
+
+  .legal-page-subsection {
+    @apply mt-6 md:mt-8;
+  }
+
+  .legal-page-subsection-title {
+    @apply mb-3 font-mona text-body-sm font-bold text-text-primary md:mb-4 md:text-body;
+  }
+
+  .legal-page-list {
+    @apply list-disc space-y-2 pl-6 marker:text-action-primary;
+  }
+
+  .legal-page-link {
+    @apply text-action-primary underline underline-offset-4 transition-colors hover:text-action-primary-hover;
+  }
+
   .mission-section {
     @apply bg-bg-inverse py-12 md:py-16 xl:py-24;
   }
