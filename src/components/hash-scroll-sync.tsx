@@ -2,11 +2,23 @@
 
 import { usePathname } from "next/navigation";
 import { useOnMount } from "@/hooks/use-on-mount";
-import { scrollToHashFromLocation } from "@/lib/hash-navigation";
+import {
+  enableHashScrollSpy,
+  scrollToHashFromLocation,
+} from "@/lib/hash-navigation";
+
+function runHashScrollAfterScrollTriggersReady(): void {
+  // Match deferGsapSetup (2 rAF) so enter timelines exist before we scroll.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scrollToHashFromLocation();
+    });
+  });
+}
 
 function HashScrollOnNavigate() {
   useOnMount(() => {
-    requestAnimationFrame(() => scrollToHashFromLocation());
+    runHashScrollAfterScrollTriggersReady();
   });
 
   return null;
@@ -18,7 +30,12 @@ export function HashScrollSync() {
   useOnMount(() => {
     const onHashChange = () => scrollToHashFromLocation();
     window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    const disableHashScrollSpy = enableHashScrollSpy();
+
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+      disableHashScrollSpy();
+    };
   });
 
   return <HashScrollOnNavigate key={pathname} />;

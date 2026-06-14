@@ -1,8 +1,21 @@
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
-import { SectionDivider } from "@/components/section-divider";
+import {
+  TeamBottomLineSvg,
+  TeamMemberDividerSvg,
+  TeamMobileDividerSvg,
+  TeamTopLineSvg,
+  TeamVerticalLineSvg,
+} from "@/components/sections/team/team-line-svg";
 import { teamSection, type TeamMember } from "@/lib/content/team";
 import { splitTrailingAccent } from "@/lib/split-trailing-accent";
+
+const TeamScrollMotion = dynamic(() =>
+  import("@/components/sections/team/team-scroll-motion").then(
+    (mod) => mod.TeamScrollMotion,
+  ),
+);
 
 function requireXGlyph() {
   const glyph = SOCIAL_GLYPHS.x;
@@ -36,7 +49,13 @@ function TeamSocialLink({ member }: { member: TeamMember }) {
   );
 }
 
-function TeamMemberCard({ member }: { member: TeamMember }) {
+function TeamMemberCard({
+  member,
+  showDivider = false,
+}: {
+  member: TeamMember;
+  showDivider?: boolean;
+}) {
   return (
     <article
       className="team-member"
@@ -81,6 +100,10 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           </li>
         ))}
       </ul>
+
+      {showDivider ? (
+        <TeamMemberDividerSvg className="team-line-svg team-line-svg--member" />
+      ) : null}
     </article>
   );
 }
@@ -97,28 +120,41 @@ export function TeamSection() {
       aria-labelledby="team-heading"
       data-team-section
     >
-      <div className="site-container">
-        <SectionDivider variant="orange-reverse" />
-      </div>
-      <div className="site-container team-container">
-        <header className="team-header" data-team-header>
-          <p className="team-eyebrow">{teamSection.eyebrow}</p>
-          <h2 id="team-heading" className="section-title team-title">
-            {teamTitle}
-            {teamTitleAccent ? (
-              <span aria-hidden="true">{teamTitleAccent}</span>
-            ) : null}
-          </h2>
-        </header>
+      <TeamScrollMotion>
+        <TeamTopLineSvg className="team-line-svg team-line-svg--top" />
 
-        <ul className="team-list" data-team-list aria-label="Team members">
-          {teamSection.members.map((member) => (
-            <li key={member.id}>
-              <TeamMemberCard member={member} />
-            </li>
-          ))}
-        </ul>
-      </div>
+        <div className="site-container">
+          <TeamMobileDividerSvg className="team-line-svg team-line-svg--mobile-divider" />
+        </div>
+
+        <div className="site-container team-container">
+          <header className="team-header" data-team-header>
+            <p className="team-eyebrow">{teamSection.eyebrow}</p>
+            <h2 id="team-heading" className="section-title team-title">
+              {teamTitle}
+              {teamTitleAccent ? (
+                <span aria-hidden="true">{teamTitleAccent}</span>
+              ) : null}
+            </h2>
+          </header>
+
+          <div className="team-list-panel" data-team-list-panel>
+            <TeamVerticalLineSvg className="team-line-svg team-line-svg--vertical" />
+            <ul className="team-list" data-team-list aria-label="Team members">
+              {teamSection.members.map((member, index) => (
+                <li key={member.id}>
+                  <TeamMemberCard
+                    member={member}
+                    showDivider={index < teamSection.members.length - 1}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <TeamBottomLineSvg className="team-line-svg team-line-svg--bottom" />
+      </TeamScrollMotion>
     </section>
   );
 }

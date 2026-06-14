@@ -1,7 +1,14 @@
+import dynamic from "next/dynamic";
 import {
   historySection,
   type HistoryMilestoneBody,
 } from "@/lib/content/history";
+
+const HistoryScrollMotion = dynamic(() =>
+  import("@/components/sections/history/history-scroll-motion").then(
+    (mod) => mod.HistoryScrollMotion,
+  ),
+);
 
 const SCROLL_CALLOUT_ACCENT = "Cortex";
 const [scrollCalloutBefore, scrollCalloutAfter] =
@@ -34,59 +41,68 @@ export function HistorySection() {
       aria-labelledby="history-heading"
       data-history-section
     >
-      <div className="site-container history-container">
-        <h2 id="history-heading" className="history-eyebrow">
-          {historySection.title}
-        </h2>
+      <HistoryScrollMotion>
+        <div className="site-container history-container">
+          <h2 id="history-heading" className="history-eyebrow">
+            {historySection.title}
+          </h2>
 
-        <div className="history-timeline">
-          <span
-            className="history-timeline-line"
-            aria-hidden="true"
-            data-history-line
-          />
-          <ol
-            className="history-timeline-list"
-            aria-label="Cortex history timeline"
-          >
-            {historySection.milestones.map((milestone) => (
-              <li
-                key={milestone.id}
-                className="history-milestone"
-                data-history-milestone
-                data-history-milestone-id={milestone.id}
-              >
-                <span className="history-milestone-date">
-                  {milestone.dateLabel}
-                </span>
-                <span className="history-milestone-axis" aria-hidden="true">
-                  <span className="history-milestone-dot" data-history-dot />
-                  <span className="history-milestone-stem" />
-                </span>
-                <div className="history-milestone-copy">
-                  <h3 className="history-milestone-title">{milestone.title}</h3>
-                  <div className="history-milestone-body">
-                    {milestone.body.map((paragraph) => (
-                      <p key={historyParagraphKey(paragraph)}>
-                        {typeof paragraph === "string" ? (
-                          paragraph
-                        ) : (
-                          <>
-                            <strong>{paragraph.accent}</strong>
-                            {paragraph.text}
-                          </>
-                        )}
-                      </p>
-                    ))}
+          <div className="history-timeline">
+            <span
+              className="history-timeline-line"
+              aria-hidden="true"
+              data-history-line
+            />
+            <ol
+              className="history-timeline-list"
+              aria-label="Cortex history timeline"
+            >
+              {historySection.milestones.map((milestone, index) => (
+                <li
+                  key={milestone.id}
+                  className="history-milestone"
+                  data-history-milestone
+                  data-history-milestone-id={milestone.id}
+                >
+                  <span className="history-milestone-date">
+                    {milestone.dateLabel}
+                  </span>
+                  <span className="history-milestone-axis" aria-hidden="true">
+                    <span className="history-milestone-dot" data-history-dot />
+                    <span
+                      className="history-milestone-stem"
+                      data-history-stem={
+                        index < historySection.milestones.length - 1
+                          ? ""
+                          : undefined
+                      }
+                    />
+                  </span>
+                  <div className="history-milestone-copy">
+                    <h3 className="history-milestone-title">{milestone.title}</h3>
+                    <div className="history-milestone-body">
+                      {milestone.body.map((paragraph) => (
+                        <p key={historyParagraphKey(paragraph)}>
+                          {typeof paragraph === "string" ? (
+                            paragraph
+                          ) : (
+                            <>
+                              <strong>{paragraph.accent}</strong>
+                              {paragraph.text}
+                            </>
+                          )}
+                        </p>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+                </li>
+              ))}
+            </ol>
+          </div>
 
-        <HistorySummary />
-      </div>
+          <HistorySummary />
+        </div>
+      </HistoryScrollMotion>
     </section>
   );
 }

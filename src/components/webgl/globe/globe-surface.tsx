@@ -40,6 +40,7 @@ function useLatestRef<T>(value: T) {
 
 function GlobeLandGlow({ onTextureReady }: { onTextureReady?: () => void }) {
   const [texture, setTexture] = useState<Texture | null>(null);
+  const textureRef = useRef<Texture | null>(null);
   const onTextureReadyRef = useLatestRef(onTextureReady);
 
   const uniforms = useMemo(
@@ -52,17 +53,25 @@ function GlobeLandGlow({ onTextureReady }: { onTextureReady?: () => void }) {
 
   useOnMount(() => {
     let cancelled = false;
-    let loadedTex: Texture | null = null;
+
+    const disposeLoadedTexture = () => {
+      textureRef.current?.dispose();
+      textureRef.current = null;
+      uniforms.uMap.value = null;
+    };
 
     const loader = new TextureLoader();
     loader.load(
       "/textures/world-map-mask.png",
       (tex) => {
-        if (cancelled) return;
+        textureRef.current = tex;
+        if (cancelled) {
+          disposeLoadedTexture();
+          return;
+        }
         tex.colorSpace = SRGBColorSpace;
         tex.wrapS = RepeatWrapping;
         tex.wrapT = ClampToEdgeWrapping;
-        loadedTex = tex;
         uniforms.uMap.value = tex;
         setTexture(tex);
       },
@@ -74,7 +83,7 @@ function GlobeLandGlow({ onTextureReady }: { onTextureReady?: () => void }) {
 
     return () => {
       cancelled = true;
-      loadedTex?.dispose();
+      disposeLoadedTexture();
     };
   });
 
@@ -102,6 +111,7 @@ function GlobeLandGlow({ onTextureReady }: { onTextureReady?: () => void }) {
 
 function GlobeNightGlow({ onTextureReady }: { onTextureReady?: () => void }) {
   const [texture, setTexture] = useState<Texture | null>(null);
+  const textureRef = useRef<Texture | null>(null);
   const onTextureReadyRef = useLatestRef(onTextureReady);
 
   const uniforms = useMemo(
@@ -115,17 +125,25 @@ function GlobeNightGlow({ onTextureReady }: { onTextureReady?: () => void }) {
 
   useOnMount(() => {
     let cancelled = false;
-    let loadedTex: Texture | null = null;
+
+    const disposeLoadedTexture = () => {
+      textureRef.current?.dispose();
+      textureRef.current = null;
+      uniforms.uMap.value = null;
+    };
 
     const loader = new TextureLoader();
     loader.load(
       "/textures/earth-black-marble.jpg",
       (tex) => {
-        if (cancelled) return;
+        textureRef.current = tex;
+        if (cancelled) {
+          disposeLoadedTexture();
+          return;
+        }
         tex.colorSpace = SRGBColorSpace;
         tex.wrapS = RepeatWrapping;
         tex.wrapT = ClampToEdgeWrapping;
-        loadedTex = tex;
         uniforms.uMap.value = tex;
         setTexture(tex);
       },
@@ -137,7 +155,7 @@ function GlobeNightGlow({ onTextureReady }: { onTextureReady?: () => void }) {
 
     return () => {
       cancelled = true;
-      loadedTex?.dispose();
+      disposeLoadedTexture();
     };
   });
 

@@ -3,7 +3,6 @@
 import {
   memo,
   useState,
-  useSyncExternalStore,
   Component,
   type ErrorInfo,
   type ReactNode,
@@ -11,6 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import { useIsLargeScreen } from "@/hooks/use-is-desktop";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useWebGLSupport } from "@/hooks/use-webgl-support";
 import { DEFAULT_GLOBE_ROTATION_Y } from "@/components/webgl/globe/globe-rotation";
 import {
   HERO_GLOBE_MOBILE_HEIGHT,
@@ -125,32 +125,6 @@ function StaticGlobeImage() {
       />
     </picture>
   );
-}
-
-// ---------------------------------------------------------------------------
-// Hooks
-// ---------------------------------------------------------------------------
-
-/** WebGL2 feature check — custom GLSL ShaderMaterials require WebGL, not WebGPU. */
-let _webglChecked = false;
-let _webglOk = false;
-function checkWebGL(): boolean {
-  if (!_webglChecked) {
-    try {
-      const c = document.createElement("canvas");
-      const ctx = c.getContext("webgl2");
-      _webglOk = !!ctx;
-      ctx?.getExtension("WEBGL_lose_context")?.loseContext();
-    } catch {
-      _webglOk = false;
-    }
-    _webglChecked = true;
-  }
-  return _webglOk;
-}
-const noopSubscribe = () => () => {};
-function useWebGLSupport() {
-  return useSyncExternalStore(noopSubscribe, checkWebGL, () => false);
 }
 
 function WebglGlobe({ reducedMotion }: { reducedMotion: boolean }) {

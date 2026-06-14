@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { EventCardLink } from "@/components/sections/events/event-card-link";
@@ -7,6 +8,12 @@ import { CortexMark } from "@/components/logos/cortex-mark";
 import { eventsSection, type CortexEvent } from "@/lib/content/events";
 import { getUpcomingEvents } from "@/lib/events/upcoming";
 import { splitTrailingAccent } from "@/lib/split-trailing-accent";
+
+const EventsScrollMotion = dynamic(() =>
+  import("@/components/sections/events/events-scroll-motion").then(
+    (mod) => mod.EventsScrollMotion,
+  ),
+);
 
 function EventLockup({ region }: { region?: string }) {
   return (
@@ -104,7 +111,7 @@ function EventCardContent({ event }: { event: CortexEvent }) {
 
 function EventCard({ event }: { event: CortexEvent }) {
   return (
-    <article className="event-card">
+    <article className="event-card" data-events-card>
       <EventCardContent event={event} />
     </article>
   );
@@ -124,54 +131,73 @@ export function EventsSection() {
       className="events-section"
       aria-labelledby="events-heading"
       data-events-section
+      data-events-enter-pending
     >
-      <div className="site-container">
-        <div className="events-top-rule" aria-hidden="true" />
-      </div>
-
-      <div className="site-container section-intro" data-events-header>
-        <h2 id="events-heading" className="section-title events-title">
-          {eventsSection.titleLines.map((line, index) => {
-            const isLastLine = index === lastLineIndex;
-            const lineText = isLastLine ? lastLineText : line;
-
-            return (
-              <span key={line} className="events-title-line">
-                {lineText}
-                {isLastLine && lastLineAccent ? (
-                  <span className="text-action-primary">{lastLineAccent}</span>
-                ) : null}
-              </span>
-            );
-          })}
-        </h2>
-      </div>
-
-      {hasUpcomingEvents ? (
-        <div className="site-container events-list-wrap">
-          <ul className="events-list" aria-label="Upcoming events">
-            {upcomingEvents.map((event) => (
-              <li key={event.id} className="events-list-item">
-                <EventCard event={event} />
-              </li>
-            ))}
-          </ul>
+      <EventsScrollMotion>
+        <div className="site-container">
+          <div
+            data-events-top-rule
+            className="events-top-rule"
+            aria-hidden="true"
+          />
         </div>
-      ) : null}
 
-      <div
-        className={`site-container events-follow-up-wrap${hasUpcomingEvents ? "" : " events-follow-up-wrap-empty"}`}
-      >
-        <div className="events-follow-up">
-          <p className="events-follow-up-kicker">Next on the network</p>
-          <h3 className="events-follow-up-title">
-            {eventsSection.followUp.title}
-          </h3>
-          <p className="events-follow-up-description">
-            {eventsSection.followUp.description}
-          </p>
+        <div className="site-container section-intro" data-events-header>
+          <h2
+            id="events-heading"
+            className="section-title events-title"
+            data-events-title
+          >
+            {eventsSection.titleLines.map((line, index) => {
+              const isLastLine = index === lastLineIndex;
+              const lineText = isLastLine ? lastLineText : line;
+
+              return (
+                <span key={line} className="events-title-line">
+                  {lineText}
+                  {isLastLine && lastLineAccent ? (
+                    <span className="text-action-primary">{lastLineAccent}</span>
+                  ) : null}
+                </span>
+              );
+            })}
+          </h2>
         </div>
-      </div>
+
+        {hasUpcomingEvents ? (
+          <div className="site-container events-list-wrap">
+            <ul className="events-list" aria-label="Upcoming events">
+              {upcomingEvents.map((event) => (
+                <li key={event.id} className="events-list-item">
+                  <EventCard event={event} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <div
+          className={`site-container events-follow-up-wrap${hasUpcomingEvents ? "" : " events-follow-up-wrap-empty"}`}
+        >
+          <div className="events-follow-up" data-events-follow-up>
+            <p className="events-follow-up-kicker" data-events-follow-up-kicker>
+              Next on the network
+            </p>
+            <h3
+              className="events-follow-up-title"
+              data-events-follow-up-title
+            >
+              {eventsSection.followUp.title}
+            </h3>
+            <p
+              className="events-follow-up-description"
+              data-events-follow-up-description
+            >
+              {eventsSection.followUp.description}
+            </p>
+          </div>
+        </div>
+      </EventsScrollMotion>
     </section>
   );
 }
