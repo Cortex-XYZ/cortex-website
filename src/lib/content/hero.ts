@@ -19,6 +19,12 @@ export const heroSection = {
       text: "Everything for Everyone. Everywhere.",
     },
   ] satisfies readonly HeroParagraph[],
+  mobileParagraphs: [
+    {
+      emphasis: "Cortex",
+      text: "connects people, businesses, and communities with trusted local experts — anywhere in the world.",
+    },
+  ] satisfies readonly HeroParagraph[],
   primaryCta: {
     label: "I am new here",
     href: siteLinks.start.href,
@@ -29,6 +35,7 @@ export const heroSection = {
   } satisfies ContentCta,
 } as const satisfies SectionContent & {
   paragraphs: readonly HeroParagraph[];
+  mobileParagraphs: readonly HeroParagraph[];
   primaryCta: ContentCta;
   secondaryCta: ContentCta;
 };
