@@ -40,9 +40,8 @@ export const eventsSection = {
         city: "Online",
         region: "GLOBAL",
       },
-      // TODO: Replace placeholder description with final CONNEX Tech Fest copy before launch.
       description:
-        "Placeholder event description for Cortex CONNEX Tech Fest. This copy should be changed before launch.",
+        "Workshops for participants of all interests and levels. AI and Blockchain basics to advanced concepts - led by our expert team. Newcomers friendly.",
       image: {
         src: "/images/events/627.png",
         alt: "Cortex CONNEX Tech Festival poster for June 27, 2026",

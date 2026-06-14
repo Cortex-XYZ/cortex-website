@@ -3,7 +3,7 @@ import type { ContentCta, InternalHref, SectionContent } from "./types";
 
 export type ServiceVisualVariant =
   | "education"
-  | "event"
+  | "events"
   | "services"
   | "research"
   | "staking";
@@ -31,12 +31,12 @@ export const servicesSection = {
       visualVariant: "education",
     },
     {
-      id: "event",
-      title: "Event",
+      id: "events",
+      title: "Events",
       href: siteLinks.events.href,
       description:
         "We believe that social, collaborative, enjoyable events are integral to our mission. Hosting various types of events is core to our mission of service to all needs.",
-      visualVariant: "event",
+      visualVariant: "events",
     },
     {
       id: "services",
