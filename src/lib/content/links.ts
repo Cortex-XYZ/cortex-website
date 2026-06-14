@@ -21,8 +21,8 @@ export const siteLinks = {
   staking: { label: "Staking", href: "/#services" }, // TODO: Need to update for v-2 version where we will have a separate staking page
   contact: { label: "Contact", href: "/#footer" }, // TODO: Currently this is the footer contact link, but we need to update it to be the contact page link or other appropriate link
   stake: { label: "Stake to Support", href: "/stake" }, // TODO: Need to verify this link
-  privacy: { label: "Privacy policy", href: "/privacy" }, // TODO: Need to verify this link
-  terms: { label: "Terms of use", href: "/terms" }, // TODO: Need to verify this link
+  privacy: { label: "Privacy policy", href: "/privacy" },
+  terms: { label: "Terms of use", href: "/terms" },
 } as const satisfies Record<string, SiteLink>;
 
 export type SiteLinkKey = keyof typeof siteLinks;

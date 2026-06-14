@@ -26,7 +26,7 @@ const SERVICE_BLOBS: Record<ServiceVisualVariant, [BlobConfig, BlobConfig]> = {
     { color: "var(--shader-orange-amber-color-b)", x: 30, y: 68 },
     { color: "var(--shader-orange-amber-color-a)", x: 72, y: 88 },
   ],
-  event: [
+  events: [
     { color: "var(--shader-orange-purple-color-a)", x: 28, y: 82 },
     { color: "var(--shader-orange-purple-color-b)", x: 72, y: 48 },
   ],
