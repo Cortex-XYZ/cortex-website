@@ -3,7 +3,7 @@
 import { HashLink } from "@/components/hash-link";
 import { reconcileHashFocusOnDialogClose } from "@/lib/hash-navigation";
 import { useState } from "react";
-import { ArrowRight, ChevronDown, X } from "lucide-react";
+import { ChevronDown, Clock, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -117,17 +117,26 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           ))}
         </nav>
 
-        {/* CTA */}
+        {/* TEMP(staking-page): disabled CTA row — restore HashLink to /stake when ready. */}
         <div className="shrink-0">
           <div className="h-px w-full bg-neutral-neural-dark" />
-          <HashLink
-            href={ctaButton.href}
-            onClick={onClose}
-            className="group flex items-center justify-between px-6 py-5 text-brand-cortex-orange"
+          <div
+            className="mobile-nav-cta-row"
+            aria-disabled="true"
+            aria-label={`${ctaButton.label} — ${ctaButton.comingSoonLabel}`}
           >
             <span className="mobile-nav-cta-label">{ctaButton.label}</span>
-            <ArrowRight className="size-6 animate-arrow-move-right mr-1.5" />
-          </HashLink>
+            <span className="mobile-nav-cta-status">
+              <Clock
+                className="mobile-nav-cta-clock"
+                aria-hidden="true"
+                strokeWidth={1.75}
+              />
+              <span className="mobile-nav-cta-coming-soon">
+                {ctaButton.comingSoonLabel}
+              </span>
+            </span>
+          </div>
           <div className="h-1 w-full bg-brand-cortex-orange" />
         </div>
       </SheetContent>

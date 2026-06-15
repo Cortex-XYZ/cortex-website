@@ -1,4 +1,4 @@
-import { siteLinks } from "./links"
+import { siteLinks, stakeCta } from "./links"
 
 export type MegaNavLink = {
   label: string
@@ -83,7 +83,5 @@ export const directNavLinks = navItems.filter(
   (item): item is DirectNavLink => !item.megaNav,
 )
 
-export const ctaButton = {
-  label: siteLinks.stake.label,
-  href: siteLinks.stake.href,
-}
+/** TEMP(staking-page): re-export until header/mobile nav link to /stake. */
+export const ctaButton = stakeCta

@@ -1,14 +1,13 @@
-import Link from "next/link";
 import { HashLink } from "@/components/hash-link";
 import { HomeLink } from "@/components/home-link";
-import { CortexButton } from "@/components/cortex-button";
 import { HeaderMegaNav } from "@/components/layout/header/header-mega-nav";
+import { HeaderStakeCta } from "@/components/layout/header/header-stake-cta";
 import { HeaderUpcomingEvent } from "@/components/layout/header/header-upcoming-event";
 import { SiteHeaderMobileMenu } from "@/components/layout/header/site-header-mobile-menu";
 import { SiteHeaderShell } from "@/components/layout/header/site-header-shell";
 import { CortexMark } from "@/components/logos/cortex-mark";
 import { CortexWordmark } from "@/components/logos/cortex-wordmark";
-import { aboutNavItem, ctaButton, directNavLinks } from "@/lib/content/nav";
+import { aboutNavItem, directNavLinks } from "@/lib/content/nav";
 
 export function SiteHeader() {
   return (
@@ -46,9 +45,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-4">
           <HeaderUpcomingEvent className="hidden sm:inline-flex" />
-          <CortexButton asChild className="hidden font-bold sm:inline-flex">
-            <Link href={ctaButton.href}>{ctaButton.label}</Link>
-          </CortexButton>
+          <HeaderStakeCta />
           <SiteHeaderMobileMenu />
         </div>
       </div>
