@@ -65,6 +65,19 @@ function getHeaderOffset(): number {
   return 90;
 }
 
+function getLocationHashId(): string {
+  try {
+    return decodeURIComponent(window.location.hash.slice(1));
+  } catch {
+    return window.location.hash.slice(1);
+  }
+}
+
+function isElementVisibleInViewport(element: Element): boolean {
+  const rect = element.getBoundingClientRect();
+  return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
 const FOCUS_AFTER_SCROLL_MAX_MS = 1500;
 
 /** Hash targets inside client-only islands (e.g. Monad topic cards) may not be mounted yet on a cold deep link; wait briefly for them. */
@@ -162,6 +175,12 @@ class HashNavigationRuntime {
     return true;
   }
 
+  prepareForRouteHashNavigation(): void {
+    this.cancelTargetMountWait?.();
+    this.cancelPendingScrollFocus();
+    this.hashSpyPaused = true;
+  }
+
   private resumeHashSpy(): void {
     this.hashSpyPaused = false;
     this.syncHashFromScroll();
@@ -196,6 +215,15 @@ class HashNavigationRuntime {
   }
 
   private resolveActiveHashId(): string {
+    const currentHashId = getLocationHashId();
+
+    if (currentHashId === footerContent.id) {
+      const footer = document.getElementById(footerContent.id);
+      if (footer && isElementVisibleInViewport(footer)) {
+        return footerContent.id;
+      }
+    }
+
     const probe = window.scrollY + getHeaderOffset() + 2;
     let activeId: string = HASH_SPY_IDS[0];
 
@@ -283,6 +311,7 @@ class HashNavigationRuntime {
 
     const timer = window.setTimeout(() => {
       cleanup();
+      this.resumeHashSpy();
     }, HASH_TARGET_MOUNT_MAX_WAIT_MS);
 
     const observer = new MutationObserver(() => {
@@ -347,7 +376,7 @@ class HashNavigationRuntime {
     this.scrollToHashId(hash);
   }
 
-  navigateToHome(): void {
+  navigateToTop(): void {
     const path = window.location.pathname || "/";
 
     this.cancelTargetMountWait?.();
@@ -393,8 +422,16 @@ export function navigateToHash(hash: string): void {
   hashNavigationRuntime.navigateToHash(hash);
 }
 
+export function prepareForRouteHashNavigation(): void {
+  hashNavigationRuntime.prepareForRouteHashNavigation();
+}
+
+export function navigateToTop(): void {
+  hashNavigationRuntime.navigateToTop();
+}
+
 export function navigateToHome(): void {
-  hashNavigationRuntime.navigateToHome();
+  hashNavigationRuntime.navigateToTop();
 }
 
 export function scrollToHashFromLocation(): void {
