@@ -4,8 +4,7 @@ import { ChevronUp } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useOnMount } from "@/hooks/use-on-mount";
 import { footerContent } from "@/lib/content/footer";
-import { heroSection } from "@/lib/content/hero";
-import { navigateToHash } from "@/lib/hash-navigation";
+import { navigateToTop } from "@/lib/hash-navigation";
 import { SITE_HEADER_SCROLL_THRESHOLD } from "@/lib/layout/site-header-scroll";
 import { cn } from "@/lib/utils";
 
@@ -57,7 +56,7 @@ export function ScrollToTopButton() {
   });
 
   const handleClick = useCallback(() => {
-    navigateToHash(heroSection.id);
+    navigateToTop();
   }, []);
 
   return (

@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps, MouseEvent } from "react";
-import { navigateToHash, parseHashHref } from "@/lib/hash-navigation";
+import {
+  navigateToHash,
+  parseHashHref,
+  prepareForRouteHashNavigation,
+} from "@/lib/hash-navigation";
 
 type HashLinkProps = ComponentProps<typeof Link>;
 
@@ -19,22 +23,35 @@ function hrefToString(href: HashLinkProps["href"]): string {
   return "";
 }
 
-export function HashLink({ href, onClick, ...props }: HashLinkProps) {
+export function HashLink({ href, onClick, scroll, ...props }: HashLinkProps) {
   const pathname = usePathname();
+  const parsedHref = parseHashHref(hrefToString(href));
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
     if (event.defaultPrevented) return;
 
-    const parsed = parseHashHref(hrefToString(href));
+    const parsed = parsedHref;
     if (!parsed) return;
 
     const targetPath = parsed.pathname || "/";
-    if (targetPath !== pathname) return;
+    if (targetPath !== pathname) {
+      if (targetPath === "/") {
+        prepareForRouteHashNavigation();
+      }
+      return;
+    }
 
     event.preventDefault();
     navigateToHash(parsed.hash);
   };
 
-  return <Link href={href} onClick={handleClick} {...props} />;
+  return (
+    <Link
+      href={href}
+      onClick={handleClick}
+      scroll={parsedHref ? false : scroll}
+      {...props}
+    />
+  );
 }
