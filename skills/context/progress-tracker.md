@@ -48,6 +48,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - `/privacy` and `/terms` ship as Server Component routes in the `(site)` group with copy in `src/lib/content/legal.ts`; footer legal links point to the live routes.
 - `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
 - Footer and mission presentation classes extracted to `@layer components` in `globals.css`.
+- Stake CTA interim: header and mobile nav show Coming Soon (no `/stake` link) until the staking page ships; marked `TEMP(staking-page)` in CSS/components for removal.
 - Root `not-found.tsx` keeps the compact no-footer 404 treatment with a Back home CTA.
 
 ## Decisions
@@ -77,7 +78,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 1. Preformance review and optimization.
 2. og image and description.
 3. SEO, tracking, analytics.
-4. Staking page.
+4. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
 
