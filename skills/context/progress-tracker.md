@@ -90,4 +90,4 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
-- Events empty state: `events-empty-divider` full-width rule when no upcoming events remain (list borders unchanged when events exist). Removed temporary event helper tests and left no package test script because the static-event flow will be replaced by the event submission/API pipeline. Touched `events-section.tsx`, `globals.css`, and removed the local event test files. Verified at `/#events` (empty + live states); `typecheck`, `build`, and `lint` pass. Open: confirm June 27 vs July 27 event date. Next: event submission/API pipeline.
+- Team content proofreading 1: updated Jeff Paul's bio to the edupreneur/founder copy and changed the second metric from "Revenue-positive for 2 years" to "Over $5m in Grants Raised". Touched `src/lib/content/team.ts`. Verification: `bun run typecheck` passes. Open: animation overlap in Mission card remains deferred. Next: continue content QA fixes.

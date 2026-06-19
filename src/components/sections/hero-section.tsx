@@ -63,6 +63,12 @@ export function HeroSection() {
                   </>
                 )}
                 {heroSection.paragraphs[0].text}
+                {heroSection.paragraphs[0].tabletLine ? (
+                  <>
+                    <br className="hidden md:block lg:hidden" aria-hidden="true" />
+                    {heroSection.paragraphs[0].tabletLine}
+                  </>
+                ) : null}
               </p>
               {heroSection.paragraphs.slice(1).map((p, i) => (
                 <p

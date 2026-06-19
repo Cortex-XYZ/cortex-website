@@ -23,7 +23,7 @@ export const teamSection = {
       id: "jeff-paul",
       name: "Jeff Paul",
       role: "Education and talent development",
-      bio: "Former Turbine CEO who helped train 300+ professionals across Web3 ecosystems and scale advanced builder education.",
+      bio: "Edupreneur with over 35 years in education, program building, and talent development. Multi-time founder who has worked across technical, research, product, BD, and operations.",
       image: {
         src: "/images/team/jeff.png",
         alt: "Jeff Paul",
@@ -33,7 +33,7 @@ export const teamSection = {
       xHandle: "japarjam",
       metrics: [
         { label: "300+ careers launched" },
-        { label: "Revenue-positive for 2 years" },
+        { label: "Over $5m in Grants Raised" },
       ],
     },
     {

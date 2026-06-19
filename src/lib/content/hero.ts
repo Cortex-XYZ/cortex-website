@@ -5,6 +5,8 @@ export type HeroParagraph = {
   /** Word or phrase rendered with emphasis (e.g. bold + primary color). */
   emphasis?: string;
   text: string;
+  /** Continuation rendered after a tablet-only line break (md–lg). */
+  tabletLine?: string;
 };
 
 export const heroSection = {
@@ -13,7 +15,9 @@ export const heroSection = {
   paragraphs: [
     {
       emphasis: "Cortex",
-      text: "serves all individual, business, and community needs from our local hubs —\nlocal citizens providing expertise, guidance, and connection to the top industry professionals in all verticals — around the world.",
+      text: "serves all individual, business, and community needs through our globally distributed professional network —",
+      tabletLine:
+        "local citizens providing expertise, guidance, and connection to the top industry professionals in all verticals.",
     },
     {
       text: "Everything for Everyone. Everywhere.",
@@ -22,15 +26,15 @@ export const heroSection = {
   mobileParagraphs: [
     {
       emphasis: "Cortex",
-      text: "connects people, businesses, and communities with trusted local experts — anywhere in the world.",
+      text: "serves individual, business, and community needs through a globally distributed professional network.",
     },
   ] satisfies readonly HeroParagraph[],
   primaryCta: {
-    label: "I am new here",
+    label: "New to Cortex",
     href: siteLinks.start.href,
   } satisfies ContentCta,
   secondaryCta: {
-    label: "I am in community",
+    label: "Cortex Community",
     href: siteLinks.services.href,
   } satisfies ContentCta,
 } as const satisfies SectionContent & {
