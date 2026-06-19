@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mona_Sans, Open_Sans } from "next/font/google";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { HashScrollSync } from "@/components/hash-scroll-sync";
 import { RouteLoadingShell } from "@/components/layout/route-loading-shell";
 import { ScrollToTopButton } from "@/components/layout/scroll-to-top-button";
@@ -65,6 +66,7 @@ export default function RootLayout({
           <ScrollToTopButton />
           <Suspense fallback={<RouteLoadingShell />}>{children}</Suspense>
         </TooltipProvider>
+        <Analytics />
       </body>
     </html>
   );
