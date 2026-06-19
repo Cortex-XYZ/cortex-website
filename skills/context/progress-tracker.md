@@ -17,6 +17,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - CI workflow: Bun setup, frozen lockfile, lint, typecheck, build.
 - Typed content modules in `src/lib/content/` for all sections + `nav.ts`.
 - Vercel Web Analytics wired through `@vercel/analytics` in the root app layout.
+- Sentry wired through `@sentry/nextjs` using Next 16 instrumentation entrypoints.
 
 ### Sections
 
@@ -52,6 +53,10 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Stake CTA interim: header and mobile nav show Coming Soon (no `/stake` link) until the staking page ships; marked `TEMP(staking-page)` in CSS/components for removal.
 - Root `not-found.tsx` keeps the compact no-footer 404 treatment with a Back home CTA.
 
+### Observability
+
+- Sentry (`@sentry/nextjs` 10.x): `src/instrumentation.ts` (Node + edge register, `onRequestError`), `src/instrumentation-client.ts` (browser init + `onRouterTransitionStart`), `src/app/(site)/error.tsx` for route-segment render failures, and `src/app/global-error.tsx` with self-contained inline fallback styles and matching inline primary retry button for root layout/template failures. Sentry Logs are enabled across browser, Node.js, and edge runtimes when DSNs are configured; `console.log`, `console.warn`, and `console.error` are captured as structured logs in development and production, while intentional app logs should use `Sentry.logger.*` with `snake_case` attributes. Session Replay is intentionally disabled for now. `next.config.ts` is wrapped with `withSentryConfig` for source-map upload and per-deploy release tracking via `VERCEL_GIT_COMMIT_SHA`.
+
 ## Decisions
 
 - Tailwind 4 + shadcn/ui (accessibility base, not visual source). Bun for package management.
@@ -69,6 +74,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - `(site)` route group separates site pages from error pages — `SiteFooter` renders only for site routes, not `not-found.tsx`.
 - Header split into server component + client islands to minimize client JS (only scroll detection, mega nav, and mobile menu are client components).
 - Legal copy lives in `src/lib/content/legal.ts`; no shared legal-page component until a third legal route is needed.
+- Error tracking -> Sentry. Source maps and per-deploy releases are gated on `SENTRY_AUTH_TOKEN` so local/preview builds stay quiet by default.
 
 ## Open Questions
 
@@ -83,4 +89,4 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
-Merged `origin/main` into `dev` to bring in Vercel Web Analytics. Files touched by the merge: `package.json`, `bun.lock`, and `src/app/layout.tsx`; tracker updated in `skills/context/progress-tracker.md`. Verification: `bun install --frozen-lockfile`, `bun run typecheck`, and `bun run build` all passed. Open: CONNEX event URL still temporary. Next: continue launch metadata and tracking validation.
+Added an inline-styled primary `Try again` button to `src/app/global-error.tsx` wired to `unstable_retry`, matching `(site)/error.tsx` without importing `globals.css` or `CortexButton`. `(site)/error.tsx` still handles route-segment failures. Removed the temporary `global-error-content` extract and dev preview route after style review. Sentry log capture still sends `console.log`, `console.warn`, and `console.error` in development and production whenever the relevant DSN is configured, and Sentry Session Replay remains disabled. Files touched: `src/app/global-error.tsx` and `skills/context/progress-tracker.md`. Verification: `bun run typecheck` passed. Next: deploy a preview to confirm Sentry errors, logs, source maps, and release metadata.
