@@ -16,6 +16,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Five Pattern Studio animated SVG starters in `skills/examples/` (algorithmic generation, no static SVG deps).
 - CI workflow: Bun setup, frozen lockfile, lint, typecheck, build.
 - Typed content modules in `src/lib/content/` for all sections + `nav.ts`.
+- Vercel Web Analytics wired through `@vercel/analytics` in the root app layout.
 
 ### Sections
 
@@ -77,9 +78,9 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 1. Preformance review and optimization.
 2. og image and description.
-3. SEO, tracking, analytics.
+3. SEO, tracking validation, and launch metadata.
 4. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
 
-Fixed navigation polish in `src/lib/hash-navigation.ts`, `src/components/hash-link.tsx`, `src/components/layout/scroll-to-top-button.tsx`, and `src/app/not-found.tsx`: explicit `#footer` navigation is no longer overwritten by the homepage scroll spy while the footer is visible; cross-route homepage hash links from 404/non-home routes now keep the intended hash (`/#events`, `/#footer`) instead of being rewritten by scroll spy before target scroll completes; scroll-to-top returns to the current route top and clears stale hashes; the 404 page keeps its compact layout with a Back home CTA. Verification pending. Open: CONNEX event URL still temporary. Next: continue launch polish.
+Merged `origin/main` into `dev` to bring in Vercel Web Analytics. Files touched by the merge: `package.json`, `bun.lock`, and `src/app/layout.tsx`; tracker updated in `skills/context/progress-tracker.md`. Verification: `bun install --frozen-lockfile`, `bun run typecheck`, and `bun run build` all passed. Open: CONNEX event URL still temporary. Next: continue launch metadata and tracking validation.
