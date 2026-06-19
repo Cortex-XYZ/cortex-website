@@ -29,7 +29,6 @@ import {
 import type { MissionCard, MissionCardId } from "@/lib/content/mission";
 
 type MissionIllustrationPlacement = {
-  topClass: string;
   sizeClass: string;
 };
 
@@ -44,26 +43,27 @@ type MissionDesktopStackProps = MissionCardsProps & {
 const MISSION_COLLAPSED_EYEBROW_CLASS =
   "mission-eyebrow mission-collapsed-card-eyebrow";
 
+const MISSION_ILLUSTRATION_SIZE_LG =
+  "xl:size-[clamp(15rem,min(74cqw,48cqh),28rem)]";
+
+const MISSION_ILLUSTRATION_SIZE_MD =
+  "xl:size-[clamp(13rem,min(64cqw,42cqh),24rem)]";
+
 const MISSION_ILLUSTRATION_PLACEMENTS = {
   pulse: {
-    topClass: "top-[12.5rem] md:top-[14.5rem] xl:top-[60%] xl:-translate-y-1/2",
-    sizeClass: "size-[13.5rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
+    sizeClass: `size-[13.5rem] md:size-[22rem] ${MISSION_ILLUSTRATION_SIZE_LG}`,
   },
   disciplines: {
-    topClass: "top-[12rem] md:top-[14rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
-    sizeClass: "size-[13rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
+    sizeClass: `size-[13rem] md:size-[22rem] ${MISSION_ILLUSTRATION_SIZE_LG}`,
   },
   collections: {
-    topClass: "top-[13.5rem] md:top-[14.5rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
-    sizeClass: "size-[11.5rem] md:size-[20rem] xl:size-[clamp(16rem,36dvh,24rem)]",
+    sizeClass: `size-[11.5rem] md:size-[20rem] ${MISSION_ILLUSTRATION_SIZE_MD}`,
   },
   ideas: {
-    topClass: "top-[12.8rem] md:top-[14.5rem] xl:top-[calc(50%+3rem)] xl:-translate-y-1/2",
-    sizeClass: "size-[14rem] md:size-[22rem] xl:size-[clamp(18rem,42dvh,28rem)]",
+    sizeClass: `size-[14rem] md:size-[22rem] ${MISSION_ILLUSTRATION_SIZE_LG}`,
   },
   culture: {
-    topClass: "top-[14.5rem] md:top-[15.5rem] xl:top-[60%] xl:-translate-y-1/2",
-    sizeClass: "size-[11.5rem] md:size-[18rem] xl:size-[clamp(16rem,36dvh,24rem)]",
+    sizeClass: `size-[11.5rem] md:size-[18rem] ${MISSION_ILLUSTRATION_SIZE_MD}`,
   },
 } satisfies Record<MissionCardId, MissionIllustrationPlacement>;
 
@@ -77,24 +77,11 @@ const MissionExpandedCard = memo(function MissionExpandedCard({
   illustrationActive: boolean;
   className?: string;
 }) {
-  const { topClass, sizeClass } = MISSION_ILLUSTRATION_PLACEMENTS[card.id];
+  const { sizeClass } = MISSION_ILLUSTRATION_PLACEMENTS[card.id];
   const illustrationClassName = cn("text-text-secondary", sizeClass);
 
   return (
     <div className={cn("mission-card-shell", className)}>
-      <div className={cn("mission-card-illustration", topClass)}>
-        {illustrationActive ? (
-          <MissionIllustration
-            key={card.id}
-            pattern={card.pattern}
-            active
-            className={illustrationClassName}
-          />
-        ) : (
-          <MissionIllustrationFallback className={illustrationClassName} />
-        )}
-      </div>
-
       <div className="mission-card-content">
         <div>
           <p className="mission-eyebrow">{card.eyebrow}</p>
@@ -102,7 +89,18 @@ const MissionExpandedCard = memo(function MissionExpandedCard({
             {card.title}
           </h2>
         </div>
-        <div aria-hidden />
+        <div className="mission-card-illustration" aria-hidden>
+          {illustrationActive ? (
+            <MissionIllustration
+              key={card.id}
+              pattern={card.pattern}
+              active
+              className={illustrationClassName}
+            />
+          ) : (
+            <MissionIllustrationFallback className={illustrationClassName} />
+          )}
+        </div>
         <p className="mission-card-body self-end">{card.body}</p>
       </div>
     </div>
