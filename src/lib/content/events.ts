@@ -46,8 +46,7 @@ export const eventsSection = {
         src: "/images/events/627.png",
         alt: "Cortex CONNEX Tech Festival poster for June 27, 2026",
       },
-      // TODO: Temporary Luma profile link — replace with the CONNEX Tech Fest event page URL once available.
-      url: "https://luma.com/user/Cortex_Global",
+      url: "https://luma.com/vcdd20wc?utm_source=cortex_website",
     },
   ] satisfies readonly CortexEvent[],
 } as const satisfies Pick<SectionContent, "id"> & {

@@ -2044,12 +2044,20 @@
     @apply pt-0;
   }
 
+  .events-empty-divider-wrap {
+    @apply pt-0;
+  }
+
+  .events-empty-divider {
+    @apply h-px w-full bg-border-default;
+  }
+
   .events-follow-up-wrap {
     @apply pt-20 md:pt-24 xl:pt-30;
   }
 
   .events-follow-up-wrap-empty {
-    @apply pt-0;
+    @apply pt-12 md:pt-16 xl:pt-20;
   }
 
   .events-follow-up {
