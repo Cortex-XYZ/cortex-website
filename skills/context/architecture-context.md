@@ -112,6 +112,10 @@ Recommended pattern:
 
 The root layout and homepage route export `revalidate = EVENTS_DATE_REVALIDATE_SECONDS` (3600) from `src/lib/events/upcoming.ts` so date-aware event UI—`HeaderUpcomingEvent` in the site header and `EventsSection` on the homepage—can re-run filtering after event dates pass without a manual rebuild. Event content is still hardcoded TypeScript, so hourly revalidation only refreshes which events are shown—not content from an external source. Events whose `date` is earlier than the current UTC `YYYY-MM-DD` are hidden from the Upcoming Events list; when no upcoming events remain, the Events section renders only its follow-up bridge copy.
 
+## Observability
+
+Sentry is wired through `@sentry/nextjs` and the Next 16 instrumentation entrypoints. `src/app/(site)/error.tsx` captures route-segment render failures with `Sentry.captureException`, while `src/app/global-error.tsx` remains the root layout/template fallback. Sentry Logs are enabled in the browser, Node.js server, and edge runtime whenever the related DSN env var is present. Use `Sentry.logger.*` for intentional structured logs with `snake_case` custom attributes. The SDK captures `console.log`, `console.warn`, and `console.error` as structured logs in development and production when Sentry initializes. Session Replay is intentionally disabled for now.
+
 ## Invariants
 
 - The site is dark-first.
