@@ -1,11 +1,10 @@
 import {
-  contactEmail,
   cortexSocialLinkKeys,
   externalLinks,
   siteLinks,
   type ExternalLinkKey,
 } from "./links";
-import type { ContentCta, InternalHref, SectionContent } from "./types";
+import type { InternalHref, SectionContent } from "./types";
 
 export type FooterColumnLink = {
   label: string;
@@ -24,11 +23,8 @@ export const footerContent = {
   description:
     "Get Cortex updates on local hubs, education tracks, events, services, and ways to support the network.",
   tagline: "Open innovation, made local. Open to all.",
-  email: contactEmail,
-  newsletterCta: {
-    label: "Subscribe",
-    href: contactEmail.href,
-  } satisfies ContentCta,
+  newsletterPlaceholder: "youremail@example.com",
+  newsletterSubmitLabel: "Subscribe",
   columns: [
     {
       title: "About",
@@ -62,8 +58,8 @@ export const footerContent = {
 } as const satisfies SectionContent & {
   tagline: string;
   emailInputId: string;
-  email: typeof contactEmail;
-  newsletterCta: ContentCta;
+  newsletterPlaceholder: string;
+  newsletterSubmitLabel: string;
   columns: readonly FooterColumn[];
   socialLinks: readonly ((typeof externalLinks)[ExternalLinkKey] & {
     key: ExternalLinkKey;

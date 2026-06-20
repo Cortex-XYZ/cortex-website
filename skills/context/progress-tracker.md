@@ -15,6 +15,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Shared hooks: `use-reduced-motion`, `use-is-desktop`, `use-on-mount`.
 - Five Pattern Studio animated SVG starters in `skills/examples/` (algorithmic generation, no static SVG deps).
 - CI workflow: Bun setup, frozen lockfile, lint, typecheck, build.
+- Local unit tests use Bun's built-in runner via `bun run test`.
 - Typed content modules in `src/lib/content/` for all sections + `nav.ts`.
 - Vercel Web Analytics wired through `@vercel/analytics` in the root app layout.
 - Sentry wired through `@sentry/nextjs` using Next 16 instrumentation entrypoints.
@@ -39,13 +40,15 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - ScrollTrigger-triggered automatic line drawing for History and Team: History draws the desktop timeline line and mobile stems after their triggers enter; Team draws the desktop SVG rules and mobile divider separately from the content reveal. Both respect reduced-motion by setting lines directly to their resting drawn state.
 - Slightly slowed the Hero SplitText word reveal and Team line-draw timing after visual tuning feedback.
 - Aligned the History timeline line with milestone reveal timing: desktop line advances one segment per milestone trigger; mobile stems use the same trigger start/duration as milestone reveals.
+- History ScrollTrigger setup now uses one trigger per milestone; each trigger owns milestone reveal, desktop line advance, mobile stem draw, and the final summary reveal. This avoids the previous batch-plus-separate-summary-trigger mix that could leave GSAP refresh with an undefined internal trigger.
 
 ### Layout
 
 - `SiteHeader` refactored from monolithic client component into server component + client islands (`SiteHeaderShell`, `HeaderMegaNav`, `SiteHeaderMobileMenu`). Reduces client JS bundle.
 - Header upcoming-event promo: `HeaderUpcomingEvent` / `HeaderUpcomingEventLink` render the next event (from `src/lib/events/upcoming.ts`, shared with the Events section; hourly ISR via `EVENTS_DATE_REVALIDATE_SECONDS`) in the desktop header and mobile hero. Header scroll state lives in `src/lib/layout/site-header-scroll.ts`.
 - Same-page hash navigation: `HashLink` + `HashScrollSync` (`src/lib/hash-navigation.ts`) fix `/#section` links when already on `/`; wired through hero CTAs, header, mobile nav, footer, and services CTA. Root layout wraps `{children}` in `Suspense` with `RouteLoadingShell`.
-- `SiteFooter` server component: CTA quote block, newsletter input (UI only), contact mailto, About/Programs/Legal columns, social glyphs (X/Instagram/TikTok/LinkedIn/YouTube), copyright. Module-scope hoisted constants (`QUOTE_LINES`, `TAGLINE_LINES`, `SOCIAL_LINKS`).
+- `SiteFooter` server component: CTA quote block, newsletter form island, About/Programs/Legal columns, social glyphs (X/Instagram/TikTok/LinkedIn/YouTube), copyright. Module-scope hoisted constants (`QUOTE_LINES`, `TAGLINE_LINES`, `SOCIAL_LINKS`).
+- Footer newsletter capture: `NewsletterForm` client island runs an invisible Cloudflare Turnstile challenge when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is present, loads `api.js` with the existing page script nonce when a CSP nonce is present, then calls a thin server action with Zod email validation, honeypot (checked before rate limiting/Turnstile so bot traffic stays silent and does not consume Upstash quota), Upstash Redis-backed per-IP rate limiting (`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`; local dev skips if absent, production-like runtimes fail closed; unknown client IPs fail closed in production-like runtimes instead of sharing a global fallback bucket), server-side Turnstile Siteverify via `TURNSTILE_SECRET_KEY` after rate limiting, and Resend global Contact + Segment assignment via `RESEND_API_KEY` / `RESEND_SEGMENT_ID`; new contacts are created with the newsletter segment in one Resend call (`contacts.create` + `segments`), existing contacts are re-subscribed via update + segment list/add with one inline retry on transient failures. Submit decisions, missing/invalid Turnstile tokens, rate-limit behavior, and Resend subscribe logic are covered by Bun unit tests. A localhost Turnstile submit has been verified to create the test email in Resend.
 - `(site)` route group: `page.tsx` and site-specific layout (with `SiteFooter` + `flex-1` wrapper) live under `src/app/(site)/`. Root `layout.tsx` has header only — `not-found.tsx` stays at root so the 404 page renders without footer.
 - `/privacy` and `/terms` ship as Server Component routes in the `(site)` group with copy in `src/lib/content/legal.ts`; footer legal links point to the live routes.
 - `SectionDivider` shared component replaces per-section divider markup in team, monad, and services sections.
@@ -82,12 +85,18 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Next Steps
 
-1. Integrate Resend for newsletter form. Cloudflare Turnstile for prevent spam.
-2. Preformance review and optimization.
-3. og image and description.
-4. SEO, tracking validation, and launch metadata.
-5. Staking page (remove `TEMP(staking-page)` comments when shipping).
+1. Performance review and optimization.
+2. og image and description.
+3. SEO, tracking validation, and launch metadata.
+4. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
 
-- Mission graph placement tuning: moved expanded-card illustrations into the Mission card content grid so each graph centers in the remaining space between the wrapped title and body instead of relying on fixed vertical offsets. Added equal vertical inset and max sizing for the illustration row to preserve breathing room at short desktop heights such as 1440x670. Touched `src/components/sections/mission/mission-cards-client.tsx` and `src/app/globals.css`. Verification: `bun run typecheck`, `bun run lint` (passes with existing warnings in `site-footer.tsx` and `monad-topic-enter.ts`), `bun run build`, browser geometry check at 1440x670 showing equal title/graph and graph/body gaps. Open: existing unrelated lint warnings remain. Next: continue Mission card-by-card visual tuning if requested.
+- **Newsletter form refactor** — Turnstile logic extracted to `use-turnstile.ts`; `NewsletterForm` handles submit UX. Hidden client **submission id** echoed by `handleNewsletterSignup`; UI only shows feedback for the **active submission** (fixes stale success/error on resubmit). Email input **clears on success**; Turnstile **tokens reset after each response** (single-use).
+- **Newsletter pipeline order** — honeypot (silent, before rate limit/Turnstile) → **Upstash** per-IP rate limit → **Cloudflare Siteverify** → **Resend** (`contacts.create` + segments; existing contacts re-subscribed via `contacts.update` when `unsubscribed: true`). Rate limiting runs **before Siteverify** to reduce forged-token abuse.
+- **Turnstile config** — Client reads `NEXT_PUBLIC_TURNSTILE_SITE_KEY`; server Siteverify gated by `isNewsletterTurnstileEnabled()` (both keys required). Secret **trimmed** before Siteverify. **Hostname validation**: `TURNSTILE_ALLOWED_HOSTNAMES`, `*.vercel.app` wildcards, `VERCEL_URL` merged for previews; action must match `newsletter`. Script loader stores **loading/loaded/error** on shared script element, uses `turnstile.ready()`, handles remount/retry; copies page **CSP nonce** onto `api.js`.
+- **Rate-limit IP hardening** — Parses `x-vercel-forwarded-for`, `Forwarded`, IPv4-with-port, bracketed IPv6; **skips loopback** in production-like runtimes. Unknown IP returns `null` identifier; **fail closed** in production (no shared `local` bucket).
+- **Footer hash nav** — `hash-navigation.ts` keeps `#footer` while footer is visible and while focus is in the newsletter/contact region (prevents demotion to `#events` during footer interaction).
+- **Resend re-subscribe** — Reactivates unsubscribed contacts only; reactivated members get success message, not already-submitted.
+- **Tests** — `submit.test.ts`, `turnstile.test.ts`, `rate-limit.test.ts`, `resend.test.ts`.
+- **Verified** — `bun run test`, `bun run typecheck`, `bun run build`. Localhost `#footer` Turnstile submit confirmed against Resend.
