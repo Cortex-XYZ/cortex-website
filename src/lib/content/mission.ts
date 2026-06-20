@@ -33,7 +33,7 @@ export const missionSection = {
   paragraphs: [
     {
       emphasis: "Cortex",
-      text: "is a global network of professionals accelerating the growth, adoption, and integration of blockchain technology into all facets of community life.",
+      text: "is a global network of professionals accelerating the growth, adoption, and integration of AI and Blockchain technology into all facets of community life.",
     },
     {
       text: "We support every region and the unique needs and personas through expert education for every audience, and a full-slate of services including technical, security, research, advocacy, and incubation offerings integral to drive open innovation.",
@@ -68,7 +68,7 @@ export const missionSection = {
       id: "ideas",
       eyebrow: "04 / Ideas",
       title: "Real projects that can become real businesses.",
-      body: "The goal is a pipeline of market-ready products and resilient teams connected to Nitro and other Monad programs.",
+      body: "The goal is a pipeline of market-ready products and resilient teams connected to blockchain and AI platforms, incubators, accelerators, and other support programs across the industries.",
       pattern: "radiating-segments",
     },
     {
