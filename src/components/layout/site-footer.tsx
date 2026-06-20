@@ -90,8 +90,8 @@ export function SiteFooter() {
           <div className="site-footer-newsletter-region">
             <NewsletterForm
               emailInputId={footerContent.emailInputId}
-              placeholder={footerContent.email.label}
-              submitLabel={footerContent.newsletterCta.label}
+              placeholder={footerContent.newsletterPlaceholder}
+              submitLabel={footerContent.newsletterSubmitLabel}
             />
           </div>
         </div>

@@ -3,7 +3,10 @@ import type { TurnstileVerificationResult } from "@/lib/integrations/turnstile";
 import type { NewsletterSubscribeResult } from "@/lib/integrations/resend";
 import type { NewsletterRateLimitResult } from "@/lib/newsletter/rate-limit";
 import { NEWSLETTER_TURNSTILE_FIELD } from "@/lib/newsletter/turnstile";
-import type { NewsletterFormState } from "@/lib/newsletter/types";
+import {
+  NEWSLETTER_SUBMISSION_ID_FIELD,
+  type NewsletterFormState,
+} from "@/lib/newsletter/types";
 
 type NewsletterSubscribe = (email: string) => Promise<NewsletterSubscribeResult>;
 type NewsletterRateLimit = () => Promise<NewsletterRateLimitResult>;
@@ -23,17 +26,30 @@ const ALREADY_SUBSCRIBED_MESSAGE = "Your email has already been submitted.";
 const GENERIC_ERROR_MESSAGE =
   "We could not subscribe that email right now. Please try again.";
 
+function getSubmissionId(formData: FormData): string | undefined {
+  const submissionId = formData.get(NEWSLETTER_SUBMISSION_ID_FIELD);
+
+  return typeof submissionId === "string" && submissionId.trim()
+    ? submissionId.trim()
+    : undefined;
+}
+
 export async function handleNewsletterSignup(
   formData: FormData,
   { rateLimit, subscribe, turnstile }: HandleNewsletterSignupOptions,
 ): Promise<NewsletterFormState> {
+  const submissionId = getSubmissionId(formData);
+  const withSubmissionId = (
+    state: Omit<NewsletterFormState, "submissionId">,
+  ): NewsletterFormState =>
+    submissionId ? { ...state, submissionId } : state;
   const company = formData.get("company");
 
   if (typeof company === "string" && company.trim()) {
-    return {
+    return withSubmissionId({
       status: "success",
       message: SUBSCRIBED_MESSAGE,
-    };
+    });
   }
 
   const parsed = newsletterSignupSchema.safeParse({
@@ -44,20 +60,20 @@ export async function handleNewsletterSignup(
   if (!parsed.success) {
     const errors = parsed.error.flatten().fieldErrors;
 
-    return {
+    return withSubmissionId({
       status: "error",
       message: errors.email?.[0] || GENERIC_ERROR_MESSAGE,
       emailError: errors.email?.[0],
-    };
+    });
   }
 
   const rateLimitResult = await rateLimit?.();
 
   if (rateLimitResult && !rateLimitResult.ok) {
-    return {
+    return withSubmissionId({
       status: "error",
       message: rateLimitResult.message,
-    };
+    });
   }
 
   const turnstileResult = await turnstile?.(
@@ -65,10 +81,10 @@ export async function handleNewsletterSignup(
   );
 
   if (turnstileResult && !turnstileResult.ok) {
-    return {
+    return withSubmissionId({
       status: "error",
       message: turnstileResult.message,
-    };
+    });
   }
 
   const result = await subscribe(parsed.data.email);
@@ -79,17 +95,17 @@ export async function handleNewsletterSignup(
         ? "Newsletter setup is missing required Resend environment variables."
         : GENERIC_ERROR_MESSAGE;
 
-    return {
+    return withSubmissionId({
       status: "error",
       message: configurationMessage,
-    };
+    });
   }
 
-  return {
+  return withSubmissionId({
     status: "success",
     message: result.alreadySubscribed
       ? ALREADY_SUBSCRIBED_MESSAGE
       : SUBSCRIBED_MESSAGE,
     subscribedEmail: parsed.data.email,
-  };
+  });
 }

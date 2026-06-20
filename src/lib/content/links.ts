@@ -2,7 +2,7 @@ import type { ExternalHref, InternalHref } from "./types";
 
 export type SiteLink = {
   label: string;
-  href: InternalHref;
+  href?: InternalHref;
 };
 
 export const siteLinks = {
@@ -45,7 +45,7 @@ export type ExternalLinkChannel =
   | "tiktok"
   | "linkedin"
   | "youtube"
-  | "github"
+  | "github";
 
 export type ExternalLink = {
   label: string;
@@ -182,9 +182,3 @@ export const monadLinkKeys = [
   "mipland",
   "categoryLabs",
 ] as const satisfies readonly ExternalLinkKey[];
-
-// TODO: Need to verify this
-export const contactEmail = {
-  label: "becool@cortexglobal.xyz",
-  href: "mailto:becool@cortexglobal.xyz",
-} as const satisfies SiteLink;

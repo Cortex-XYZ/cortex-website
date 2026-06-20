@@ -1,5 +1,6 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import {
+  isNewsletterTurnstileEnabled,
   resolveTurnstileAllowedHostnames,
   verifyTurnstileToken,
 } from "@/lib/integrations/turnstile";
@@ -39,6 +40,48 @@ describe("verifyTurnstileToken", () => {
       message: "Verification failed. Please try again.",
     });
     expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  test("rejects whitespace-only secret keys before calling Siteverify", async () => {
+    const fetcher = mock(async () => Response.json({ success: true }));
+
+    const result = await verifyTurnstileToken({
+      fetcher,
+      secretKey: "   ",
+      token: "token_test",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: "configuration",
+      message: "Verification failed. Please try again.",
+    });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  test("trims secret keys before calling Siteverify", async () => {
+    const fetcher = mock(async (_input, init) => {
+      const body = init?.body;
+
+      expect(body).toBeInstanceOf(URLSearchParams);
+      expect((body as URLSearchParams).get("secret")).toBe("secret_test");
+
+      return Response.json({
+        action: "newsletter",
+        hostname: "www.cortexglobal.xyz",
+        success: true,
+      });
+    });
+
+    const result = await verifyTurnstileToken({
+      allowedHostnames: ["www.cortexglobal.xyz"],
+      fetcher,
+      secretKey: "  secret_test  ",
+      token: "token_test",
+    });
+
+    expect(result).toEqual({ ok: true });
+    expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
   test("accepts a valid Siteverify response for the newsletter action and hostname", async () => {
@@ -206,5 +249,52 @@ describe("resolveTurnstileAllowedHostnames", () => {
       "www.cortexglobal.xyz",
       "cortex-website-preview.vercel.app",
     ]);
+  });
+});
+
+describe("isNewsletterTurnstileEnabled", () => {
+  const originalSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const originalSecretKey = process.env.TURNSTILE_SECRET_KEY;
+
+  afterEach(() => {
+    if (originalSiteKey === undefined) {
+      delete process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    } else {
+      process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = originalSiteKey;
+    }
+
+    if (originalSecretKey === undefined) {
+      delete process.env.TURNSTILE_SECRET_KEY;
+    } else {
+      process.env.TURNSTILE_SECRET_KEY = originalSecretKey;
+    }
+  });
+
+  test("requires both the public site key and secret key", () => {
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "site-key";
+    process.env.TURNSTILE_SECRET_KEY = "secret-key";
+
+    expect(isNewsletterTurnstileEnabled()).toBe(true);
+  });
+
+  test("rejects a secret-only configuration", () => {
+    delete process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    process.env.TURNSTILE_SECRET_KEY = "secret-key";
+
+    expect(isNewsletterTurnstileEnabled()).toBe(false);
+  });
+
+  test("rejects a site-key-only configuration", () => {
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "site-key";
+    delete process.env.TURNSTILE_SECRET_KEY;
+
+    expect(isNewsletterTurnstileEnabled()).toBe(false);
+  });
+
+  test("ignores whitespace-only env values", () => {
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "   ";
+    process.env.TURNSTILE_SECRET_KEY = "secret-key";
+
+    expect(isNewsletterTurnstileEnabled()).toBe(false);
   });
 });

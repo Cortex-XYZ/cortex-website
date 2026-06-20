@@ -4,6 +4,7 @@ import type { TurnstileVerificationResult } from "@/lib/integrations/turnstile";
 import type { NewsletterRateLimitResult } from "@/lib/newsletter/rate-limit";
 import { handleNewsletterSignup } from "@/lib/newsletter/submit";
 import { NEWSLETTER_TURNSTILE_FIELD } from "@/lib/newsletter/turnstile";
+import { NEWSLETTER_SUBMISSION_ID_FIELD } from "@/lib/newsletter/types";
 
 function createFormData(fields: Record<string, string>): FormData {
   const formData = new FormData();
@@ -127,6 +128,27 @@ describe("handleNewsletterSignup", () => {
     });
     expect(rateLimitSpy.calls).toBe(1);
     expect(subscribeSpy.calls).toEqual(["person@example.com"]);
+  });
+
+  test("preserves the client submission id in the returned state", async () => {
+    const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const result = await handleNewsletterSignup(
+      createFormData({
+        email: "person@example.com",
+        company: "",
+        [NEWSLETTER_SUBMISSION_ID_FIELD]: "submission-123",
+      }),
+      {
+        subscribe: subscribeSpy.subscribe,
+      },
+    );
+
+    expect(result).toEqual({
+      status: "success",
+      message: "You have successfully subscribed to the Cortex update list.",
+      subscribedEmail: "person@example.com",
+      submissionId: "submission-123",
+    });
   });
 
   test("rate limits before rejecting a missing Turnstile token", async () => {

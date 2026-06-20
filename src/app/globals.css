@@ -1968,6 +1968,7 @@
 
   .site-footer-newsletter-message {
     @apply mt-2 font-open text-[0.75rem] leading-normal text-text-muted md:absolute md:top-full;
+    animation: site-footer-newsletter-message-hide 3s ease forwards;
   }
 
   .site-footer-newsletter-message[data-status="success"] {
@@ -1980,6 +1981,19 @@
 
   .site-footer-newsletter-button {
     @apply w-fit min-w-44 shrink-0 px-6 text-brand-cortex-carbon hover:text-brand-cortex-carbon;
+  }
+
+  @keyframes site-footer-newsletter-message-hide {
+    0%,
+    82% {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   .site-footer-body {
@@ -2564,7 +2578,6 @@
   .event-location-icon {
     @apply size-4 shrink-0 md:size-4.5;
   }
-
 }
 
 @layer base {

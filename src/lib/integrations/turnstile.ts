@@ -6,6 +6,13 @@ import {
 
 const TURNSTILE_SITEVERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+export function isNewsletterTurnstileEnabled(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() &&
+      process.env.TURNSTILE_SECRET_KEY?.trim(),
+  );
+}
 const TURNSTILE_TEST_ACTION = "test";
 const TURNSTILE_TEST_SECRET_KEYS = new Set([
   "1x0000000000000000000000000000000AA",
@@ -136,12 +143,13 @@ export async function verifyTurnstileToken({
   token,
 }: VerifyTurnstileTokenOptions): Promise<TurnstileVerificationResult> {
   const responseToken = typeof token === "string" ? token.trim() : "";
+  const normalizedSecretKey = secretKey?.trim() ?? "";
   const normalizedAllowedHostnames = resolveTurnstileAllowedHostnames(
     allowedHostnames,
     deploymentHostname,
   );
 
-  if (!secretKey) {
+  if (!normalizedSecretKey) {
     return {
       ok: false,
       code: "configuration",
@@ -167,7 +175,7 @@ export async function verifyTurnstileToken({
 
   const body = new URLSearchParams({
     response: responseToken,
-    secret: secretKey,
+    secret: normalizedSecretKey,
   });
 
   if (remoteIp) {
@@ -190,7 +198,10 @@ export async function verifyTurnstileToken({
       };
     }
 
-    const expectedActions = getExpectedActions(secretKey, expectedAction);
+    const expectedActions = getExpectedActions(
+      normalizedSecretKey,
+      expectedAction,
+    );
 
     if (!result.action || !expectedActions.has(result.action)) {
       return {

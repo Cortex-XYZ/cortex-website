@@ -2,7 +2,10 @@
 
 import { headers } from "next/headers";
 import { subscribeNewsletterContact } from "@/lib/integrations/resend";
-import { verifyTurnstileToken } from "@/lib/integrations/turnstile";
+import {
+  isNewsletterTurnstileEnabled,
+  verifyTurnstileToken,
+} from "@/lib/integrations/turnstile";
 import {
   checkNewsletterRateLimit,
   getNewsletterClientIp,
@@ -22,6 +25,8 @@ export async function submitNewsletterSignup(
   return handleNewsletterSignup(formData, {
     rateLimit: () => checkNewsletterRateLimit(rateLimitIdentifier),
     subscribe: subscribeNewsletterContact,
-    turnstile: (token) => verifyTurnstileToken({ remoteIp: clientIp, token }),
+    turnstile: isNewsletterTurnstileEnabled()
+      ? (token) => verifyTurnstileToken({ remoteIp: clientIp, token })
+      : undefined,
   });
 }
