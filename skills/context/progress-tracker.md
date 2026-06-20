@@ -91,6 +91,9 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
+- **SEO metadata route cleanup** — `src/app/robots.ts` now omits the optional `host` directive and keeps canonical `Allow` + `Sitemap` output for indexable production hosts while preview/staging hosts remain fully disallowed.
+- **Organization JSON-LD hardening** — `src/components/seo/organization-jsonld.tsx` now escapes `<` (`\u003c`) during script serialization per Next.js guidance to guard against markup injection vectors.
+- **Verified** — `bun run build` passes; static metadata routes still emit (`/robots.txt`, `/sitemap.xml`) and JSON-LD remains present in built HTML.
 - **Hash navigation + ScrollTrigger hardening** — `HashScrollSync` waits for safe `ScrollTrigger.refresh(true)` and Mission pin readiness before restoring deep links; abandoned restores cancel so hash spy resumes after route changes. `hash-navigation.ts` kills competing scroll tweens, updates spy on focus-in, keeps `#footer` while visible/focused/at max scroll, and resolves active hash via viewport/header intersection with a Services boundary hold (`#services` won't demote to `#monad-links`).
 - **History runtime crash fixed** — Replaced `ScrollTrigger.batch()` + separate summary trigger with one trigger per milestone (final milestone reveals summary). Fixes `Cannot read properties of undefined (reading 'end')` during `ScrollTrigger.create()`.
 - **Mission click-scroll guard** — `mission-pin-stack.ts` returns `null` when pin trigger bounds are non-finite; `mission-cards-client.tsx` bails and requests refresh instead of tweening invalid state.
