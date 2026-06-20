@@ -19,10 +19,12 @@ const monaSans = Mona_Sans({
   display: "swap",
 });
 
+// `optional` avoids the late font-swap repaint that made the hero subtitle's
+// LCP land at font-arrival time; the preloaded font still wins on fast loads.
 const openSans = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
 });
 
 export const metadata: Metadata = {
