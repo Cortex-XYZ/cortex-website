@@ -1,8 +1,5 @@
 import { MOTION_DURATION, MOTION_EASE, MOTION_START } from "@/lib/motion/tokens";
 
-/** Stagger between each milestone reveal in the batch (seconds). */
-export const HISTORY_MILESTONE_STAGGER = 0.22;
-
 /** Pause after the last milestone enters before the summary callout fades in (seconds). */
 export const HISTORY_SUMMARY_DELAY = 0.5;
 
