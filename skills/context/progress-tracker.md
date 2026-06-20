@@ -78,15 +78,16 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Open Questions
 
-- Final CONNEX copy and Luma event URL before launch.
+- Final CONNEX copy before launch.
 
 ## Next Steps
 
-1. Preformance review and optimization.
-2. og image and description.
-3. SEO, tracking validation, and launch metadata.
-4. Staking page (remove `TEMP(staking-page)` comments when shipping).
+1. Integrate Resend for newsletter form. Cloudflare Turnstile for prevent spam.
+2. Preformance review and optimization.
+3. og image and description.
+4. SEO, tracking validation, and launch metadata.
+5. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
 
-Added an inline-styled primary `Try again` button to `src/app/global-error.tsx` wired to `unstable_retry`, matching `(site)/error.tsx` without importing `globals.css` or `CortexButton`. `(site)/error.tsx` still handles route-segment failures. Removed the temporary `global-error-content` extract and dev preview route after style review. Sentry log capture still sends `console.log`, `console.warn`, and `console.error` in development and production whenever the relevant DSN is configured, and Sentry Session Replay remains disabled. Files touched: `src/app/global-error.tsx` and `skills/context/progress-tracker.md`. Verification: `bun run typecheck` passed. Next: deploy a preview to confirm Sentry errors, logs, source maps, and release metadata.
+- Events empty state: `events-empty-divider` full-width rule when no upcoming events remain (list borders unchanged when events exist). Removed temporary event helper tests and left no package test script because the static-event flow will be replaced by the event submission/API pipeline. Touched `events-section.tsx`, `globals.css`, and removed the local event test files. Verified at `/#events` (empty + live states); `typecheck`, `build`, and `lint` pass. Open: confirm June 27 vs July 27 event date. Next: event submission/API pipeline.

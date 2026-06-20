@@ -174,7 +174,11 @@ export function EventsSection() {
               ))}
             </ul>
           </div>
-        ) : null}
+        ) : (
+          <div className="site-container events-empty-divider-wrap">
+            <div className="events-empty-divider" aria-hidden="true" />
+          </div>
+        )}
 
         <div
           className={`site-container events-follow-up-wrap${hasUpcomingEvents ? "" : " events-follow-up-wrap-empty"}`}
