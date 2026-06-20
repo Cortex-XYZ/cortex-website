@@ -240,6 +240,11 @@ export function MissionDesktopStack({
         cards.length,
         index,
       );
+      if (targetScrollTop === null) {
+        clickScrollRef.current = null;
+        ScrollTrigger.refresh(true);
+        return;
+      }
 
       gsap.to(window, {
         scrollTo: { y: targetScrollTop, autoKill: true },

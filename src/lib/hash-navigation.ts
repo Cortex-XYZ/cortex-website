@@ -73,9 +73,36 @@ function getLocationHashId(): string {
   }
 }
 
-function isElementVisibleInViewport(element: Element): boolean {
-  const rect = element.getBoundingClientRect();
-  return rect.bottom > 0 && rect.top < window.innerHeight;
+function isElementFocusedWithin(element: Element): boolean {
+  const activeElement = document.activeElement;
+  return activeElement instanceof Element && element.contains(activeElement);
+}
+
+function isNearPageBottom(): boolean {
+  const maxScroll = ScrollTrigger.maxScroll(window);
+  return Number.isFinite(maxScroll) && maxScroll - window.scrollY <= 4;
+}
+
+function isFooterActive(footer: Element, currentHashId: string): boolean {
+  const rect = footer.getBoundingClientRect();
+  const headerOffset = getHeaderOffset();
+  const footerVisibleBelowHeader =
+    rect.bottom > headerOffset && rect.top < window.innerHeight;
+
+  if (!footerVisibleBelowHeader) {
+    return false;
+  }
+
+  if (currentHashId === footerContent.id || isElementFocusedWithin(footer)) {
+    return true;
+  }
+
+  if (isNearPageBottom()) {
+    return true;
+  }
+
+  const readingLine = Math.max(headerOffset + 1, window.innerHeight * 0.7);
+  return rect.top <= readingLine;
 }
 
 const FOCUS_AFTER_SCROLL_MAX_MS = 1500;
@@ -85,6 +112,21 @@ const HASH_TARGET_MOUNT_MAX_WAIT_MS = 3000;
 
 /** Smooth scroll only for short hops; long jumps (e.g. hero → #events) jump instantly. */
 const HASH_SMOOTH_SCROLL_MAX_DISTANCE_PX = () => window.innerHeight * 1.25;
+const HASH_SPY_PROBE_TOLERANCE_PX = 24;
+const SERVICES_HASH_HOLD_RATIO = 0.25;
+
+function shouldPreferServicesHash(headerOffset: number): boolean {
+  const target = document.getElementById(servicesSection.id);
+  if (!target) return false;
+
+  const rect = target.getBoundingClientRect();
+  const topHoldLine = Math.max(
+    headerOffset + HASH_SPY_PROBE_TOLERANCE_PX,
+    window.innerHeight * SERVICES_HASH_HOLD_RATIO,
+  );
+
+  return rect.top <= topHoldLine && rect.bottom > headerOffset;
+}
 
 class HashNavigationRuntime {
   private pendingHashFocusId: string | null = null;
@@ -181,12 +223,21 @@ class HashNavigationRuntime {
     this.hashSpyPaused = true;
   }
 
+  cancelRouteHashNavigation(): void {
+    this.cancelTargetMountWait?.();
+    this.cancelPendingScrollFocus();
+    gsap.killTweensOf(window);
+    this.hashSpyPaused = false;
+  }
+
   private resumeHashSpy(): void {
     this.hashSpyPaused = false;
     this.syncHashFromScroll();
   }
 
   private scrollWindowTo(targetScrollY: number, smooth: boolean): void {
+    gsap.killTweensOf(window);
+
     if (!smooth) {
       window.scrollTo({ top: targetScrollY, behavior: "auto" });
       ScrollTrigger.update();
@@ -216,27 +267,30 @@ class HashNavigationRuntime {
 
   private resolveActiveHashId(): string {
     const currentHashId = getLocationHashId();
+    const headerOffset = getHeaderOffset();
+    const footer = document.getElementById(footerContent.id);
 
-    if (currentHashId === footerContent.id) {
-      const footer = document.getElementById(footerContent.id);
-      if (footer && isElementVisibleInViewport(footer)) {
-        return footerContent.id;
-      }
+    if (footer && isFooterActive(footer, currentHashId)) {
+      return footerContent.id;
     }
 
-    const probe = window.scrollY + getHeaderOffset() + 2;
+    if (shouldPreferServicesHash(headerOffset)) {
+      return servicesSection.id;
+    }
+
+    const probe = headerOffset + HASH_SPY_PROBE_TOLERANCE_PX;
     let activeId: string = HASH_SPY_IDS[0];
 
     for (const id of HASH_SPY_IDS) {
       const target = document.getElementById(id);
       if (!target) continue;
 
-      const top = getScrollTargetY(target, 0);
-      if (top <= probe) {
+      const rect = target.getBoundingClientRect();
+      if (rect.top <= probe && rect.bottom > headerOffset) {
         activeId = id;
         continue;
       }
-      break;
+      if (rect.top > probe) break;
     }
 
     return activeId;
@@ -296,10 +350,12 @@ class HashNavigationRuntime {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("focusin", scheduleSync);
     window.addEventListener("pageshow", scheduleSync);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("focusin", scheduleSync);
       window.removeEventListener("pageshow", scheduleSync);
       this.teardownHashScrollSpy();
     };
@@ -424,6 +480,10 @@ export function navigateToHash(hash: string): void {
 
 export function prepareForRouteHashNavigation(): void {
   hashNavigationRuntime.prepareForRouteHashNavigation();
+}
+
+export function cancelRouteHashNavigation(): void {
+  hashNavigationRuntime.cancelRouteHashNavigation();
 }
 
 export function navigateToTop(): void {

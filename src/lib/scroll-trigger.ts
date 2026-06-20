@@ -13,7 +13,7 @@ export function scheduleScrollTriggerRefresh(): void {
   }
   scheduledRefreshRafId = requestAnimationFrame(() => {
     scheduledRefreshRafId = null;
-    ScrollTrigger.refresh();
+    ScrollTrigger.refresh(true);
   });
 }
 
@@ -150,4 +150,3 @@ export function playIfAlreadyInView(timeline: gsap.core.Timeline): void {
     timeline.play(0);
   }
 }
-
