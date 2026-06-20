@@ -362,7 +362,7 @@
   }
 
   .hero-container {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 relative z-10 flex min-h-svh flex-col pt-[26svh] pb-20 sm:flex-row sm:items-center sm:pt-(--site-header-height) sm:pb-0 lg:translate-y-6;
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 relative z-10 flex min-h-svh flex-col pt-[26svh] pb-20 sm:flex-row sm:items-center sm:pt-(--site-header-height) sm:pb-0 lg:top-6;
   }
 
   .hero-content {
@@ -392,15 +392,12 @@
   }
 
   .hero-subtitle {
-    @apply mx-auto flex max-w-88 flex-1 flex-col gap-2.5 font-open text-[0.875rem] leading-normal text-text-secondary sm:mx-0 sm:max-w-lg sm:flex-initial sm:text-[0.9375rem] sm:leading-[1.4] md:max-w-xl md:gap-4 md:text-body lg:max-w-3xl text-pretty;
-  }
-
-  .hero-subtitle-lead {
-    @apply lg:whitespace-pre-line;
+    @apply mx-auto flex max-w-88 flex-1 flex-col gap-2.5 font-open text-[0.875rem] leading-normal font-normal text-text-secondary sm:mx-0 sm:max-w-lg sm:flex-initial sm:text-[0.9375rem] sm:leading-[1.4] md:max-w-xl md:gap-4 md:text-body lg:max-w-3xl text-wrap;
   }
 
   .hero-subtitle-emphasis {
     @apply font-mona font-semibold text-text-primary;
+    font-synthesis: none;
   }
 
   .hero-paragraph-lead {
@@ -513,32 +510,64 @@
 
   .mission-card-shell {
     @apply relative overflow-hidden rounded-2xl border border-border-default bg-background text-left;
+    container: mission-card / size;
   }
 
   .mission-card-illustration {
-    @apply pointer-events-none absolute inset-x-0 flex justify-center;
+    @apply pointer-events-none flex h-full min-h-0 items-center justify-center overflow-visible;
+    padding-block: 0.75rem;
+    padding-block: clamp(0.75rem, 2cqh, 1rem);
+  }
+
+  .mission-card-illustration > * {
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .mission-card-content {
-    @apply relative z-10 grid h-full grid-rows-[auto_1fr_auto] p-5 md:p-6 xl:p-7;
+    @apply relative z-10 grid h-full grid-rows-[auto_minmax(0,1fr)_auto] p-5 md:p-6 xl:p-7;
   }
 
   .mission-card-title {
     @apply font-mona leading-none text-text-primary max-md:text-[2.25rem] max-md:font-semibold md:text-section-heading md:font-medium xl:font-semibold;
   }
 
-  @media (width >= 80rem) {
-    .mission-card-title {
-      font-size: clamp(3rem, 5.5dvh, 3.75rem);
-    }
-  }
-
   .mission-card-title-spaced {
-    @apply mt-4 md:mt-5 xl:mt-7;
+    @apply mt-4 md:mt-5;
   }
 
   .mission-card-body {
-    @apply font-mona text-body-sm font-light text-text-secondary md:text-body xl:text-body-lg;
+    @apply font-mona text-body-sm font-light text-text-secondary;
+  }
+
+  @media (width >= 48rem) {
+    .mission-card-body {
+      font-size: var(--text-body);
+      line-height: var(--text-body-line-height);
+    }
+  }
+
+  @media (width >= 80rem) {
+    .mission-card-content {
+      padding: 1.75rem;
+      padding: clamp(1.25rem, min(5cqw, 4.4cqh), 1.75rem);
+    }
+
+    .mission-card-title {
+      font-size: 3.75rem;
+      font-size: clamp(2.5rem, min(10.8cqw, 8.4cqh), 3.75rem);
+    }
+
+    .mission-card-title-spaced {
+      margin-top: 1.75rem;
+      margin-top: clamp(1rem, 3.4cqh, 1.75rem);
+    }
+
+    .mission-card-body {
+      font-size: var(--text-body-lg);
+      font-size: clamp(1rem, min(3.6cqw, 3.2cqh), 1.25rem);
+      line-height: 1.3;
+    }
   }
 
   .mission-desktop-card-trigger {

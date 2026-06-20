@@ -60,7 +60,7 @@ export const historySection = {
         },
         {
           accent: "North America /",
-          text: " ETH NY mobilization began with Cortex US East alongside new Miami events.",
+          text: " ETH NY mobilization began with Cortex US East alongside new Atlanta events.",
         },
         {
           accent: "Europe & Asia /",
