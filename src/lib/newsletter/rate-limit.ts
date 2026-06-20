@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { isIP } from "node:net";
 
 const NEWSLETTER_RATE_LIMIT_REQUESTS = 5;
 const NEWSLETTER_RATE_LIMIT_WINDOW = "1 m";
@@ -9,6 +10,10 @@ const LOCAL_RATE_LIMIT_IDENTIFIER = "local";
 
 type HeaderReader = {
   get(name: string): string | null;
+};
+
+type ForwardedIpOptions = {
+  skipLoopback: boolean;
 };
 
 export type NewsletterRateLimitResult =
@@ -53,21 +58,107 @@ function getNewsletterRateLimiter(): Ratelimit {
   return newsletterRateLimiter;
 }
 
-function firstForwardedIp(value: string | null): string | null {
+function normalizeForwardedIp(value: string | null): string | null {
+  const trimmed = value?.trim();
+
+  if (!trimmed || trimmed.toLowerCase() === "unknown") return null;
+
+  let candidate =
+    trimmed.startsWith('"') && trimmed.endsWith('"')
+      ? trimmed.slice(1, -1).trim()
+      : trimmed;
+
+  const bracketedAddress = candidate.match(/^\[([^\]]+)\](?::\d+)?$/);
+
+  if (bracketedAddress) {
+    candidate = bracketedAddress[1];
+  }
+
+  const mappedIpv4Address = candidate.match(
+    /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?$/i,
+  );
+
+  if (mappedIpv4Address && isIP(mappedIpv4Address[1]) === 4) {
+    return mappedIpv4Address[1];
+  }
+
+  const ipv4Address = candidate.match(
+    /^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?$/,
+  );
+
+  if (ipv4Address && isIP(ipv4Address[1]) === 4) {
+    return ipv4Address[1];
+  }
+
+  return isIP(candidate) ? candidate.toLowerCase() : null;
+}
+
+function isLoopbackIp(ipAddress: string): boolean {
+  return (
+    ipAddress === "::1" ||
+    ipAddress === "0:0:0:0:0:0:0:1" ||
+    ipAddress === "127.0.0.1" ||
+    ipAddress.startsWith("127.")
+  );
+}
+
+function firstUsableForwardedIp(
+  values: (string | null)[],
+  { skipLoopback }: ForwardedIpOptions,
+): string | null {
+  const normalizedIps = values
+    .map((value) => normalizeForwardedIp(value))
+    .filter((value): value is string => Boolean(value));
+
+  if (skipLoopback) {
+    return normalizedIps.find((ipAddress) => !isLoopbackIp(ipAddress)) ?? null;
+  }
+
+  return normalizedIps[0] ?? null;
+}
+
+function firstForwardedIp(
+  value: string | null,
+  options: ForwardedIpOptions,
+): string | null {
   if (!value) return null;
 
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .find(Boolean) ?? null;
+  return firstUsableForwardedIp(value.split(","), options);
+}
+
+function firstStandardForwardedIp(
+  value: string | null,
+  options: ForwardedIpOptions,
+): string | null {
+  if (!value) return null;
+
+  const forwardedForValues = value.split(",").map((entry) => {
+    const forPart = entry
+      .split(";")
+      .find((part) => part.trim().toLowerCase().startsWith("for="));
+
+    return forPart?.split("=").slice(1).join("=") ?? null;
+  });
+
+  return firstUsableForwardedIp(forwardedForValues, options);
+}
+
+function headerIp(
+  value: string | null,
+  options: ForwardedIpOptions,
+): string | null {
+  return firstUsableForwardedIp([value], options);
 }
 
 export function getNewsletterClientIp(headersList: HeaderReader): string | null {
+  const options = { skipLoopback: isProductionLikeRuntime() };
+
   return (
-    firstForwardedIp(headersList.get("x-forwarded-for")) ??
-    firstForwardedIp(headersList.get("x-vercel-forwarded-for")) ??
-    headersList.get("cf-connecting-ip") ??
-    headersList.get("x-real-ip")
+    firstForwardedIp(headersList.get("x-vercel-forwarded-for"), options) ??
+    headerIp(headersList.get("cf-connecting-ip"), options) ??
+    headerIp(headersList.get("x-real-ip"), options) ??
+    firstStandardForwardedIp(headersList.get("forwarded"), options) ??
+    firstForwardedIp(headersList.get("x-forwarded-for"), options)
   );
 }
 

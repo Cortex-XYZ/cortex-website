@@ -34,6 +34,44 @@ describe("getNewsletterRateLimitIdentifier", () => {
     expect(identifier).toBe("203.0.113.10");
   });
 
+  test("prefers the Vercel forwarded IP over a generic forwarded loopback", () => {
+    const identifier = getNewsletterRateLimitIdentifier(
+      headersFrom({
+        "x-forwarded-for": "::ffff:127.0.0.1:29698569",
+        "x-vercel-forwarded-for": "203.0.113.10",
+      }),
+    );
+
+    expect(identifier).toBe("203.0.113.10");
+  });
+
+  test("normalizes a local IPv6-mapped IPv4 address with a port", () => {
+    const identifier = getNewsletterRateLimitIdentifier(
+      headersFrom({
+        "x-forwarded-for": "::ffff:127.0.0.1:29698569",
+      }),
+    );
+
+    expect(identifier).toBe("127.0.0.1");
+  });
+
+  test("skips loopback values in production-like forwarded chains", () => {
+    const previousVercelEnv = process.env.VERCEL_ENV;
+    process.env.VERCEL_ENV = "preview";
+
+    try {
+      const identifier = getNewsletterRateLimitIdentifier(
+        headersFrom({
+          "x-forwarded-for": "::ffff:127.0.0.1:29698569, 203.0.113.10",
+        }),
+      );
+
+      expect(identifier).toBe("203.0.113.10");
+    } finally {
+      restoreEnv("VERCEL_ENV", previousVercelEnv);
+    }
+  });
+
   test("returns null when proxy headers are absent", () => {
     const identifier = getNewsletterRateLimitIdentifier(headersFrom({}));
 
