@@ -10,6 +10,15 @@ import {
   SITE_HEADER_SCROLL_BOOTSTRAP_SCRIPT,
   SITE_HEADER_SCROLL_CRITICAL_CSS,
 } from "@/lib/layout/site-header-scroll";
+import {
+  OG_IMAGE,
+  OG_PAGE_URL,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_URL,
+  TWITTER_HANDLE,
+} from "@/lib/site";
 import "./globals.css";
 
 const monaSans = Mona_Sans({
@@ -26,10 +35,39 @@ const openSans = Open_Sans({
   display: "optional",
 });
 
+const openGraphTitle = `${SITE_NAME} — ${SITE_TAGLINE}`;
+
 export const metadata: Metadata = {
-  title: "Cortex Global",
-  description:
-    "A global network of local hubs, education, events, services, and real projects around emerging technology.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: OG_PAGE_URL,
+    siteName: SITE_NAME,
+    title: openGraphTitle,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: OG_IMAGE.url,
+        width: OG_IMAGE.width,
+        height: OG_IMAGE.height,
+        alt: OG_IMAGE.alt,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: `@${TWITTER_HANDLE}`,
+    title: openGraphTitle,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE.url],
+  },
 };
 
 // HeaderUpcomingEvent filters by UTC date at render; hourly ISR keeps the promo fresh.
