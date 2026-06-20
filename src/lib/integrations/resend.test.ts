@@ -138,6 +138,27 @@ describe("subscribeNewsletterContact", () => {
 
     expect(result).toEqual({ ok: true, alreadySubscribed: true });
     expect(contactsCreateMock).not.toHaveBeenCalled();
+    expect(contactsUpdateMock).not.toHaveBeenCalled();
+    expect(segmentsAddMock).not.toHaveBeenCalled();
+  });
+
+  test("unsubscribed existing contact already in segment is reactivated", async () => {
+    contactsGetMock.mockImplementation(async () => ({
+      data: { id: "contact_1", unsubscribed: true },
+      error: null,
+    }));
+    segmentsListMock.mockImplementation(async () => ({
+      data: { data: [{ id: SEGMENT_ID }] },
+      error: null,
+    }));
+
+    const result = await subscribeNewsletterContact(EMAIL);
+
+    expect(result).toEqual({ ok: true, alreadySubscribed: false });
+    expect(contactsUpdateMock).toHaveBeenCalledWith({
+      email: EMAIL,
+      unsubscribed: false,
+    });
     expect(segmentsAddMock).not.toHaveBeenCalled();
   });
 
@@ -160,10 +181,37 @@ describe("subscribeNewsletterContact", () => {
     const result = await subscribeNewsletterContact(EMAIL);
 
     expect(result).toEqual({ ok: true, alreadySubscribed: false });
-    expect(contactsUpdateMock).toHaveBeenCalledTimes(1);
+    expect(contactsUpdateMock).not.toHaveBeenCalled();
     expect(contactsCreateMock).not.toHaveBeenCalled();
     expect(segmentsListMock).toHaveBeenCalledTimes(1);
     expect(segmentsAddMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("unsubscribed existing contact already in segment gets the success message", async () => {
+    contactsGetMock.mockImplementation(async () => ({
+      data: { id: "contact_1", unsubscribed: true },
+      error: null,
+    }));
+    segmentsListMock.mockImplementation(async () => ({
+      data: { data: [{ id: SEGMENT_ID }] },
+      error: null,
+    }));
+
+    const result = await handleNewsletterSignup(
+      createFormData({
+        email: EMAIL,
+        company: "",
+      }),
+      {
+        subscribe: subscribeNewsletterContact,
+      },
+    );
+
+    expect(result).toEqual({
+      status: "success",
+      message: "You have successfully subscribed to the Cortex update list.",
+      subscribedEmail: EMAIL,
+    });
   });
 
   test("segment add fails once, retry succeeds, result is success", async () => {

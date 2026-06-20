@@ -118,18 +118,21 @@ async function subscribeExistingContact(
   resend: Resend,
   email: string,
   segmentId: string,
+  wasUnsubscribed: boolean,
 ): Promise<NewsletterSubscribeResult> {
-  const updateContact = await resend.contacts.update({
-    email,
-    unsubscribed: false,
-  });
+  if (wasUnsubscribed) {
+    const updateContact = await resend.contacts.update({
+      email,
+      unsubscribed: false,
+    });
 
-  if (updateContact.error) {
-    return {
-      ok: false,
-      code: "resend",
-      message: getResendErrorMessage(updateContact.error),
-    };
+    if (updateContact.error) {
+      return {
+        ok: false,
+        code: "resend",
+        message: getResendErrorMessage(updateContact.error),
+      };
+    }
   }
 
   const contactSegments = await resend.contacts.segments.list({
@@ -152,7 +155,7 @@ async function subscribeExistingContact(
   if (alreadyInSegment) {
     return {
       ok: true,
-      alreadySubscribed: true,
+      alreadySubscribed: !wasUnsubscribed,
     };
   }
 
@@ -188,7 +191,12 @@ async function subscribeWithResend(
   }
 
   if (existingContact.data) {
-    return subscribeExistingContact(resend, email, config.segmentId);
+    return subscribeExistingContact(
+      resend,
+      email,
+      config.segmentId,
+      existingContact.data.unsubscribed,
+    );
   }
 
   const createContact = await resend.contacts.create({

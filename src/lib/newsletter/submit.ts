@@ -1,14 +1,20 @@
 import { newsletterSignupSchema } from "@/lib/schemas/newsletter";
+import type { TurnstileVerificationResult } from "@/lib/integrations/turnstile";
 import type { NewsletterSubscribeResult } from "@/lib/integrations/resend";
 import type { NewsletterRateLimitResult } from "@/lib/newsletter/rate-limit";
+import { NEWSLETTER_TURNSTILE_FIELD } from "@/lib/newsletter/turnstile";
 import type { NewsletterFormState } from "@/lib/newsletter/types";
 
 type NewsletterSubscribe = (email: string) => Promise<NewsletterSubscribeResult>;
 type NewsletterRateLimit = () => Promise<NewsletterRateLimitResult>;
+type NewsletterTurnstileVerify = (
+  token: FormDataEntryValue | null,
+) => Promise<TurnstileVerificationResult>;
 
 type HandleNewsletterSignupOptions = {
   rateLimit?: NewsletterRateLimit;
   subscribe: NewsletterSubscribe;
+  turnstile?: NewsletterTurnstileVerify;
 };
 
 const SUBSCRIBED_MESSAGE =
@@ -19,7 +25,7 @@ const GENERIC_ERROR_MESSAGE =
 
 export async function handleNewsletterSignup(
   formData: FormData,
-  { rateLimit, subscribe }: HandleNewsletterSignupOptions,
+  { rateLimit, subscribe, turnstile }: HandleNewsletterSignupOptions,
 ): Promise<NewsletterFormState> {
   const company = formData.get("company");
 
@@ -51,6 +57,17 @@ export async function handleNewsletterSignup(
     return {
       status: "error",
       message: rateLimitResult.message,
+    };
+  }
+
+  const turnstileResult = await turnstile?.(
+    formData.get(NEWSLETTER_TURNSTILE_FIELD),
+  );
+
+  if (turnstileResult && !turnstileResult.ok) {
+    return {
+      status: "error",
+      message: turnstileResult.message,
     };
   }
 

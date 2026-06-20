@@ -18,7 +18,7 @@ export type NewsletterRateLimitResult =
     }
   | {
       ok: false;
-      code: "configuration" | "limited" | "storage";
+      code: "configuration" | "identifier" | "limited" | "storage";
       message: string;
       reset?: number;
     };
@@ -62,19 +62,26 @@ function firstForwardedIp(value: string | null): string | null {
     .find(Boolean) ?? null;
 }
 
-export function getNewsletterRateLimitIdentifier(headersList: HeaderReader): string {
+export function getNewsletterClientIp(headersList: HeaderReader): string | null {
   return (
     firstForwardedIp(headersList.get("x-forwarded-for")) ??
     firstForwardedIp(headersList.get("x-vercel-forwarded-for")) ??
     headersList.get("cf-connecting-ip") ??
-    headersList.get("x-real-ip") ??
-    LOCAL_RATE_LIMIT_IDENTIFIER
+    headersList.get("x-real-ip")
   );
 }
 
+export function getNewsletterRateLimitIdentifier(
+  headersList: HeaderReader,
+): string | null {
+  return getNewsletterClientIp(headersList);
+}
+
 export async function checkNewsletterRateLimit(
-  identifier: string,
+  identifier: string | null,
 ): Promise<NewsletterRateLimitResult> {
+  const rateLimitIdentifier = identifier?.trim() || null;
+
   if (!hasUpstashConfig()) {
     if (!isProductionLikeRuntime()) {
       return { ok: true, skipped: true };
@@ -88,8 +95,18 @@ export async function checkNewsletterRateLimit(
     };
   }
 
+  if (!rateLimitIdentifier && isProductionLikeRuntime()) {
+    return {
+      ok: false,
+      code: "identifier",
+      message: "We could not accept that request right now. Please try again.",
+    };
+  }
+
   try {
-    const result = await getNewsletterRateLimiter().limit(identifier);
+    const result = await getNewsletterRateLimiter().limit(
+      rateLimitIdentifier ?? LOCAL_RATE_LIMIT_IDENTIFIER,
+    );
 
     if (!result.success) {
       return {

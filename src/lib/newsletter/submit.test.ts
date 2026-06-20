@@ -1,7 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import type { NewsletterSubscribeResult } from "@/lib/integrations/resend";
+import type { TurnstileVerificationResult } from "@/lib/integrations/turnstile";
 import type { NewsletterRateLimitResult } from "@/lib/newsletter/rate-limit";
 import { handleNewsletterSignup } from "@/lib/newsletter/submit";
+import { NEWSLETTER_TURNSTILE_FIELD } from "@/lib/newsletter/turnstile";
 
 function createFormData(fields: Record<string, string>): FormData {
   const formData = new FormData();
@@ -34,6 +36,18 @@ function createRateLimitSpy(result: NewsletterRateLimitResult) {
     },
     rateLimit: async () => {
       calls += 1;
+      return result;
+    },
+  };
+}
+
+function createTurnstileSpy(result: TurnstileVerificationResult) {
+  const calls: Array<FormDataEntryValue | null> = [];
+
+  return {
+    calls,
+    turnstile: async (token: FormDataEntryValue | null) => {
+      calls.push(token);
       return result;
     },
   };
@@ -115,8 +129,68 @@ describe("handleNewsletterSignup", () => {
     expect(subscribeSpy.calls).toEqual(["person@example.com"]);
   });
 
+  test("rate limits before rejecting a missing Turnstile token", async () => {
+    const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const rateLimitSpy = createRateLimitSpy({ ok: true });
+    const turnstileSpy = createTurnstileSpy({
+      ok: false,
+      code: "missing-token",
+      message: "Verification failed. Please try again.",
+    });
+    const result = await handleNewsletterSignup(
+      createFormData({
+        email: "person@example.com",
+        company: "",
+      }),
+      {
+        rateLimit: rateLimitSpy.rateLimit,
+        subscribe: subscribeSpy.subscribe,
+        turnstile: turnstileSpy.turnstile,
+      },
+    );
+
+    expect(result).toEqual({
+      status: "error",
+      message: "Verification failed. Please try again.",
+    });
+    expect(turnstileSpy.calls).toEqual([null]);
+    expect(rateLimitSpy.calls).toBe(1);
+    expect(subscribeSpy.calls).toEqual([]);
+  });
+
+  test("rate limits before rejecting an invalid Turnstile token", async () => {
+    const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const rateLimitSpy = createRateLimitSpy({ ok: true });
+    const turnstileSpy = createTurnstileSpy({
+      ok: false,
+      code: "invalid",
+      message: "Verification failed. Please try again.",
+    });
+    const result = await handleNewsletterSignup(
+      createFormData({
+        email: "person@example.com",
+        company: "",
+        [NEWSLETTER_TURNSTILE_FIELD]: "invalid-token",
+      }),
+      {
+        rateLimit: rateLimitSpy.rateLimit,
+        subscribe: subscribeSpy.subscribe,
+        turnstile: turnstileSpy.turnstile,
+      },
+    );
+
+    expect(result).toEqual({
+      status: "error",
+      message: "Verification failed. Please try again.",
+    });
+    expect(turnstileSpy.calls).toEqual(["invalid-token"]);
+    expect(rateLimitSpy.calls).toBe(1);
+    expect(subscribeSpy.calls).toEqual([]);
+  });
+
   test("does not subscribe when the rate limit blocks the request", async () => {
     const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const turnstileSpy = createTurnstileSpy({ ok: true });
     const rateLimitSpy = createRateLimitSpy({
       ok: false,
       code: "limited",
@@ -131,6 +205,7 @@ describe("handleNewsletterSignup", () => {
       {
         rateLimit: rateLimitSpy.rateLimit,
         subscribe: subscribeSpy.subscribe,
+        turnstile: turnstileSpy.turnstile,
       },
     );
 
@@ -139,6 +214,7 @@ describe("handleNewsletterSignup", () => {
       message: "Too many attempts. Please try again in a few minutes.",
     });
     expect(rateLimitSpy.calls).toBe(1);
+    expect(turnstileSpy.calls).toEqual([]);
     expect(subscribeSpy.calls).toEqual([]);
   });
 
@@ -167,6 +243,7 @@ describe("handleNewsletterSignup", () => {
 
   test("does not subscribe when production rate-limit configuration is missing", async () => {
     const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const turnstileSpy = createTurnstileSpy({ ok: true });
     const rateLimitSpy = createRateLimitSpy({
       ok: false,
       code: "configuration",
@@ -181,6 +258,7 @@ describe("handleNewsletterSignup", () => {
       {
         rateLimit: rateLimitSpy.rateLimit,
         subscribe: subscribeSpy.subscribe,
+        turnstile: turnstileSpy.turnstile,
       },
     );
 
@@ -190,6 +268,7 @@ describe("handleNewsletterSignup", () => {
         "Newsletter rate limiting is missing required Upstash environment variables.",
     });
     expect(rateLimitSpy.calls).toBe(1);
+    expect(turnstileSpy.calls).toEqual([]);
     expect(subscribeSpy.calls).toEqual([]);
   });
 
