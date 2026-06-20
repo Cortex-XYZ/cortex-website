@@ -6,6 +6,7 @@ import {
   MissionIllustrationFallback,
 } from "@/components/illustrations/mission-illustration";
 import { DESKTOP_MQL, useIsDesktop } from "@/hooks/use-is-desktop";
+import { useInView } from "@/hooks/use-in-view";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-setup";
 import { cn } from "@/lib/utils";
@@ -140,6 +141,7 @@ export function MissionDesktopStack({
   const [activeIndex, setActiveIndex] = useState(0);
   const [entranceComplete, setEntranceComplete] = useState(false);
   const reducedMotion = useReducedMotion();
+  const { ref: inViewRef, inView } = useInView();
 
   const markEntranceComplete = useCallback(() => {
     entranceCompleteRef.current = true;
@@ -265,7 +267,10 @@ export function MissionDesktopStack({
 
   return (
     <div ref={pinRef} data-mission-pin className="hidden xl:block">
-      <div className="site-container flex flex-row items-start gap-11">
+      <div
+        ref={inViewRef}
+        className="site-container flex flex-row items-start gap-11"
+      >
         <div
           className="flex shrink-0 flex-col"
           style={{
@@ -304,7 +309,7 @@ export function MissionDesktopStack({
                 {isActive ? (
                   <MissionExpandedCard
                     card={card}
-                    illustrationActive={entranceComplete}
+                    illustrationActive={entranceComplete && inView}
                     className="h-full border-0"
                   />
                 ) : (
@@ -333,6 +338,7 @@ export function MissionMobileCards({ cards }: MissionCardsProps) {
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const scrollRafRef = useRef<number | null>(null);
   const isDesktop = useIsDesktop();
+  const { ref: inViewRef, inView } = useInView();
 
   const setCarouselRef = useCallback((node: HTMLDivElement | null) => {
     if (node === null && scrollRafRef.current !== null) {
@@ -368,7 +374,7 @@ export function MissionMobileCards({ cards }: MissionCardsProps) {
   }, []);
 
   return (
-    <div className="mt-6 md:mt-8 xl:hidden">
+    <div ref={inViewRef} className="mt-6 md:mt-8 xl:hidden">
       <div
         ref={setCarouselRef}
         onScroll={handleCarouselScroll}
@@ -378,7 +384,7 @@ export function MissionMobileCards({ cards }: MissionCardsProps) {
           <MissionExpandedCard
             key={card.id}
             card={card}
-            illustrationActive={!isDesktop && activeIndex === i}
+            illustrationActive={!isDesktop && inView && activeIndex === i}
             className="mission-carousel-card"
           />
         ))}

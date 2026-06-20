@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import dynamic from "next/dynamic";
+import { useInView } from "@/hooks/use-in-view";
 import { useIsLargeScreen } from "@/hooks/use-is-desktop";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useWebGLSupport } from "@/hooks/use-webgl-support";
@@ -127,7 +128,13 @@ function StaticGlobeImage() {
   );
 }
 
-function WebglGlobe({ reducedMotion }: { reducedMotion: boolean }) {
+function WebglGlobe({
+  reducedMotion,
+  active,
+}: {
+  reducedMotion: boolean;
+  active: boolean;
+}) {
   const [ready, setReady] = useState(false);
 
   return (
@@ -137,6 +144,7 @@ function WebglGlobe({ reducedMotion }: { reducedMotion: boolean }) {
         reducedMotion={reducedMotion}
         rotationY={DEFAULT_GLOBE_ROTATION_Y}
         onReady={() => setReady(true)}
+        active={active}
       />
     </GlobeCanvasErrorBoundary>
   );
@@ -150,12 +158,14 @@ export const HeroWebglBackground = memo(function HeroWebglBackground() {
   const reducedMotion = useReducedMotion();
   const isLargeScreen = useIsLargeScreen();
   const webgl = useWebGLSupport();
+  const { ref: inViewRef, inView } = useInView();
 
   const showLiveGlobe = isLargeScreen && webgl;
   const showStaticGlobe = !showLiveGlobe;
 
   return (
     <div
+      ref={inViewRef}
       aria-hidden="true"
       className="absolute inset-0 -z-10 bg-bg-canvas"
       style={{ pointerEvents: "none" }}
@@ -163,7 +173,9 @@ export const HeroWebglBackground = memo(function HeroWebglBackground() {
     >
       {showStaticGlobe ? <StaticGlobeImage /> : null}
 
-      {showLiveGlobe ? <WebglGlobe reducedMotion={reducedMotion} /> : null}
+      {showLiveGlobe ? (
+        <WebglGlobe reducedMotion={reducedMotion} active={inView} />
+      ) : null}
 
       {/* Ambient spill — warm glow rising from the bottom-anchored globe */}
       <div

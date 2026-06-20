@@ -85,10 +85,9 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Next Steps
 
-1. Performance review and optimization.
-2. og image and description.
-3. SEO, tracking validation, and launch metadata.
-4. Staking page (remove `TEMP(staking-page)` comments when shipping).
+1. og image and description.
+2. launch metadata.
+3. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
 
