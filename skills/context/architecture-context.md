@@ -18,6 +18,7 @@ Use this stack when the production website is scaffolded or consolidated:
 - Zod for all input validation (form schemas, server action parsing, future env-var validation)
 - Resend (`resend` package) for newsletter capture — create a Contact and assign to the newsletter Segment/Topic (Audiences API is being migrated; see https://resend.com/docs/dashboard/segments/migrating-from-audiences-to-segments). Sending deferred to post-launch.
 - Cloudflare Turnstile for invisible bot prevention on public forms
+- Upstash Redis (`@upstash/ratelimit`, `@upstash/redis`) for server-side rate limiting on public form endpoints (newsletter). Sliding window, 5 requests per minute per IP. Skipped in local dev when env vars are absent; required in production-like runtimes.
 
 If the selected app uses a newer Next.js version, read the relevant docs in `node_modules/next/dist/docs/` before implementation. Do not rely only on older Next.js memory.
 

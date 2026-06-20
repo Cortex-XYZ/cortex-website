@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { HashLink } from "@/components/hash-link";
 import { HomeLink } from "@/components/home-link";
-import { CortexButton } from "@/components/cortex-button";
 import { CortexMark } from "@/components/logos/cortex-mark";
 import { CortexWordmark } from "@/components/logos/cortex-wordmark";
 import { SOCIAL_GLYPHS } from "@/components/icons/social-glyphs";
+import NewsletterForm from "@/components/layout/newsletter-form";
 import { footerContent } from "@/lib/content/footer";
 import type { ExternalLinkChannel } from "@/lib/content/links";
 import { splitTrailingAccent } from "@/lib/split-trailing-accent";
@@ -88,33 +87,12 @@ export function SiteFooter() {
             )}
           </div>
 
-          {/* Newsletter — input UI only, no submit behavior. Mobile: input above button. Desktop: input and button inline. */}
           <div className="site-footer-newsletter-region">
-            <div className="site-footer-newsletter">
-              <div className="site-footer-email-shell">
-                <label htmlFor={footerContent.emailInputId} className="sr-only">
-                  Email address
-                </label>
-                {/* TODO: add validation */}
-                <input
-                  id={footerContent.emailInputId}
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  placeholder={footerContent.email.label}
-                  suppressHydrationWarning
-                  className="site-footer-email-input"
-                />
-              </div>
-              <CortexButton
-                type="button"
-                variant="primary"
-                size="default"
-                className="site-footer-newsletter-button"
-              >
-                {footerContent.newsletterCta.label}
-              </CortexButton>
-            </div>
+            <NewsletterForm
+              emailInputId={footerContent.emailInputId}
+              placeholder={footerContent.newsletterPlaceholder}
+              submitLabel={footerContent.newsletterSubmitLabel}
+            />
           </div>
         </div>
 
