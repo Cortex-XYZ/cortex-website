@@ -6,7 +6,6 @@ import {
   HISTORY_LINE_DRAW_EASE,
   HISTORY_LINE_DRAW_START,
   HISTORY_LINE_SEGMENT_DRAW_DURATION,
-  HISTORY_MILESTONE_STAGGER,
   HISTORY_REVEAL_START,
   HISTORY_SUMMARY_DELAY,
 } from "@/components/sections/history/history-scroll";
@@ -14,7 +13,6 @@ import { BELOW_DESKTOP_MQL, DESKTOP_MQL } from "@/hooks/use-is-desktop";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-setup";
 import {
-  createBatchReveal,
   createScrollTriggerConfig,
   playIfAlreadyInView,
   SCROLL_REVEAL_FROM,
@@ -27,6 +25,7 @@ const HISTORY_MILESTONE_SELECTOR = "[data-history-milestone]";
 const HISTORY_SUMMARY_SELECTOR = "[data-history-summary]";
 const HISTORY_LINE_SELECTOR = "[data-history-line]";
 const HISTORY_STEM_SELECTOR = "[data-history-stem]";
+const HISTORY_MILESTONE_REVEAL_ID_PREFIX = "history-milestone-reveal";
 const HISTORY_DESKTOP_LINE_DRAW_ID_PREFIX = "history-line-draw";
 const HISTORY_MOBILE_STEM_DRAW_ID_PREFIX = "history-stem-draw";
 
@@ -150,6 +149,79 @@ function setupMobileStemDraw(scope: HTMLElement): () => void {
   };
 }
 
+function setupHistoryContentReveal(scope: HTMLElement): () => void {
+  const milestones = Array.from(
+    scope.querySelectorAll<HTMLElement>(HISTORY_MILESTONE_SELECTOR),
+  );
+  const summary = scope.querySelector<HTMLElement>(HISTORY_SUMMARY_SELECTOR);
+  const lastMilestoneIndex = milestones.length - 1;
+  const revealedMilestones = new Set<number>();
+  let summaryRevealed = false;
+
+  if (milestones.length === 0 && !summary) return () => {};
+
+  gsap.set(milestones, SCROLL_REVEAL_FROM);
+  if (summary) {
+    gsap.set(summary, SCROLL_REVEAL_FROM);
+  }
+
+  const revealSummary = () => {
+    if (!summary || summaryRevealed) return;
+    summaryRevealed = true;
+
+    gsap.to(summary, {
+      ...SCROLL_REVEAL_TO,
+      delay: HISTORY_SUMMARY_DELAY,
+      overwrite: true,
+    });
+  };
+
+  const revealMilestone = (milestone: HTMLElement, index: number) => {
+    if (revealedMilestones.has(index)) return;
+    revealedMilestones.add(index);
+
+    gsap.to(milestone, {
+      ...SCROLL_REVEAL_TO,
+      overwrite: true,
+    });
+
+    if (index === lastMilestoneIndex) {
+      revealSummary();
+    }
+  };
+
+  const triggers = milestones.map((milestone, index) => {
+    const trigger = ScrollTrigger.create({
+      id: `${HISTORY_MILESTONE_REVEAL_ID_PREFIX}-${index + 1}`,
+      trigger: milestone,
+      start: HISTORY_REVEAL_START,
+      once: true,
+      fastScrollEnd: true,
+      invalidateOnRefresh: true,
+      markers: SCROLL_TRIGGER_MARKERS,
+      onEnter: () => {
+        revealMilestone(milestone, index);
+      },
+    });
+
+    if (trigger.progress > 0) {
+      revealMilestone(milestone, index);
+    }
+
+    return trigger;
+  });
+
+  return () => {
+    for (const trigger of triggers) {
+      trigger.kill();
+    }
+    gsap.killTweensOf(milestones);
+    if (summary) {
+      gsap.killTweensOf(summary);
+    }
+  };
+}
+
 export function HistoryScrollMotion({ children }: HistoryScrollMotionProps) {
   const scopeRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
@@ -167,49 +239,15 @@ export function HistoryScrollMotion({ children }: HistoryScrollMotionProps) {
         return;
       }
 
-      createBatchReveal({
-        selector: HISTORY_MILESTONE_SELECTOR,
-        start: HISTORY_REVEAL_START,
-        stagger: HISTORY_MILESTONE_STAGGER,
-      });
-
-      const summary = scope?.querySelector<HTMLElement>(HISTORY_SUMMARY_SELECTOR);
-      const milestones = scope?.querySelectorAll<HTMLElement>(
-        HISTORY_MILESTONE_SELECTOR,
-      );
-      const lastMilestone = milestones?.[milestones.length - 1];
       const matchMedia = gsap.matchMedia();
+      const cleanupContentReveal = setupHistoryContentReveal(scope);
 
       matchMedia.add(DESKTOP_MQL, () => setupDesktopLineDraw(scope));
       matchMedia.add(BELOW_DESKTOP_MQL, () => setupMobileStemDraw(scope));
 
-      if (!summary || !lastMilestone) {
-        return () => {
-          matchMedia.revert();
-        };
-      }
-
-      gsap.set(summary, SCROLL_REVEAL_FROM);
-
-      const summaryTrigger = ScrollTrigger.create({
-        id: "history-summary",
-        trigger: lastMilestone,
-        start: HISTORY_REVEAL_START,
-        once: true,
-        fastScrollEnd: true,
-        markers: SCROLL_TRIGGER_MARKERS,
-        onEnter: () => {
-          gsap.to(summary, {
-            ...SCROLL_REVEAL_TO,
-            delay: HISTORY_SUMMARY_DELAY,
-            overwrite: true,
-          });
-        },
-      });
-
       return () => {
-        summaryTrigger.kill();
         matchMedia.revert();
+        cleanupContentReveal();
       };
     },
     { scope: scopeRef, dependencies: [reducedMotion] },

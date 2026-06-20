@@ -74,9 +74,15 @@ export function getMissionStackScrollTop(
   scrollTrigger: ScrollTrigger,
   cardCount: number,
   index: number,
-): number {
+): number | null {
+  const { start, end } = scrollTrigger;
+
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    return null;
+  }
+
   const progress = getMissionStackProgress(cardCount, index);
-  return scrollTrigger.start + progress * (scrollTrigger.end - scrollTrigger.start);
+  return start + progress * (end - start);
 }
 
 export function createMissionStackScrollTrigger({
