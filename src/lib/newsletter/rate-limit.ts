@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
@@ -100,7 +101,9 @@ export async function checkNewsletterRateLimit(
     }
 
     return { ok: true };
-  } catch {
+  } catch (error) {
+    Sentry.captureException(error);
+
     return {
       ok: false,
       code: "storage",

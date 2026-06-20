@@ -48,55 +48,46 @@ function getResendErrorMessage(error: { message: string } | null): string {
   return error?.message || "Resend rejected the newsletter subscription.";
 }
 
-async function verifyNewsletterSubscription(
-  resend: Resend,
+type SegmentAddClient = {
+  contacts: {
+    segments: {
+      add: (params: {
+        email: string;
+        segmentId: string;
+      }) => Promise<{
+        error: { message: string } | null;
+      }>;
+    };
+  };
+};
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function addContactToNewsletterSegment(
+  client: SegmentAddClient,
   email: string,
   segmentId: string,
-): Promise<NewsletterSubscribeResult | null> {
-  const contact = await resend.contacts.get({ email });
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const firstAttempt = await client.contacts.segments.add({ email, segmentId });
 
-  if (contact.error || !contact.data) {
-    return {
-      ok: false,
-      code: "resend",
-      message: getResendErrorMessage(contact.error),
-    };
+  if (!firstAttempt.error) {
+    return { ok: true };
   }
 
-  if (contact.data.unsubscribed) {
-    return {
-      ok: false,
-      code: "resend",
-      message: "Resend did not confirm the newsletter subscription.",
-    };
+  await wait(1_000);
+
+  const secondAttempt = await client.contacts.segments.add({ email, segmentId });
+
+  if (!secondAttempt.error) {
+    return { ok: true };
   }
 
-  const contactSegments = await resend.contacts.segments.list({
-    email,
-    limit: 100,
-  });
-
-  if (contactSegments.error) {
-    return {
-      ok: false,
-      code: "resend",
-      message: getResendErrorMessage(contactSegments.error),
-    };
-  }
-
-  const inSegment = contactSegments.data.data.some(
-    (segment) => segment.id === segmentId,
-  );
-
-  if (!inSegment) {
-    return {
-      ok: false,
-      code: "resend",
-      message: "Resend did not confirm the newsletter subscription.",
-    };
-  }
-
-  return null;
+  return {
+    ok: false,
+    message: getResendErrorMessage(secondAttempt.error),
+  };
 }
 
 export async function subscribeNewsletterContact(
@@ -112,43 +103,33 @@ export async function subscribeNewsletterContact(
     };
   }
 
-  const resend = new Resend(config.apiKey);
-  const existingContact = await resend.contacts.get({ email });
-
-  if (existingContact.error && !isMissingContactError(existingContact.error.name)) {
+  try {
+    return await subscribeWithResend(email, config);
+  } catch {
     return {
       ok: false,
       code: "resend",
-      message: getResendErrorMessage(existingContact.error),
+      message: "Resend is not reachable right now.",
     };
   }
+}
 
-  if (existingContact.data) {
-    const updateContact = await resend.contacts.update({
-      email,
-      unsubscribed: false,
-    });
+async function subscribeExistingContact(
+  resend: Resend,
+  email: string,
+  segmentId: string,
+): Promise<NewsletterSubscribeResult> {
+  const updateContact = await resend.contacts.update({
+    email,
+    unsubscribed: false,
+  });
 
-    if (updateContact.error) {
-      return {
-        ok: false,
-        code: "resend",
-        message: getResendErrorMessage(updateContact.error),
-      };
-    }
-  } else {
-    const createContact = await resend.contacts.create({
-      email,
-      unsubscribed: false,
-    });
-
-    if (createContact.error) {
-      return {
-        ok: false,
-        code: "resend",
-        message: getResendErrorMessage(createContact.error),
-      };
-    }
+  if (updateContact.error) {
+    return {
+      ok: false,
+      code: "resend",
+      message: getResendErrorMessage(updateContact.error),
+    };
   }
 
   const contactSegments = await resend.contacts.segments.list({
@@ -165,36 +146,67 @@ export async function subscribeNewsletterContact(
   }
 
   const alreadyInSegment = contactSegments.data.data.some(
-    (segment) => segment.id === config.segmentId,
+    (segment) => segment.id === segmentId,
   );
 
-  if (!alreadyInSegment) {
-    const addSegment = await resend.contacts.segments.add({
-      email,
-      segmentId: config.segmentId,
-    });
-
-    if (addSegment.error) {
-      return {
-        ok: false,
-        code: "resend",
-        message: getResendErrorMessage(addSegment.error),
-      };
-    }
+  if (alreadyInSegment) {
+    return {
+      ok: true,
+      alreadySubscribed: true,
+    };
   }
 
-  const verificationError = await verifyNewsletterSubscription(
-    resend,
-    email,
-    config.segmentId,
-  );
+  const addSegment = await addContactToNewsletterSegment(resend, email, segmentId);
 
-  if (verificationError) {
-    return verificationError;
+  if (!addSegment.ok) {
+    return {
+      ok: false,
+      code: "resend",
+      message: addSegment.message,
+    };
   }
 
   return {
     ok: true,
-    alreadySubscribed: alreadyInSegment,
+    alreadySubscribed: false,
+  };
+}
+
+async function subscribeWithResend(
+  email: string,
+  config: { apiKey: string; segmentId: string },
+): Promise<NewsletterSubscribeResult> {
+  const resend = new Resend(config.apiKey);
+  const existingContact = await resend.contacts.get({ email });
+
+  if (existingContact.error && !isMissingContactError(existingContact.error.name)) {
+    return {
+      ok: false,
+      code: "resend",
+      message: getResendErrorMessage(existingContact.error),
+    };
+  }
+
+  if (existingContact.data) {
+    return subscribeExistingContact(resend, email, config.segmentId);
+  }
+
+  const createContact = await resend.contacts.create({
+    email,
+    unsubscribed: false,
+    segments: [{ id: config.segmentId }],
+  });
+
+  if (createContact.error) {
+    return {
+      ok: false,
+      code: "resend",
+      message: getResendErrorMessage(createContact.error),
+    };
+  }
+
+  return {
+    ok: true,
+    alreadySubscribed: false,
   };
 }

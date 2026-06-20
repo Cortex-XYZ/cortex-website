@@ -67,12 +67,19 @@ describe("handleNewsletterSignup", () => {
 
   test("silently accepts honeypot submissions without subscribing", async () => {
     const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const rateLimitSpy = createRateLimitSpy({
+      ok: false,
+      code: "limited",
+      message: "Too many attempts. Please try again in a few minutes.",
+      reset: 20_000,
+    });
     const result = await handleNewsletterSignup(
       createFormData({
         email: "person@example.com",
         company: "Bot Corp",
       }),
       {
+        rateLimit: rateLimitSpy.rateLimit,
         subscribe: subscribeSpy.subscribe,
       },
     );
@@ -81,6 +88,7 @@ describe("handleNewsletterSignup", () => {
       status: "success",
       message: "You have successfully subscribed to the Cortex update list.",
     });
+    expect(rateLimitSpy.calls).toBe(0);
     expect(subscribeSpy.calls).toEqual([]);
   });
 
@@ -131,6 +139,29 @@ describe("handleNewsletterSignup", () => {
       message: "Too many attempts. Please try again in a few minutes.",
     });
     expect(rateLimitSpy.calls).toBe(1);
+    expect(subscribeSpy.calls).toEqual([]);
+  });
+
+  test("does not consume a rate-limit token when the email is invalid", async () => {
+    const subscribeSpy = createSubscribeSpy(subscribedResult);
+    const rateLimitSpy = createRateLimitSpy({ ok: true });
+    const result = await handleNewsletterSignup(
+      createFormData({
+        email: "not-an-email",
+        company: "",
+      }),
+      {
+        rateLimit: rateLimitSpy.rateLimit,
+        subscribe: subscribeSpy.subscribe,
+      },
+    );
+
+    expect(result).toEqual({
+      status: "error",
+      message: "Enter a valid email address.",
+      emailError: "Enter a valid email address.",
+    });
+    expect(rateLimitSpy.calls).toBe(0);
     expect(subscribeSpy.calls).toEqual([]);
   });
 

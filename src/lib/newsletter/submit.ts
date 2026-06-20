@@ -21,6 +21,15 @@ export async function handleNewsletterSignup(
   formData: FormData,
   { rateLimit, subscribe }: HandleNewsletterSignupOptions,
 ): Promise<NewsletterFormState> {
+  const company = formData.get("company");
+
+  if (typeof company === "string" && company.trim()) {
+    return {
+      status: "success",
+      message: SUBSCRIBED_MESSAGE,
+    };
+  }
+
   const parsed = newsletterSignupSchema.safeParse({
     email: formData.get("email"),
     company: formData.get("company"),
@@ -33,13 +42,6 @@ export async function handleNewsletterSignup(
       status: "error",
       message: errors.email?.[0] || GENERIC_ERROR_MESSAGE,
       emailError: errors.email?.[0],
-    };
-  }
-
-  if (parsed.data.company) {
-    return {
-      status: "success",
-      message: SUBSCRIBED_MESSAGE,
     };
   }
 

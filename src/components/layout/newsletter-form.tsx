@@ -22,12 +22,13 @@ export default function NewsletterForm({
   );
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [emailValue, setEmailValue] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const [messageDismissed, setMessageDismissed] = useState(false);
   const messageId = `${emailInputId}-message`;
   const hasMessage = state.message.length > 0;
   const showConfirmedMessage =
     state.status === "success" &&
-    state.subscribedEmail === emailValue.trim().toLowerCase();
+    state.subscribedEmail === submittedEmail;
   const showMessage =
     !messageDismissed &&
     hasMessage &&
@@ -47,6 +48,7 @@ export default function NewsletterForm({
   }
 
   function handleSubmit() {
+    setSubmittedEmail(emailValue.trim().toLowerCase());
     setMessageDismissed(false);
   }
 
