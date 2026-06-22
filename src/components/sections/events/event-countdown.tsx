@@ -2,15 +2,20 @@
 
 import { useState } from "react";
 import { useOnMount } from "@/hooks/use-on-mount";
-import { getEventCountdownState } from "@/lib/events/countdown";
+import { getEventTimingState } from "@/lib/events/countdown";
 import { cn } from "@/lib/utils";
 
 type EventCountdownProps = {
   className?: string;
-  date: string;
+  startsAt: string;
+  endsAt: string;
 };
 
-export function EventCountdown({ className, date }: EventCountdownProps) {
+export function EventCountdown({
+  className,
+  startsAt,
+  endsAt,
+}: EventCountdownProps) {
   const [now, setNow] = useState<number | null>(null);
 
   useOnMount(() => {
@@ -36,10 +41,22 @@ export function EventCountdown({ className, date }: EventCountdownProps) {
     );
   }
 
-  const countdown = getEventCountdownState(date, now);
+  const timing = getEventTimingState(startsAt, endsAt, now);
 
-  if (!countdown) {
+  if (!timing) {
     return null;
+  }
+
+  if (timing.status !== "countdown") {
+    return (
+      <p
+        className={cn("event-countdown", className)}
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span className="event-countdown-label">{timing.label}</span>
+      </p>
+    );
   }
 
   return (
@@ -48,15 +65,15 @@ export function EventCountdown({ className, date }: EventCountdownProps) {
       aria-live="polite"
       aria-atomic="true"
     >
-      <span className="event-countdown-label">{countdown.label}</span>
+      <span className="event-countdown-label">{timing.label}</span>
       <span className="event-countdown-separator" aria-hidden="true">
         ·
       </span>
       <time
         className="event-countdown-clock"
-        dateTime={`P${countdown.days}DT${countdown.hours}H${countdown.minutes}M${countdown.seconds}S`}
+        dateTime={`P${timing.days}DT${timing.hours}H${timing.minutes}M${timing.seconds}S`}
       >
-        {countdown.clock}
+        {timing.clock}
       </time>
     </p>
   );

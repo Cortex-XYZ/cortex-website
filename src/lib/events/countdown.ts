@@ -7,6 +7,14 @@ type EventCountdownState = {
   clock: string;
 };
 
+type EventLiveState = {
+  label: "Happening now" | "Event ended";
+};
+
+export type EventTimingState =
+  | (EventCountdownState & { status: "countdown" })
+  | (EventLiveState & { status: "live" | "ended" });
+
 const DAY_MS = 86_400_000;
 const HOUR_MS = 3_600_000;
 const MINUTE_MS = 60_000;
@@ -16,29 +24,23 @@ function padTime(value: number): string {
   return String(value).padStart(2, "0");
 }
 
-/** Calendar date key (YYYY-MM-DD) in UTC for the given instant. */
-export function getUtcDateKey(date: Date): string {
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-/** Midnight UTC on the event's calendar day. Event `date` fields are UTC calendar dates. */
-function getEventTargetTime(date: string): number {
-  return new Date(`${date}T00:00:00Z`).getTime();
-}
-
-export function getEventCountdownState(
-  date: string,
+export function getEventTimingState(
+  startsAt: string,
+  endsAt: string,
   now: number,
-): EventCountdownState | null {
-  const diff = getEventTargetTime(date) - now;
+): EventTimingState | null {
+  const startMs = new Date(startsAt).getTime();
+  const endMs = new Date(endsAt).getTime();
 
-  if (diff <= 0) {
-    return null;
+  if (now >= endMs) {
+    return { status: "ended", label: "Event ended" };
   }
+
+  if (now >= startMs) {
+    return { status: "live", label: "Happening now" };
+  }
+
+  const diff = startMs - now;
 
   const days = Math.floor(diff / DAY_MS);
   const hours = Math.floor((diff % DAY_MS) / HOUR_MS);
@@ -55,6 +57,7 @@ export function getEventCountdownState(
   }
 
   return {
+    status: "countdown",
     days,
     hours,
     minutes,
