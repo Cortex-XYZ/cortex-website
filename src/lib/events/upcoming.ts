@@ -1,21 +1,20 @@
 import type { CortexEvent } from "@/lib/content/events";
-import { getUtcDateKey } from "@/lib/events/countdown";
 
-/** Hourly ISR for date-aware event visibility (header promo, Events section). */
+/** Hourly ISR for event visibility (header promo, Events section). */
 export const EVENTS_DATE_REVALIDATE_SECONDS = 3600;
 
 export function getUpcomingEvents(
   events: readonly CortexEvent[],
-  today = getUtcDateKey(new Date()),
+  now = Date.now(),
 ): CortexEvent[] {
   return events
-    .filter((event) => event.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .filter((event) => new Date(event.startsAt).getTime() > now)
+    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
 }
 
 export function getNextUpcomingEvent(
   events: readonly CortexEvent[],
-  today = getUtcDateKey(new Date()),
+  now = Date.now(),
 ): CortexEvent | undefined {
-  return getUpcomingEvents(events, today)[0];
+  return getUpcomingEvents(events, now)[0];
 }

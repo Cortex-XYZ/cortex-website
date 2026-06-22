@@ -36,7 +36,7 @@ function EventMetaDetails({
 }) {
   return (
     <div className={`event-meta-details${className ? ` ${className}` : ""}`}>
-      <time dateTime={event.date}>{event.dateLabel}</time>
+      <time dateTime={event.startsAt}>{event.dateLabel}</time>
       <span className="event-location">
         <MapPin className="event-location-icon" aria-hidden="true" />
         <span>{event.location.city}</span>
@@ -49,7 +49,11 @@ function EventMeta({ event }: { event: CortexEvent }) {
   return (
     <div className="event-meta">
       <EventMetaDetails className="event-meta-details-inline" event={event} />
-      <EventCountdown className="event-countdown-slot" date={event.date} />
+      <EventCountdown
+        className="event-countdown-slot"
+        startsAt={event.startsAt}
+        endsAt={event.endsAt}
+      />
     </div>
   );
 }

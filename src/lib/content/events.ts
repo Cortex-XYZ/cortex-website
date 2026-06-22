@@ -9,8 +9,11 @@ export type CortexEvent = {
   id: string;
   label: string;
   title: string;
-  /** ISO calendar date (YYYY-MM-DD), interpreted as UTC midnight. */
-  date: string;
+  /** ISO UTC event start instant, sourced from Luma. */
+  startsAt: `${string}T${string}Z`;
+  /** ISO UTC event end instant, sourced from Luma. */
+  endsAt: `${string}T${string}Z`;
+  /** Display label for the event date. */
   dateLabel: string;
   location: EventLocation;
   description: string;
@@ -34,7 +37,8 @@ export const eventsSection = {
       id: "cortex-connex-tech-fest",
       label: "GLOBAL",
       title: "Cortex CONNEX Tech Fest",
-      date: "2026-06-27",
+      startsAt: "2026-06-27T13:00:00Z", // 9:00 AM EDT
+      endsAt: "2026-06-28T01:00:00Z", // 9:00 PM EDT
       dateLabel: "Jun 27, 2026",
       location: {
         city: "Online",
