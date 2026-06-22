@@ -24,7 +24,7 @@ export function HeaderUpcomingEventLink({
     <span className="header-upcoming-event-content">
       <span className="header-upcoming-event-pill">{event.label}</span>
       <span className="header-upcoming-event-copy">
-        <time className="header-upcoming-event-date" dateTime={event.date}>
+        <time className="header-upcoming-event-date" dateTime={event.startsAt}>
           {event.dateLabel}
         </time>
         <span className="header-upcoming-event-title">{event.title}</span>
