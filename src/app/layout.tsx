@@ -6,6 +6,7 @@ import { HashScrollSync } from "@/components/hash-scroll-sync";
 import { RouteLoadingShell } from "@/components/layout/route-loading-shell";
 import { ScrollToTopButton } from "@/components/layout/scroll-to-top-button";
 import { SiteHeader } from "@/components/layout/site-header";
+import { OrganizationJsonLd } from "@/components/seo/organization-jsonld";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   SITE_HEADER_SCROLL_BOOTSTRAP_SCRIPT,
@@ -100,6 +101,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <OrganizationJsonLd />
         <TooltipProvider>
           <HashScrollSync />
           <SiteHeader />

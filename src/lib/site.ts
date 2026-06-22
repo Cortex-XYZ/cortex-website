@@ -3,6 +3,21 @@ export const SITE_NAME = "Cortex Global" as const;
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cortexglobal.xyz";
 
+export const SITE_HOST = new URL(SITE_URL).host;
+
+/**
+ * Hosts whose deployments search engines may index — the live production
+ * domain(s) only. Preview/staging hosts (preview.cortexglobal.xyz, *.vercel.app)
+ * must stay out of the index, so robots.ts disallows everything unless SITE_HOST
+ * is in this set. Driven by NEXT_PUBLIC_SITE_URL via SITE_URL.
+ */
+const INDEXABLE_HOSTS: ReadonlySet<string> = new Set([
+  "cortexglobal.xyz",
+  "www.cortexglobal.xyz",
+]);
+
+export const IS_INDEXABLE_HOST = INDEXABLE_HOSTS.has(SITE_HOST);
+
 export const SITE_TAGLINE = "Local Service. Global Impact." as const;
 
 export const SITE_DESCRIPTION =
