@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
+
 import { EventCardLink } from "@/components/sections/events/event-card-link";
 import { EventCardRsvp } from "@/components/sections/events/event-card-rsvp";
 import { EventCountdown } from "@/components/sections/events/event-countdown";
@@ -14,6 +15,14 @@ const EventsScrollMotion = dynamic(() =>
     (mod) => mod.EventsScrollMotion,
   ),
 );
+
+const EventCarouselControls = dynamic(() =>
+  import("@/components/sections/events/event-carousel-controls").then(
+    (mod) => mod.EventCarouselControls,
+  ),
+);
+
+const EVENTS_LIST_ID = "events-list";
 
 function EventLockup({ region }: { region?: string }) {
   return (
@@ -101,7 +110,9 @@ function EventCardContent({ event }: { event: CortexEvent }) {
             <EventPoster event={event} />
 
             <div className="event-card-copy">
-              <p className="event-description">{event.description}</p>
+              <p className="event-description event-description-clamp">
+                {event.description}
+              </p>
               <EventMeta event={event} />
             </div>
           </>
@@ -124,6 +135,7 @@ function EventCard({ event }: { event: CortexEvent }) {
 export function EventsSection() {
   const upcomingEvents = getUpcomingEvents(eventsSection.events);
   const hasUpcomingEvents = upcomingEvents.length > 0;
+  const hasMultipleUpcomingEvents = upcomingEvents.length > 1;
   const lastLineIndex = eventsSection.titleLines.length - 1;
   const { text: lastLineText, accent: lastLineAccent } = splitTrailingAccent(
     eventsSection.titleLines[lastLineIndex] ?? "",
@@ -160,17 +172,26 @@ export function EventsSection() {
                 <span key={line} className="events-title-line">
                   {lineText}
                   {isLastLine && lastLineAccent ? (
-                    <span className="text-action-primary">{lastLineAccent}</span>
+                    <span className="text-action-primary">
+                      {lastLineAccent}
+                    </span>
                   ) : null}
                 </span>
               );
             })}
           </h2>
+          {hasMultipleUpcomingEvents ? (
+            <EventCarouselControls listId={EVENTS_LIST_ID} />
+          ) : null}
         </div>
 
         {hasUpcomingEvents ? (
           <div className="site-container events-list-wrap">
-            <ul className="events-list" aria-label="Upcoming events">
+            <ul
+              id={EVENTS_LIST_ID}
+              className="events-list"
+              aria-label="Upcoming events"
+            >
               {upcomingEvents.map((event) => (
                 <li key={event.id} className="events-list-item">
                   <EventCard event={event} />
@@ -191,10 +212,7 @@ export function EventsSection() {
             <p className="events-follow-up-kicker" data-events-follow-up-kicker>
               Next on the network
             </p>
-            <h3
-              className="events-follow-up-title"
-              data-events-follow-up-title
-            >
+            <h3 className="events-follow-up-title" data-events-follow-up-title>
               {eventsSection.followUp.title}
             </h3>
             <p

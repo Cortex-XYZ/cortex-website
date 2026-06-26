@@ -285,6 +285,7 @@ export function MissionDesktopStack({
         <div
           ref={stackRef}
           data-mission-stack
+          role="group"
           className="flex gap-2.5"
           aria-label="Mission statement cards"
         >
