@@ -2143,6 +2143,10 @@
     @apply block;
   }
 
+  .events-carousel-controls {
+    @apply hidden;
+  }
+
   .events-list {
     @apply m-0 list-none border-y border-border-default p-0;
   }
@@ -2193,7 +2197,7 @@
   }
 
   .event-description {
-    @apply max-w-none font-mona text-[0.8125rem] leading-[1.5] text-text-muted md:font-open md:text-[0.875rem] md:leading-[1.3] md:text-text-secondary;
+    @apply max-w-none font-mona text-[0.8125rem] leading-[1.4] text-text-muted md:font-open md:text-[0.875rem] md:text-text-secondary;
   }
 
   .event-meta {
@@ -2315,7 +2319,11 @@
     }
 
     .event-description {
-      @apply text-[0.9375rem] leading-[1.45] text-text-secondary;
+      @apply text-[0.9375rem] leading-[1.5] text-text-secondary;
+    }
+
+    .event-description-clamp {
+      @apply line-clamp-4;
     }
 
     .event-meta {
@@ -2376,7 +2384,7 @@
     }
 
     .event-description {
-      @apply max-w-lg text-[1rem];
+      @apply max-w-none text-[1rem];
     }
 
     .event-title {
@@ -2415,6 +2423,50 @@
   }
 
   @media (width < 48rem) {
+    .events-section .section-intro {
+      @apply grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 pb-8;
+    }
+
+    .events-carousel-controls {
+      @apply mt-1 flex shrink-0 justify-end gap-2;
+    }
+
+    .events-carousel-control {
+      @apply inline-flex size-10 items-center justify-center rounded-full border border-border-default bg-bg-elevated text-text-secondary transition-colors duration-200 hover:border-action-primary hover:text-action-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary disabled:pointer-events-none disabled:opacity-35;
+    }
+
+    .events-carousel-control-icon {
+      @apply size-5;
+    }
+
+    .events-list {
+      align-items: flex-start;
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .events-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .events-list-item {
+      align-self: flex-start;
+      display: flex;
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .events-list-item .event-card {
+      align-self: flex-start;
+      width: 100%;
+    }
+
     .event-card-main {
       grid-template-areas:
         "primary"
