@@ -28,7 +28,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - **Team** -- team member cards. Member names link to X profile (tappable on mobile/tablet).
 - **Monad** -- GSAP hover/dialog animations, `MonadCardsClient` with Radix dialog (desktop) + Sheet (mobile), `TooltipProvider` in layout.
 - **Services** -- blob-based static gradient cards with conic-gradient hover animation on CTA tile, responsive layout. Shared `section-title` / `section-intro` classes. Old `--gradient-service-*` CSS vars removed.
-- **Events** -- static `CortexEvent` content (CONNEX Tech Fest), responsive cards, poster, countdown, RSVP, desktop cursor preview (`xl+`), hourly ISR date filtering.
+- **Events** -- static `CortexEvent` content (CONNEX Tech Fest, Cortex Atlanta stablecoins/payments gathering), responsive cards, mobile snap carousel with conditional arrow controls, poster, countdown, RSVP, desktop cursor preview (`xl+`), hourly ISR date filtering.
 
 ### Motion
 
@@ -85,25 +85,17 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Next Steps
 
-1. og image and description.
-2. launch metadata.
-3. Staking page (remove `TEMP(staking-page)` comments when shipping).
+1. Staking page (remove `TEMP(staking-page)` comments when shipping).
 
 ## Latest Handoff
 
-- **SEO metadata route cleanup** — `src/app/robots.ts` now omits the optional `host` directive and keeps canonical `Allow` + `Sitemap` output for indexable production hosts while preview/staging hosts remain fully disallowed.
-- **Organization JSON-LD hardening** — `src/components/seo/organization-jsonld.tsx` now escapes `<` (`\u003c`) during script serialization per Next.js guidance to guard against markup injection vectors.
-- **Verified** — `bun run build` passes; static metadata routes still emit (`/robots.txt`, `/sitemap.xml`) and JSON-LD remains present in built HTML.
-- **Hash navigation + ScrollTrigger hardening** — `HashScrollSync` waits for safe `ScrollTrigger.refresh(true)` and Mission pin readiness before restoring deep links; abandoned restores cancel so hash spy resumes after route changes. `hash-navigation.ts` kills competing scroll tweens, updates spy on focus-in, keeps `#footer` while visible/focused/at max scroll, and resolves active hash via viewport/header intersection with a Services boundary hold (`#services` won't demote to `#monad-links`).
-- **History runtime crash fixed** — Replaced `ScrollTrigger.batch()` + separate summary trigger with one trigger per milestone (final milestone reveals summary). Fixes `Cannot read properties of undefined (reading 'end')` during `ScrollTrigger.create()`.
-- **Mission click-scroll guard** — `mission-pin-stack.ts` returns `null` when pin trigger bounds are non-finite; `mission-cards-client.tsx` bails and requests refresh instead of tweening invalid state.
-- **Verified** — typecheck, lint (Monad `_section` warning only), test, build, and headless Chrome on `#history`, `#team`, `#services`, `#events`, `#footer`: reload lands correctly; footer hash persists while visible and clears when scrolled away.
-- **Newsletter form refactor** — Turnstile extracted to `use-turnstile.ts`; `NewsletterForm` owns submit UX. Submission id ties UI feedback to the active request (no stale success/error); email clears on success; Turnstile tokens reset after each response.
-- **Newsletter pipeline order** — honeypot (silent, before rate limit/Turnstile) → **Upstash** per-IP rate limit → **Cloudflare Siteverify** → **Resend** (`contacts.create` + segments; existing contacts re-subscribed via `contacts.update` when `unsubscribed: true`). Rate limiting runs **before Siteverify** to reduce forged-token abuse.
-- **Turnstile config** — Client reads `NEXT_PUBLIC_TURNSTILE_SITE_KEY`; server Siteverify gated by `isNewsletterTurnstileEnabled()` (both keys required). Secret **trimmed** before Siteverify. **Hostname validation**: `TURNSTILE_ALLOWED_HOSTNAMES`, `*.vercel.app` wildcards, `VERCEL_URL` merged for previews; action must match `newsletter`. Script loader stores **loading/loaded/error** on shared script element, uses `turnstile.ready()`, handles remount/retry; copies page **CSP nonce** onto `api.js`.
-- **Rate-limit IP hardening** — Parses `x-vercel-forwarded-for`, `Forwarded`, IPv4-with-port, bracketed IPv6; **skips loopback** in production-like runtimes. Unknown IP returns `null` identifier; **fail closed** in production (no shared `local` bucket).
-- **Footer hash nav** — `hash-navigation.ts` keeps `#footer` while footer is visible and while focus is in the newsletter/contact region (prevents demotion to `#events` during footer interaction).
-- **Resend re-subscribe** — Reactivates unsubscribed contacts only; reactivated members get success message, not already-submitted.
-- **Event timing source** — Each event carries two Luma UTC instants: `startsAt` and `endsAt`. Upcoming-event visibility (`getUpcomingEvents`) filters by exact `startsAt` timestamp — events are removed once their start instant passes. The client-side `EventCountdown` uses `getEventTimingState` (discriminated union: `countdown` | `live` | `ended`) to show a ticking clock before start, "Happening now" between start and end, and "Event ended" after `endsAt`. CONNEX: `startsAt` `2026-06-27T13:00:00Z` (9 AM EDT), `endsAt` `2026-06-28T01:00:00Z` (9 PM EDT).
-- **Tests** — `submit.test.ts`, `turnstile.test.ts`, `rate-limit.test.ts`, `resend.test.ts`, `countdown.test.ts`, `upcoming.test.ts`.
-- **Verified** — `bun run test`, `bun run typecheck`, `bun run lint` (existing Monad `_section` warning only), `bun run build`. Localhost `#footer` Turnstile submit confirmed against Resend.
+- **Cortex Atlanta event** -- Second event added to `events.ts` (stablecoins/payments, Aug 11 EDT, Luma RSVP).
+- **Events mobile carousel** -- Snap-scroll carousel on mobile with prev/next controls, 4-line description clamp, vertical centering. Tablet/desktop unchanged.
+- **Events carousel controls** -- Hydration fix (both flags init `true`), `useOnMount` subscription, `ResizeObserver` instead of `window.resize`, functional `setScrollState` bail-out, `next/dynamic` lazy import.
+- **SEO** -- `robots.ts` cleanup, JSON-LD `<` escaping, `optimizePackageImports` for `lucide-react`, sitemap/robots routes.
+- **Hash nav hardening** -- ScrollTrigger-safe deep links, footer hash persistence, Services boundary hold, History crash fix, Mission bounds guard.
+- **Newsletter** -- Turnstile extraction, honeypot > rate-limit > Siteverify > Resend pipeline, IP hardening (fail closed), re-subscribe flow.
+- **Event timing** -- `startsAt`/`endsAt` UTC instants, countdown/live/ended states, hourly ISR filtering.
+- **llms.txt** -- Dynamic route at `/llms.txt` pulling from content modules (mission, services, team, events, history, socials). Expired events auto-drop via `getUpcomingEvents`.
+- **Aria fix** -- Corrected Atlanta event poster alt text to match title.
+- **Verified** -- typecheck, test, lint, build pass.

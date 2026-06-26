@@ -52,6 +52,26 @@ export const eventsSection = {
       },
       url: "https://luma.com/vcdd20wc?utm_source=cortex_website",
     },
+    {
+      id: "cortex-atlanta-stablecoins-payments-institutional-digital-assets",
+      label: "ATLANTA",
+      title:
+        "Cortex Atlanta: Stablecoins, Payments & Institutional Digital Assets",
+      startsAt: "2026-08-11T22:00:00Z", // 6:00 PM EDT
+      endsAt: "2026-08-12T00:00:00Z", // 8:00 PM EDT
+      dateLabel: "Aug 11, 2026",
+      location: {
+        city: "Social Space, Atlanta BeltLine",
+        region: "ATLANTA",
+      },
+      description:
+        "Atlanta runs the rails. Transaction Alley moves a huge share of the country's payments, and the next chapter is being written onchain. This off the record gathering brings founders, fintech operators, CISOs, general counsels, investors, and crypto-native builders into one serious room for a vendor-neutral stablecoins and institutional adoption segment, followed by conversation over tacos and drinks. CertiK is the security partner for the evening.",
+      image: {
+        src: "/images/events/811.png",
+        alt: "Cortex Atlanta poster for Stablecoins, Payments & Institutional Digital Assets on August 11, 2026",
+      },
+      url: "https://luma.com/37jf3t95?utm_source=cortex_website",
+    },
   ] satisfies readonly CortexEvent[],
 } as const satisfies Pick<SectionContent, "id"> & {
   titleLines: readonly string[];
