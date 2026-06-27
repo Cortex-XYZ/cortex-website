@@ -21,7 +21,7 @@ export function HeaderStakeCta() {
           type="button"
           animated={false}
           aria-disabled="true"
-          className="header-stake-cta hidden font-bold lg:inline-flex"
+          className="header-stake-cta hidden font-bold xl:inline-flex"
         >
           {ctaButton.label}
         </CortexButton>

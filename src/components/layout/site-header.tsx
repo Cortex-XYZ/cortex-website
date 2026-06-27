@@ -23,7 +23,7 @@ export function SiteHeader() {
             <CortexWordmark className="size-6 w-auto text-text-secondary" />
           </HomeLink>
 
-          <nav className="hidden items-center gap-16 lg:flex">
+          <nav className="hidden items-center gap-16 xl:flex">
             {aboutNavItem?.megaNav && (
               <HeaderMegaNav
                 label={aboutNavItem.label}
@@ -43,7 +43,7 @@ export function SiteHeader() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center justify-end gap-4">
           <HeaderUpcomingEvent className="hidden sm:inline-flex" />
           <HeaderStakeCta />
           <SiteHeaderMobileMenu />
