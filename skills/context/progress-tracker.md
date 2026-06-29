@@ -89,6 +89,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
+- **Event text containment** -- Fixed compact desktop header overflow after the Atlanta event became the next event by letting the right header group and promo pill shrink before the title truncates; moved desktop nav/stake/hamburger breakpoint from lg to xl to give the promo pill room at mid-width viewports; hardened Events card title/location text so realistic long event names and metadata wrap or truncate without horizontal layout overflow.
 - **Cortex Atlanta event** -- Second event added to `events.ts` (stablecoins/payments, Aug 11 EDT, Luma RSVP).
 - **Events mobile carousel** -- Snap-scroll carousel on mobile with prev/next controls, 4-line description clamp, vertical centering. Tablet/desktop unchanged.
 - **Events carousel controls** -- Hydration fix (both flags init `true`), `useOnMount` subscription, `ResizeObserver` instead of `window.resize`, functional `setScrollState` bail-out, `next/dynamic` lazy import.

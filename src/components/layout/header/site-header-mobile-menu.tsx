@@ -26,7 +26,7 @@ export function SiteHeaderMobileMenu() {
   return (
     <>
       <button
-        className="text-text-primary lg:hidden"
+        className="text-text-primary xl:hidden"
         onPointerEnter={preloadMobileNav}
         onFocus={preloadMobileNav}
         onPointerDown={preloadMobileNav}
