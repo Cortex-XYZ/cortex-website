@@ -53,6 +53,25 @@ export const eventsSection = {
       url: "https://luma.com/vcdd20wc?utm_source=cortex_website",
     },
     {
+      id: "tokenomics-101",
+      label: "GLOBAL",
+      title: "Tokenomics 101",
+      startsAt: "2026-07-28T14:30:00Z", // 10:30 AM EDT
+      endsAt: "2026-07-28T15:30:00Z", // 11:30 AM EDT
+      dateLabel: "Jul 28, 2026",
+      location: {
+        city: "Online",
+        region: "GLOBAL",
+      },
+      description:
+        "When designing tokenomics for a project, there always feels like the number of variables and considerations keeps growing, making the process feel like hitting a moving target. This workshop will demonstrate a foundational framework to have all the pieces participants need organized, weighted, and layered for a strong plan of action.",
+      image: {
+        src: "/images/events/728.png",
+        alt: "Tokenomics 101 poster for July 28, 2026",
+      },
+      url: "https://luma.com/pmvvsz4b?utm_source=cortex_website",
+    },
+    {
       id: "cortex-atlanta-stablecoins-payments-institutional-digital-assets",
       label: "ATLANTA",
       title:
