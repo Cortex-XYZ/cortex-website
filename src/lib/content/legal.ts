@@ -25,7 +25,7 @@ export const privacyContent: LegalContent = {
   lastUpdated: "June 11, 2026",
   intro:
     'This Privacy Policy describes how our website (the "Site," "we," "us," or "our") collects, uses, and shares your personal information when you visit our Site, register for our educational programs, sign up for events, or utilize our tech services.',
-  contactEmail: "cortexglobal76@gmail.com",
+  contactEmail: "cortexglobalservice@gmail.com",
   sections: [
     {
       title: "1. Information We May Collect",
@@ -144,7 +144,7 @@ export const termsContent: LegalContent = {
   effectiveDate: "June 11, 2026",
   intro:
     'Welcome to our website. By accessing or using our Site, educational materials, events, and technical services (collectively, the "Services"), you agree to be bound by these Terms of Use. If you do not agree, please do not use our Services.',
-  contactEmail: "cortexglobal76@gmail.com",
+  contactEmail: "cortexglobalservice@gmail.com",
   sections: [
     {
       title: "1. Eligibility and Registration",
