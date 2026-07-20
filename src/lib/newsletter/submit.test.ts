@@ -101,7 +101,7 @@ describe("handleNewsletterSignup", () => {
 
     expect(result).toEqual({
       status: "success",
-      message: "You have successfully subscribed to the Cortex update list.",
+      message: "Welcome! You're subscribed.",
     });
     expect(rateLimitSpy.calls).toBe(0);
     expect(subscribeSpy.calls).toEqual([]);
@@ -123,7 +123,7 @@ describe("handleNewsletterSignup", () => {
 
     expect(result).toEqual({
       status: "success",
-      message: "You have successfully subscribed to the Cortex update list.",
+      message: "Welcome! You're subscribed.",
       subscribedEmail: "person@example.com",
     });
     expect(rateLimitSpy.calls).toBe(1);
@@ -145,7 +145,7 @@ describe("handleNewsletterSignup", () => {
 
     expect(result).toEqual({
       status: "success",
-      message: "You have successfully subscribed to the Cortex update list.",
+      message: "Welcome! You're subscribed.",
       subscribedEmail: "person@example.com",
       submissionId: "submission-123",
     });

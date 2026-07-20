@@ -89,6 +89,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
+- **Newsletter feedback and diagnostics** -- Added  neutral success message for form submission and five-second display, Sentry logging for Turnstile widget errors.
 - **Tokenomics 101 event** -- Third event added to `events.ts` (online Luma session, Jul 28 EDT, poster at `/images/events/728.png`).
 - **Event text containment** -- Fixed compact desktop header overflow after the Atlanta event became the next event by letting the right header group and promo pill shrink before the title truncates; moved desktop nav/stake/hamburger breakpoint from lg to xl to give the promo pill room at mid-width viewports; hardened Events card title/location text so realistic long event names and metadata wrap or truncate without horizontal layout overflow.
 - **Cortex Atlanta event** -- Second event added to `events.ts` (stablecoins/payments, Aug 11 EDT, Luma RSVP).

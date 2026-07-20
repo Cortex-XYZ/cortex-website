@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { CircleCheck, Loader2 } from "lucide-react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import type { SubmitEvent } from "react";
 import { CortexButton } from "@/components/cortex-button";
@@ -200,7 +200,13 @@ export default function NewsletterForm({
               data-status={activeStatus}
               aria-live="polite"
             >
-              {activeMessage}
+              {activeStatus === "success" && (
+                <CircleCheck
+                  className="site-footer-newsletter-success-icon"
+                  aria-hidden
+                />
+              )}
+              <span>{activeMessage}</span>
             </p>
           )}
         </div>

@@ -209,7 +209,7 @@ describe("subscribeNewsletterContact", () => {
 
     expect(result).toEqual({
       status: "success",
-      message: "You have successfully subscribed to the Cortex update list.",
+      message: "Welcome! You're subscribed.",
       subscribedEmail: EMAIL,
     });
   });

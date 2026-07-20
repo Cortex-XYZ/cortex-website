@@ -20,8 +20,7 @@ type HandleNewsletterSignupOptions = {
   turnstile?: NewsletterTurnstileVerify;
 };
 
-const SUBSCRIBED_MESSAGE =
-  "You have successfully subscribed to the Cortex update list.";
+const SUBSCRIBED_MESSAGE = "Welcome! You're subscribed.";
 const ALREADY_SUBSCRIBED_MESSAGE = "Your email has already been submitted.";
 const GENERIC_ERROR_MESSAGE =
   "We could not subscribe that email right now. Please try again.";

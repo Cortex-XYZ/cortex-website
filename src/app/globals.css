@@ -1973,7 +1973,12 @@
   }
 
   .site-footer-newsletter-message[data-status="success"] {
-    @apply text-action-primary;
+    @apply flex items-center gap-1.5 text-text-primary;
+    animation-duration: 5s;
+  }
+
+  .site-footer-newsletter-success-icon {
+    @apply size-3.5 shrink-0 text-action-primary;
   }
 
   .site-footer-newsletter-message[data-status="error"] {

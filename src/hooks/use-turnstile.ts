@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const ONLOAD_CALLBACK = "cortexTurnstileOnLoad";
@@ -26,7 +27,7 @@ type TurnstileApi = {
       action: string;
       appearance: "always" | "execute" | "interaction-only";
       callback: (token: string) => void;
-      "error-callback": () => void;
+      "error-callback": (errorCode: string) => void;
       "expired-callback": () => void;
       execution: "render" | "execute";
       sitekey: string;
@@ -120,6 +121,17 @@ export function useTurnstile({
     setPending(false);
     setError(errorMessage);
   }, [clearToken, errorMessage]);
+
+  const handleWidgetError = useCallback(
+    (errorCode: string) => {
+      Sentry.logger.warn("Newsletter Turnstile widget error", {
+        turnstile_action: action,
+        turnstile_error_code: errorCode.trim(),
+      });
+      rejectChallenge();
+    },
+    [action, rejectChallenge],
+  );
 
   const resetWidget = useCallback(() => {
     const widgetId = widgetIdRef.current;
@@ -331,7 +343,7 @@ export function useTurnstile({
       action,
       appearance: "execute",
       callback: resolveChallenge,
-      "error-callback": rejectChallenge,
+      "error-callback": handleWidgetError,
       "expired-callback": rejectChallenge,
       execution: "execute",
       sitekey: siteKey,
@@ -350,7 +362,14 @@ export function useTurnstile({
         widgetIdRef.current = null;
       }
     };
-  }, [action, siteKey, scriptReady, resolveChallenge, rejectChallenge]);
+  }, [
+    action,
+    handleWidgetError,
+    rejectChallenge,
+    resolveChallenge,
+    scriptReady,
+    siteKey,
+  ]);
 
   return {
     containerRef,
