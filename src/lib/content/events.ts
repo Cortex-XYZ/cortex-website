@@ -21,6 +21,8 @@ export type CortexEvent = {
   /** External registration/detail URL (currently Luma, may change). */
   url?: ExternalHref;
   rsvpLabel?: string;
+  /** Optional visual override for the desktop cursor preview border. */
+  cursorPreviewBorder?: "carbon";
 };
 
 export const eventsSection = {
@@ -90,6 +92,26 @@ export const eventsSection = {
         alt: "Cortex Atlanta poster for Stablecoins, Payments & Institutional Digital Assets on August 11, 2026",
       },
       url: "https://luma.com/37jf3t95?utm_source=cortex_website",
+    },
+    {
+      id: "monad-blitz-abuja-hackathon",
+      label: "NIGERIA",
+      title: "Monad Blitz Abuja Hackathon",
+      startsAt: "2026-08-22T07:00:00Z", // 8:00 AM WAT (GMT+1)
+      endsAt: "2026-08-22T17:30:00Z", // 6:30 PM WAT (GMT+1)
+      dateLabel: "Aug 22, 2026",
+      location: {
+        city: "Abuja, Nigeria",
+        region: "NGA",
+      },
+      description:
+        "A one-day Monad hackathon for developers, AI-assisted builders, and founders in Abuja. Start with a rapid introduction to Monad, then build solo or in teams of up to three, ship a working app, and demo it for a share of $2,000 in prizes.",
+      image: {
+        src: "/images/events/822.jpg",
+        alt: "Monad Blitz Abuja Hackathon poster for August 22, 2026",
+      },
+      cursorPreviewBorder: "carbon",
+      url: "https://luma.com/7cge219c?utm_source=cortex_website",
     },
   ] satisfies readonly CortexEvent[],
 } as const satisfies Pick<SectionContent, "id"> & {

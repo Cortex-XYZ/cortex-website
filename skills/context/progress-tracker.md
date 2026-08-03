@@ -28,7 +28,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - **Team** -- team member cards. Member names link to X profile (tappable on mobile/tablet).
 - **Monad** -- GSAP hover/dialog animations, `MonadCardsClient` with Radix dialog (desktop) + Sheet (mobile), `TooltipProvider` in layout.
 - **Services** -- blob-based static gradient cards with conic-gradient hover animation on CTA tile, responsive layout. Shared `section-title` / `section-intro` classes. Old `--gradient-service-*` CSS vars removed.
-- **Events** -- static `CortexEvent` content (CONNEX Tech Fest, Tokenomics 101, Cortex Atlanta stablecoins/payments gathering), responsive cards, mobile snap carousel with conditional arrow controls, poster, countdown, RSVP, desktop cursor preview (`xl+`), hourly ISR date filtering.
+- **Events** -- static `CortexEvent` content (CONNEX Tech Fest, Tokenomics 101, Cortex Atlanta stablecoins/payments gathering, Monad Blitz Abuja Hackathon), responsive cards, mobile snap carousel with conditional arrow controls, poster, countdown, RSVP, desktop cursor preview (`xl+`), hourly ISR date filtering.
 
 ### Motion
 
@@ -71,6 +71,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 - Gradient CSS vars store stop-lists; direction composed at usage site.
 - kebab-case files/folders; PascalCase React exports.
 - Events static in `events.ts` for v1; desktop interactivity gates at `xl`.
+- Event cursor previews use the existing Cortex Orange-accented border by default. Set `cursorPreviewBorder: "carbon"` only when an individual event needs the Cortex Carbon override.
 - Service Cards are the canonical name for Services visual surfaces; homepage cards use static CSS gradient/blob visuals in `services-section.tsx`, while future runtime shader surfaces must follow approved design-system recipes and fallback rules.
 - Shared entrance-motion values live in `src/lib/motion/tokens.ts`; section `*-scroll.ts` tunables files consume tokens and keep intentional deviations as commented literals (see `README.md` and `skills/context/ui-context.md`).
 - Current motion scope intentionally excludes a full Hero entrance timeline for tagline/CTAs, custom Mission keyboard switching beyond native controls, true scrubbed History line drawing, and a Footer/global reveal wrapper. The accepted direction is Hero title motion only, Mission click/scroll/mobile interaction, History line draw that automatically advances with milestone reveals, and section-owned reveal helpers where already useful.
@@ -89,6 +90,7 @@ All seven homepage sections are built, wired, and animated (scroll-driven entran
 
 ## Latest Handoff
 
+- **Monad Blitz Abuja event** -- Added the Aug 22 WAT event with UTC-backed timing, Abuja location, Luma RSVP, a 750px poster at `/images/events/822.jpg`, a `NIGERIA` badge with the `CORTEX NGA` regional lockup, and a vertically centered hover preview with an event-only Cortex Carbon border.
 - **Tokenomics 101 event** -- Third event added to `events.ts` (online Luma session, Jul 28 EDT, poster at `/images/events/728.png`).
 - **Event text containment** -- Fixed compact desktop header overflow after the Atlanta event became the next event by letting the right header group and promo pill shrink before the title truncates; moved desktop nav/stake/hamburger breakpoint from lg to xl to give the promo pill room at mid-width viewports; hardened Events card title/location text so realistic long event names and metadata wrap or truncate without horizontal layout overflow.
 - **Cortex Atlanta event** -- Second event added to `events.ts` (stablecoins/payments, Aug 11 EDT, Luma RSVP).
