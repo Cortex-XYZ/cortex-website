@@ -2571,6 +2571,10 @@
     animation: event-preview-in 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
+  .event-card-cursor-preview-frame[data-border="carbon"] {
+    border-color: var(--brand-cortex-carbon);
+  }
+
   @keyframes event-preview-in {
     from {
       opacity: 0;
@@ -2588,7 +2592,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
+    object-position: center;
   }
 
   @media (hover: none) {

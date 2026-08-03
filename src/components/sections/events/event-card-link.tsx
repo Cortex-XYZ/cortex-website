@@ -207,7 +207,10 @@ function EventCursorPreview({
       className="event-card-cursor-preview"
       aria-hidden="true"
     >
-      <div className="event-card-cursor-preview-frame">
+      <div
+        className="event-card-cursor-preview-frame"
+        data-border={event.cursorPreviewBorder}
+      >
         <Image
           src={event.image.src}
           alt=""
